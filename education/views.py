@@ -9,7 +9,9 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 import openai ,os
 from django.http import HttpResponse
 import azure.cognitiveservices.speech as speechsdk
-
+from django.shortcuts import render
+import pytesseract
+from PIL import Image
 from dotenv import load_dotenv
 load_dotenv()
 api_key=os.getenv("OPENAI_KEY",None)
@@ -78,3 +80,20 @@ def transcribe_speech(request):
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             print("Error details: {}".format(cancellation_details.error_details))
             return HttpResponse("Speech Recognition Error")
+
+
+@csrf_exempt
+@api_view(('POST',))
+@action(detail=False, methods=['POST'])
+def extract_text_from_image(request):
+    if request.method == 'POST':
+        image = request.FILES['image']
+        # Open the image using PIL
+        img = Image.open(image)
+        # Use pytesseract to extract the text
+        pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
+        text = pytesseract.image_to_string(img, lang='ara')
+        # Render the extracted text in a template
+        return HttpResponse(text)
+    else:
+        return HttpResponse("Failed")
