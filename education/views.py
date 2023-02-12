@@ -60,7 +60,7 @@ def transcribe_speech(request):
     speech_key, service_region = "eca56e10fd6c41b0b2b47181df088d83", "eastus"
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
     # Set the target language to Arabic
-    speech_config.speech_recognition_language = "ar-EG"  # or "ar-SA"
+    #speech_config.speech_recognition_language = "ar-EG"  # or "ar-SA"
     # Creates a recognizer with the given settings
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config)
     print("Say something in Arabic...")
