@@ -12,6 +12,7 @@ import azure.cognitiveservices.speech as speechsdk
 from django.shortcuts import render
 import pytesseract
 from PIL import Image
+import pyttsx3
 from dotenv import load_dotenv
 load_dotenv()
 api_key=os.getenv("OPENAI_KEY",None)
@@ -62,7 +63,7 @@ def transcribe_speech(request):
     speech_key, service_region = "eca56e10fd6c41b0b2b47181df088d83", "eastus"
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
     # Set the target language to Arabic
-    #speech_config.speech_recognition_language = "ar-EG"  # or "ar-SA"
+    speech_config.speech_recognition_language = "ar-EG"  # or "ar-SA"
     # Creates a recognizer with the given settings
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config)
     print("Say something in Arabic...")
@@ -97,3 +98,43 @@ def extract_text_from_image(request):
         return HttpResponse(text)
     else:
         return HttpResponse("Failed")
+
+@csrf_exempt
+@api_view(('POST',))
+@action(detail=False, methods=['POST'])
+def text_to_speech(request):
+    if request.method == 'POST':
+        user_input =request.POST.get('user_input')
+        # Initialize the speech engine
+        engine = pyttsx3.init()
+        ####
+        voices = engine.getProperty('voices')
+        engine.setProperty('voice','HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\MSTTS_V110_arSA_NaayfM')
+        engine.say(user_input)
+        engine.runAndWait()
+        return HttpResponse("SUCCESS")
+    else:
+        return HttpResponse("FAILED")
+
+
+
+
+
+
+from django.utils import timezone
+from .models import Question
+import random
+
+def quiz(request):
+    if request.method == "POST":
+        selected_question = Question.objects.filter(operation=request.POST['operation'])
+        selected_question = random.choice(selected_question)
+        if int(request.POST['answer']) == selected_question.answer:
+            message = "Correct! Good job."
+        else:
+            message = f"Incorrect. The correct answer is {selected_question.answer}."
+    else:
+        message = ""
+    return render(request, 'quiz.html', {'message': message})
+
+    

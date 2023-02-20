@@ -1,0 +1,22 @@
+<h1>Math Quiz for Kids</h1>
+<form method="post">
+  {% csrf_token %}
+  <p>Select an operation:</p>
+  <select name="operation">
+    <option value="+">Addition</option>
+    <option value="-">Subtraction</option>
+    <option value="*">Multiplication</option>
+    <option value="/">Division</option>
+  </select>
+  <br>
+  <br>
+  {% for i in "1234" %}
+    {% with operand=random %}
+      <p>{{ operand }} {{ request.POST.operation }} {{ operand }} = </p>
+      <input type="number" name="answer">
+      <br>
+    {% endwith %}
+  {% endfor %}
+  <input type="submit" value="Submit">
+</form>
+<p>{{ message }}</p>
