@@ -121,20 +121,73 @@ def text_to_speech(request):
 
 
 
-from django.utils import timezone
-from .models import Question
+# from django.utils import timezone
+# from .models import Question
+# import random
+
+# def quiz(request):
+#     if request.method == "POST":
+#         selected_question = Question.objects.filter(operation=request.POST['operation'])
+#         selected_question = random.choice(selected_question)
+#         if int(request.POST['answer']) == selected_question.answer:
+#             message = "Correct! Good job."
+#         else:
+#             message = f"Incorrect. The correct answer is {selected_question.answer}."
+#     else:
+#         message = ""
+#     return render(request, 'quiz.html', {'message': message})
+
 import random
+from .models import QuizQuestion
 
-def quiz(request):
-    if request.method == "POST":
-        selected_question = Question.objects.filter(operation=request.POST['operation'])
-        selected_question = random.choice(selected_question)
-        if int(request.POST['answer']) == selected_question.answer:
-            message = "Correct! Good job."
+def quiz_view(request):
+    difficulty = request.GET.get('difficulty', 1)
+    num_questions = request.GET.get('num_questions', 10)
+    questions = []
+    for i in range(num_questions):
+        operation = random.choice(['+', '-', '*', '/'])
+        if operation == '+':
+            num1 = random.randint(1, int(difficulty) * 100)
+            num2 = random.randint(1, int(difficulty) * 100)
+            answer = num1 + num2
+        elif operation == '-':
+            num1 = random.randint(1, int(difficulty) * 100)
+            num2 = random.randint(1, int(difficulty) * 100)
+            answer = num1 - num2
+        elif operation == '*':
+            num1 = random.randint(1, int(difficulty) * 20)
+            num2 = random.randint(1, int(difficulty) * 20)
+            answer = num1 * num2
         else:
-            message = f"Incorrect. The correct answer is {selected_question.answer}."
-    else:
-        message = ""
-    return render(request, 'quiz.html', {'message': message})
+            num2 = random.randint(1, int(difficulty) * 20)
+            answer = random.randint(1, int(difficulty) * 20)
+            num1 = num2 * answer
+        questions.append(QuizQuestion(operation=operation, num1=num1, num2=num2, answer=answer, difficulty=difficulty))
+    QuizQuestion.objects.bulk_create(questions)
+    quiz_questions = QuizQuestion.objects.filter(difficulty=difficulty).order_by('?')[:num_questions]
+    context = {
+        'quiz_questions': quiz_questions,
+        'difficulty': difficulty,
+        'num_questions': num_questions
+    }
+    print(num_questions)
+    print('aaa')
+    return render(request, 'quiz.html', context)
 
-    
+def quiz_results(request):
+    if request.method == 'POST':
+        print('aaaa')
+        score = 0
+        for key, value in request.POST.items():
+            if key.startswith('answer'):
+                question_id = int(key.replace('answer', ''))
+                question = QuizQuestion.objects.get(id=question_id)
+                if int(value) == question.answer:
+                    score += 1
+                    context = {'score': score,
+                            'num_questions': request.POST.get('num_questions'),
+                            'difficulty': request.POST.get('difficulty'), }
+        return render(request, 'quiz_results.html', context)
+    else:
+        return redirect('quiz_view')
+ 

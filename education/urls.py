@@ -6,5 +6,6 @@ urlpatterns=[
     path('transcribe-speech/', views.transcribe_speech, name='transcribe-speech'),
     path('extract_text/', views.extract_text_from_image, name='extract_text'),
     path('text_to_speech/', views.text_to_speech, name='text_to_speech'),
-    path('quiz/', views.quiz, name='quiz')
-    ]
+    path('quiz/', views.quiz_view, name='quiz_view'),
+    path('quiz/results/', views.quiz_results, name='quiz_results')
+]
