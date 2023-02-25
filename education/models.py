@@ -1,18 +1,29 @@
 from django.db import models
 
-# Create your models here.
-
-
-class Question(models.Model):
-    operation = models.CharField(max_length=1, choices=[
+class QuizQuestion(models.Model):
+    OPERATIONS = (
         ('+', 'Addition'),
         ('-', 'Subtraction'),
         ('*', 'Multiplication'),
         ('/', 'Division'),
-    ])
-    operand1 = models.IntegerField()
-    operand2 = models.IntegerField()
+    )
+    operation = models.CharField(max_length=1, choices=OPERATIONS)
+    num1 = models.IntegerField()
+    num2 = models.IntegerField()
     answer = models.IntegerField()
-    
-    def __str__(self):
-        return f"{self.operand1} {self.operation} {self.operand2} = {self.answer}"
+    difficulty = models.IntegerField(default=1)
+# Create your models here.
+
+class Teacher(models.Model):
+    TeacherId = models.CharField(primary_key=True,max_length=20)
+    TeacherName = models.CharField(max_length=100)
+    PhotoFileName = models.CharField(max_length=100)
+class Class(models.Model):
+    ClassId =models.CharField(primary_key=True,max_length=20)
+    ClassName = models.CharField(max_length=10)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
+class Problem(models.Model):
+    ProblemId = models.CharField(primary_key=True,max_length=20)
+    ProblemText = models.CharField(max_length=1000)
+    Class = models.ForeignKey(Class, on_delete=models.CASCADE)

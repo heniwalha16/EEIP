@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Math Quiz Results</title>
+</head>
+<body>
+	<h1>Math Quiz Results</h1>
+	<p>Your Score: {{ score }}/{{ num_questions }}</p>
+	<p>Difficulty: {{ difficulty }}</p>
+	<a href="{% url 'quiz_view' %}?difficulty={{ difficulty }}&num_questions={{ num_questions }}">Take Another Quiz</a>
+</body>
+</html>
