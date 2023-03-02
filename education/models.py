@@ -1,5 +1,8 @@
 from django.db import models
 
+
+from django.db import models
+
 class QuizQuestion(models.Model):
     OPERATIONS = (
         ('+', 'Addition'),
@@ -18,6 +21,8 @@ class Teacher(models.Model):
     TeacherId = models.CharField(primary_key=True,max_length=20)
     TeacherName = models.CharField(max_length=100)
     PhotoFileName = models.CharField(max_length=100)
+
+    
 class Class(models.Model):
     ClassId =models.CharField(primary_key=True,max_length=20)
     ClassName = models.CharField(max_length=10)

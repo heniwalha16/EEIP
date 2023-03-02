@@ -134,6 +134,26 @@ def text_to_speech(request):
 ########################### Quiz   ###############################
 
 
+
+
+
+
+# from django.utils import timezone
+# from .models import Question
+# import random
+
+# def quiz(request):
+#     if request.method == "POST":
+#         selected_question = Question.objects.filter(operation=request.POST['operation'])
+#         selected_question = random.choice(selected_question)
+#         if int(request.POST['answer']) == selected_question.answer:
+#             message = "Correct! Good job."
+#         else:
+#             message = f"Incorrect. The correct answer is {selected_question.answer}."
+#     else:
+#         message = ""
+#     return render(request, 'quiz.html', {'message': message})
+
 import random
 from .models import QuizQuestion
 
@@ -224,7 +244,8 @@ def teacherApi(request,id=0):
 @csrf_exempt
 def ClassApi(request,id=0):
     if request.method=='GET':
-        classes = Class.objects.all()
+        classes=Class.objects.filter(teacher=id)
+        #classes = Class.objects.all()
         classes_serializer = ClassSerializer(classes, many=True)
         return JsonResponse(classes_serializer.data, safe=False)
 
@@ -254,9 +275,10 @@ def ClassApi(request,id=0):
 @csrf_exempt
 def ProblemApi(request,id=0):
     if request.method=='GET':
-        problems = Problem.objects.all()
-        problems_serializer = ProblemSerializer(problems, many=True)
-        return JsonResponse(problems_serializer.data, safe=False)
+       #problems = Problem.objects.all()
+       problems=Problem.objects.filter(Class=id)
+       problems_serializer = ProblemSerializer(problems, many=True)
+       return JsonResponse(problems_serializer.data, safe=False)
 
     elif request.method=='POST':
         problem_data=JSONParser().parse(request)
@@ -292,3 +314,4 @@ def SaveFile(request):
     file_name = default_storage.save(file.name,file)
 
     return JsonResponse(file_name,safe=False)
+ 

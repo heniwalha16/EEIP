@@ -19,3 +19,4 @@ urlpatterns=[
     path('quiz/', views.quiz_view, name='quiz_view'),
     path('quiz/results/', views.quiz_results, name='quiz_results')
     ]
+

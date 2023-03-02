@@ -1,0 +1,21 @@
+<div class="form-froup row">
+    <label class="col-sm-2 col-form-label">Class ID</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" [(ngModel)]="ClassId"
+        placeholder="Enter Class Id">
+    </div>
+    <label class="col-sm-2 col-form-label">Class Name</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" [(ngModel)]="ClassName"
+        placeholder="Enter Class Name">
+    </div>
+
+</div>
+
+<button (click)="addClass()" *ngIf="Classroom.ClassId==0" class="btn btn-primary">
+    Add
+</button>
+
+<button (click)="updateClass()" *ngIf="Classroom.ClassId!=0" class="btn btn-primary">
+    Update
+</button>
