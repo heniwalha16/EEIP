@@ -17,6 +17,7 @@ urlpatterns=[
     path('Problem/<str:id>/', views.ProblemApi, name='Problem_api'),
     path('SaveFile/', views.SaveFile),
     path('quiz/', views.quiz_view, name='quiz_view'),
-    path('quiz/results/', views.quiz_results, name='quiz_results')
+    path('quiz/results/', views.quiz_results, name='quiz_results'),
+    path('image_generation/', views.image_generation)
     ]
 

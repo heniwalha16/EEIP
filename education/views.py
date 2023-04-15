@@ -239,7 +239,7 @@ def teacherApi(request,id=0):
         teacher=Teacher.objects.get(TeacherId=id)
         teacher.delete()
         return JsonResponse("Deleted Succeffully!!", safe=False)
-    ########################### ClassApi   ###############################
+################################ ClassApi   #####################################
 
 @csrf_exempt
 def ClassApi(request,id=0):
@@ -315,3 +315,200 @@ def SaveFile(request):
 
     return JsonResponse(file_name,safe=False)
  
+################################# Image Generation   ###############################
+import torch
+import torch.nn as nn
+import transformers
+import langid
+import requests
+import stanza
+from quantulum3 import parser
+
+class BertForMathProblemClassification(nn.Module):
+    def __init__(self, num_labels=2):
+        super(BertForMathProblemClassification, self).__init__()
+        self.bert = transformers.BertModel.from_pretrained('bert-base-uncased')
+        self.dropout = nn.Dropout(0.1)
+        self.classifier = nn.Linear(self.bert.config.hidden_size, num_labels)
+        
+    def forward(self, input_ids, attention_mask):
+        outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
+        pooled_output = outputs[1]
+        pooled_output = self.dropout(pooled_output)
+        logits = self.classifier(pooled_output)
+        return logits
+
+def detect_language(text):
+    lang, confidence = langid.classify(text)
+    return lang
+
+action_verbs = ['Provide', 'Zip', 'Train', 'Clean', 'Drink', 'Face', 'Build', 'Control', 'Release', 'Have', 'Play', 'Press', 'Turn', 'Sit down', 'Smell', 'Arrange', 'Ski', 'Result', 'Wonder', 'Expect', 'Visit', 'State', 'Explain', 'Correct', 'Increase', 'Wait', 'Repeat', 'Bathe', 'Run', 'Tell', 'Know', 'See', 'Mind', 'Own', 'Throw away', 'Complain', 'Feel', 'Affect', 'Buy', 'Do', 'Hug', 'Record', 'Replace', 'Sit', 'Plan', 'Admit', 'Invite', 'Pay', 'Try', 'Relate', 'Invent', 'Tend', 'Turn on', 'Order', 'Coach', 'Deliver', 'Limit', 'Apply', 'Reduce', 'Yank', 'Accept', 'Survive', 'Influence', 'Color', 'Remember', 'Form', 'Wash', 'Start', 'Describe', 'Measure', 'Share', 'Climb', 'Cough', 'Involve', 'Touch', 'Suppose', 'Keep', 'Cook', 'Approve', 'Inform', 'Produce', 'Skip', 'Shout', 'Agree', 'Suggest', 'Achieve', 'Offer', 'Cost', 'Arrive', 'Kiss', 'Afford', 'Last', 'Could', 'Understand', 'Protect', 'Answer', 'Stand', 'Point', 'Go', 'Check', 'Happen', 'Exist', 'Receive', 'Rise', 'Collect', 'Stand up', 'Ask', 'Enter', 'Continue', 'Damage', 'Fall', 'Contain', 'Remove', 'Scream', 'Believe', 'Clap', 'Come', 'Fly', 'Whistle', 'Destroy', 'Sing', 'Teach', 'Perform', 'Listen', 'Sneeze', 'Win', 'Supply', 'Leave', 'Enjoy', 'Edit', 'Reach', 'Experience', 'Must', 'Dream', 'Avoid', 'Paint', 'Shake', 'Set', 'Develop', 'Deal', 'Learn', 'Stack', 'Get', 'Carry', 'Follow', 'Speak', 'Dive', 'Write', 'Eat', 'Jump', 'Hold', 'Shop', 'Drive', 'Turn off', 'Show', 'Forgive', 'Live', 'Treat', 'Snore', 'Use', 'Make', 'Express', 'Finish', 'Forget', 'Cut', 'Move', 'Watch', 'Draw', 'Lie', 'Watch TV', 'Regard', 'Discover', 'Improve', 'Deny', 'Allow', 'Smile', 'Bow', 'Love', 'Dance', 'Hope', 'Prevent', 'Argue', 'Fight', 'Need', 'Shoot', 'Succeed', 'Meet', 'Consist', 'Choose', 'Grow', 'Take', 'Lend', 'Walk', 'Open', 'Give', 'Reply', 'Exit', 'Dig', 'Travel', 'Change', 'Think', 'Ride', 'Reveal', 'Identity', 'Return', 'Depend', 'Like', 'Matter', 'Close', 'Become', 'Create', 'Break', 'Send', 'Laugh', 'Cry', 'Hear', 'Encourage', 'Cause', 'Sound', 'Dress', 'Look', 'Say', 'Prefer', 'Care', 'Report', 'Help', 'Call',"Find", "Cross", "Save", "Imitate", "Sleep", "Clear", "Contribute", "Prepare", "Imagine", "Begin", "Crawl", "Solve", "Push", "Sew", "Study", "Mention", "Mean", "Join", "Complete", "Throw", "Read", "Act", "Disappear", "Catch", "Hide", "Knit", "Sell", "Talk", "Want"]
+action_verbs = [word.lower() for word in action_verbs]
+
+@csrf_exempt
+@api_view(('POST',))
+@action(detail=False, methods=['POST'])
+def image_generation(request):
+    if request.method == 'POST':
+        print("aaa")
+        seed = request.POST.get('problem')
+    # This sets up a default neural pipeline in Lang
+    print(seed)
+    lang=detect_language(seed)
+    if (lang != 'en'):
+        response = requests.get('https://api.mymemory.translated.net/get?q='+seed+'&langpair='+lang+'|en')
+        seed = response.json()['responseData']['translatedText']
+    if ',' in seed:
+        seed=seed.replace(',',' , ')
+    nlp = stanza.Pipeline('en', use_gpu=False,
+                          processors='tokenize,pos,lemma')
+    doc = nlp(seed)
+    res = {'type': None, 'data': []}
+
+    # Load the trained model and tokenizer
+    model = BertForMathProblemClassification()
+    model.load_state_dict(torch.load('C:/Users/user/Downloads/bert_math_problem_classification.pt'))
+    tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
+
+    # Example math problem
+    problem = seed
+
+    # Tokenize the input and convert to tensors
+    input_ids = torch.tensor(tokenizer.encode(problem, add_special_tokens=True)).unsqueeze(0)  # Batch size 1
+    attention_mask = torch.ones_like(input_ids)
+
+    # Pass the input to the model and get the predicted class
+    with torch.no_grad():
+        outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+        predicted_class = torch.argmax(outputs).item()
+
+    # Print the predicted class
+    class_names = ['Not Geometry', 'Geometry']
+    problem_type = class_names[predicted_class]
+    
+    if (problem_type=='Geometry'):      
+        
+        for sent in doc.sentences:
+            quants = parser.parse(sent.text)
+            for q in quants:
+                if q.unit.entity.name == 'length' :
+                    res['data'].append([float(q.surface.split()[0]), q.surface.split()[1]])
+                    
+        if len(res['data']) > 0:
+            if len(res['data'])==1:
+                if 'diameter' in problem:
+                    res['type'] = 'diametre'
+                elif 'radius' in problem:
+                    res['type'] = 'radius'
+                else:
+                    res['type'] = 'square'
+            elif len(res['data'])==2:
+                if 'parallelogram' in problem:
+                    res['type'] = 'parallelogram'
+                elif 'rhombus' in problem:
+                    res['type'] = 'rhombus'
+                else:
+                    res['type'] = 'rectangle'
+            elif len(res['data'])==4:
+                if 'trapezium' in problem:
+                    res['type'] = 'trapezium'
+            del doc
+            return res
+
+
+    else:
+        res['type'] = 'entity'
+
+    for sent in doc.sentences:
+        for word in sent.words:
+            res['data'].append([word.lemma, word.upos, word.text])
+
+    i = 0
+    #for w in res['data']:
+     #   w.append(i)
+      #  i = 0
+       # if w[1] == 'NUM':
+        #    print(w[0])
+         #   i = int(w[0])
+    print(res)
+    for i, w in enumerate(res['data']):
+        if w[1] == 'NOUN':
+            if i < len(res['data'])-1:
+                if res['data'][i+1][1] == 'NOUN':
+                    w[0] = w[0]+' '+res['data'][i+1][0]
+                    w[2] = w[2]+' '+res['data'][i+1][2]
+                    del res['data'][i+1]
+    print(res)
+    for i, w in enumerate(res['data']):
+        if w[1] == 'PROPN':
+            if i < len(res['data'])-1:
+                if res['data'][i+1][1] == 'PROPN':
+                    w[0] = w[0]+' '+res['data'][i+1][0]
+                    w[2] = w[2]+' '+res['data'][i+1][2]
+                    del res['data'][i+1]
+    
+    for i, w in enumerate(res['data']):
+        if w[1] == 'ADV':
+            if (i < len(res['data'])-1) and (i>0):
+                print("aaa")
+                if (res['data'][i+1][1] == 'VERB') and (res['data'][i+1][0] in action_verbs):
+                    w[0] = w[0]+' '+res['data'][i+1][0]
+                    w[2] = w[2]+' '+res['data'][i+1][2]
+                    del res['data'][i+1]    
+                elif (res['data'][i-1][1] == 'VERB') and (res['data'][i-1][0] in action_verbs):
+                    w[0] = res['data'][i-1][0] + ' ' + w[0]
+                    w[2] = res['data'][i-1][2] + ' ' + w[2]
+                    del res['data'][i-1]   
+    print(res)
+    dim_numbers=[]
+    for sent in doc.sentences:
+        sent=sent.text.replace(',','and')
+        quants = parser.parse(sent)
+        
+        for q in quants:  
+            if q.unit.entity.name != 'dimensionless' :   
+                dim_numbers.append(q.value)
+    print(dim_numbers)
+    for w in res['data']:
+        if w[1] == 'NOUN':
+            url = "https://api.giphy.com/v1/stickers/search?api_key=iidRVNv0y0mmMUNhYrwlVFufRdIeFLJP&q=" + \
+                w[0]+"&limit=1&offset=1&rating=PG"
+            response = requests.get(url)
+            if (response.json()['data']):
+                w[0] = response.json()['data'][0]['images']['downsized']['url']
+            else:w[1]='NOUN_'
+        if w[1] == 'PROPN': #or w[1] == 'X':
+            r2 = requests.get("https://api.genderize.io?name="+w[0])
+            gender = r2.json()['gender']
+            if gender == 'female':
+                w[0] = 'https://media.giphy.com/media/ifMNaJBQEJPDuUxF6n/giphy.gif'
+            else:
+                w[0] = 'https://media.giphy.com/media/TiC9sYLY9nilNnwMLq/giphy.gif'
+        if w[1] == 'ADV':
+            url = "https://api.giphy.com/v1/stickers/search?api_key=iidRVNv0y0mmMUNhYrwlVFufRdIeFLJP&q=" + \
+                w[0]+"&limit=1&offset=1&rating=PG"  #W[2] better 
+            response = requests.get(url)
+            if (response.json()['data']):
+                w[0] = response.json()['data'][0]['images']['downsized']['url']
+
+        if (w[1] == 'VERB') and (w[0] in action_verbs):
+            url = "https://api.giphy.com/v1/stickers/search?api_key=iidRVNv0y0mmMUNhYrwlVFufRdIeFLJP&q=" + \
+                w[0]+"&limit=1&offset=1&rating=PG"
+            response = requests.get(url)
+            if (response.json()['data']):
+                w[0] = response.json()['data'][0]['images']['downsized']['url']
+
+    Output_List=[]
+    for w in res['data']:
+        if (w[1]=='NUM') and (int(w[0]) in dim_numbers) and (int(w[0])<15):
+            Output_List.append([w[2],1])
+            continue
+        if (w[0].startswith('https')):
+            Output_List.append([w[0],0])
+        else:
+            Output_List.append([w[2],0])
+   #print(res)
+    #print("aaaa")
+    #print(Output_List)
+    del doc
+    return HttpResponse(Output_List)

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<header style="position: fixed;">
+    <title>Text 2 Scene
+    </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous"></script>
+    <script src="/static/js/particles.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.js'></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="/static/js/paint.js"></script>
+
+    <ul>
+
+        <li><a href="#" onclick="Nav()">Add Stuff</a></li>
+        <li><a href="/">Home</a></li>
+    </ul>
+</header>
+
+<body onload="createPaint();" >
+    <div id="mySidenav" class="sidenav">
+
+        <div id="add" style=" width: 100px; margin-left: 25%;">
+            <script>var array = [];</script>
+            {%if  input[1]['type']=='entity' %}
+            {%for i in input[1]['data'] %}
+            {%if i[1]=='NOUN'  %}
+            {%if i[3] > 0 %}
+            <script>
+
+                var x = '{{i[0]}}';
+                if (array.indexOf(x) === -1) {
+                    array.push(x)
+                };
+
+            </script>
+            {%endif%}
+            {%endif%}
+            {%endfor%}
+            {%endif%}
+            <script>
+
+                for (i = 0; i < array.length; i++)
+                    document.getElementById('add').innerHTML += '<img src=' + array[i] + ' width="100" class="task">'
+            </script>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center ">
+        <div class="d-flex flex-column mt-3">
+            <div class="p-3 mb-2 bg-info text-white text-align-center"> Situation: {{input[0]|safe}}</div>
+
+
+        </div>
+    </div>
+    <canvas id="c" class="canvas"></canvas>
+    <div class="canv " id="d" >
+
+{%if  input[1]['type']=='entity' %}
+        {%for i in input[1]['data'] %}
+        {%if i[1]=='NOUN' or i[1]=='PROPN' or i[1]=='ADV'%} 
+        {%if i[3] > 0 %}
+
+
+        <div class="parent" id='{{i[0]}}'>
+            {%for j in range(i[3]) %}
+            <img src={{i[0]}} width="100" class="task">
+            {%endfor%}</div>
+        {% else %}
+        <img src={{i[0]}} width="100">
+        {%endif%}
+        {% else %}
+        {%if i[1]!='NUM' %}
+        <span style="margin-left: 2%;">{{i[2]}}</span>
+        {%endif%}
+        {%if i[1]=='NUM' and i[3]==1 %}
+        <span style="margin-left: 2%;">{{i[2]}}</span>
+        {%endif%}
+        {%endif%}
+        {%endfor%}
+{%endif%}
+{%if  input[1]['type']=='rectangle' %}
+<script> 
+draw('{{input[1]["data"][0][0]}}','{{input[1]["data"][1][0]}}','{{input[1]["data"][0][1]}}','{{input[1]["data"][1][1]}}');
+</script>
+{%endif%}
+{%if  input[1]['type']=='square' %}
+<script> 
+draw('{{input[1]["data"][0][0]}}','{{input[1]["data"][0][0]}}','{{input[1]["data"][0][1]}}','{{input[1]["data"][0][1]}}');
+</script>
+{%endif%}
+{%if  input[1]['type']=='diametre' %}
+<script> 
+draw_circle('{{input[1]["data"][0][0]}}','{{input[1]["data"][0][1]}}',true);
+</script>
+{%endif%}
+{%if  input[1]['type']=='radius' %}
+<script> 
+draw_circle('{{input[1]["data"][0][0]}}','{{input[1]["data"][0][1]}}',false);
+</script>
+{%endif%}
+
+
+    </div>
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark d-flex bd-highlight text-white" id="nav">
+        
+        <img src="/static/images/delete.png" style="width:60px;">
+        <div id="tc" class="p-2 bd-highlight border border-white rounded " style="height: 100px;width: 100px;"></div>
+        <span class="m-3"> Drawing: <input type="checkbox" unchecked data-toggle="toggle" data-onstyle="success"
+                data-offstyle="danger" id="toggle-event"> </span>
+                <button class="btn btn-warning" onclick="emptyc()"> Empty Canvas !</button>
+        
+    </nav>
+    <div id="particles-js"></div>
+</body>
+<script>
+    function emptyc() {
+        var canvas = document.getElementById('c');
+        var context = canvas.getContext('2d');
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+</script>
+<script>
+    var draggableElems = Array.prototype.slice.call(document.querySelectorAll('.parent'));
+    draggableElems.push(document.getElementById("add"));
+    draggableElems.push(document.getElementById('tc'));
+
+    var drag = dragula(draggableElems, { revertOnSpill: true })
+        .on('drag', function (el) {
+            el.className = el.className.replace('ex-moved', '');
+
+        }).on('drop', function (el, container, source) {
+            console.log(source)
+            if (container.id == "tc") container.innerHTML = "";
+            if (source.className.includes("parent") && container.className.includes("parent")) drag.cancel();
+            if (source.id == 'add' && container.id != el.src) el.remove()
+
+            if (container.id == "add") drag.cancel();
+            if (source.id == "add" && container.id != 'add') {
+                var tmp = el.cloneNode(el)
+                tmp.className = "task"
+                document.getElementById("add").appendChild(tmp)
+            }
+            el.className += ' ex-moved';
+
+
+        }).on('over', function (el, container) {
+
+            container.className += ' ex-over';
+        }).on('out', function (el, container) {
+
+            container.className = container.className.replace('ex-over', '');
+        });
+    ;
+
+
+</script>
+
+<script>/* Set the width of the side navigation to 250px */
+    function Nav() {
+        if (document.getElementById("mySidenav").style.width == "250px")
+            document.getElementById("mySidenav").style.width = "0"
+        else document.getElementById("mySidenav").style.width = "250px"
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+</script>
+<script>
+    particlesJS.load('particles-js', '/static/js/particlesjs-1-config.json', function () {
+        console.log('callback - particles.js config loaded');
+    });
+</script>
+<script>
+    $(function () {
+        $('#toggle-event').change(function () {
+            var x = document.getElementById('t')
+            var c = document.getElementById('c')
+            console.log(x.style.display)
+            if (x.style.display === "none") {
+                x.style.display = "block";
+                c.style.zIndex = '999'
+            } else {
+                x.style.display = "none";
+                c.style.zIndex = '-1'
+            }
+        })
+    })
+   
+</script>
+
+
+</html>
