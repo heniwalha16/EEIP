@@ -131,6 +131,7 @@ def text_to_speech(request):
         return HttpResponse("SUCCESS")
     else:
         return HttpResponse("FAILED")
+    
 ########################### Quiz   ###############################
 
 
@@ -345,13 +346,10 @@ def detect_language(text):
 action_verbs = ['Provide', 'Zip', 'Train', 'Clean', 'Drink', 'Face', 'Build', 'Control', 'Release', 'Have', 'Play', 'Press', 'Turn', 'Sit down', 'Smell', 'Arrange', 'Ski', 'Result', 'Wonder', 'Expect', 'Visit', 'State', 'Explain', 'Correct', 'Increase', 'Wait', 'Repeat', 'Bathe', 'Run', 'Tell', 'Know', 'See', 'Mind', 'Own', 'Throw away', 'Complain', 'Feel', 'Affect', 'Buy', 'Do', 'Hug', 'Record', 'Replace', 'Sit', 'Plan', 'Admit', 'Invite', 'Pay', 'Try', 'Relate', 'Invent', 'Tend', 'Turn on', 'Order', 'Coach', 'Deliver', 'Limit', 'Apply', 'Reduce', 'Yank', 'Accept', 'Survive', 'Influence', 'Color', 'Remember', 'Form', 'Wash', 'Start', 'Describe', 'Measure', 'Share', 'Climb', 'Cough', 'Involve', 'Touch', 'Suppose', 'Keep', 'Cook', 'Approve', 'Inform', 'Produce', 'Skip', 'Shout', 'Agree', 'Suggest', 'Achieve', 'Offer', 'Cost', 'Arrive', 'Kiss', 'Afford', 'Last', 'Could', 'Understand', 'Protect', 'Answer', 'Stand', 'Point', 'Go', 'Check', 'Happen', 'Exist', 'Receive', 'Rise', 'Collect', 'Stand up', 'Ask', 'Enter', 'Continue', 'Damage', 'Fall', 'Contain', 'Remove', 'Scream', 'Believe', 'Clap', 'Come', 'Fly', 'Whistle', 'Destroy', 'Sing', 'Teach', 'Perform', 'Listen', 'Sneeze', 'Win', 'Supply', 'Leave', 'Enjoy', 'Edit', 'Reach', 'Experience', 'Must', 'Dream', 'Avoid', 'Paint', 'Shake', 'Set', 'Develop', 'Deal', 'Learn', 'Stack', 'Get', 'Carry', 'Follow', 'Speak', 'Dive', 'Write', 'Eat', 'Jump', 'Hold', 'Shop', 'Drive', 'Turn off', 'Show', 'Forgive', 'Live', 'Treat', 'Snore', 'Use', 'Make', 'Express', 'Finish', 'Forget', 'Cut', 'Move', 'Watch', 'Draw', 'Lie', 'Watch TV', 'Regard', 'Discover', 'Improve', 'Deny', 'Allow', 'Smile', 'Bow', 'Love', 'Dance', 'Hope', 'Prevent', 'Argue', 'Fight', 'Need', 'Shoot', 'Succeed', 'Meet', 'Consist', 'Choose', 'Grow', 'Take', 'Lend', 'Walk', 'Open', 'Give', 'Reply', 'Exit', 'Dig', 'Travel', 'Change', 'Think', 'Ride', 'Reveal', 'Identity', 'Return', 'Depend', 'Like', 'Matter', 'Close', 'Become', 'Create', 'Break', 'Send', 'Laugh', 'Cry', 'Hear', 'Encourage', 'Cause', 'Sound', 'Dress', 'Look', 'Say', 'Prefer', 'Care', 'Report', 'Help', 'Call',"Find", "Cross", "Save", "Imitate", "Sleep", "Clear", "Contribute", "Prepare", "Imagine", "Begin", "Crawl", "Solve", "Push", "Sew", "Study", "Mention", "Mean", "Join", "Complete", "Throw", "Read", "Act", "Disappear", "Catch", "Hide", "Knit", "Sell", "Talk", "Want"]
 action_verbs = [word.lower() for word in action_verbs]
 
-@csrf_exempt
-@api_view(('POST',))
-@action(detail=False, methods=['POST'])
-def image_generation(request):
-    if request.method == 'POST':
-        print("aaa")
-        seed = request.POST.get('problem')
+
+def image_generation(seed):
+    stanza.download('en')
+    
     # This sets up a default neural pipeline in Lang
     print(seed)
     lang=detect_language(seed)
@@ -367,9 +365,9 @@ def image_generation(request):
 
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('C:/Users/user/Downloads/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('C:/Users/ASUS/Downloads/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
-
+    
     # Example math problem
     problem = seed
 
@@ -509,6 +507,20 @@ def image_generation(request):
             Output_List.append([w[2],0])
    #print(res)
     #print("aaaa")
-    #print(Output_List)
+    print(Output_List)
     del doc
-    return HttpResponse(Output_List)
+    
+    return Output_List
+import requests
+from django.shortcuts import render
+
+def calculate(request):
+  if request.method == 'POST':
+    problem = request.POST.get('problem')
+    # Appel de votre API pour obtenir le résultat du problème mathématique
+    
+    result = image_generation(problem)
+    # Renvoi du résultat dans le modèle HTML
+    return render(request, 'resultat.html', {'result': result,'problem':problem})
+  else:
+    return render(request, 'calculate.html')

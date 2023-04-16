@@ -1,0 +1,235 @@
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  /* Style the header */
+  header {
+    background-color: rgb(65, 100, 153);
+    padding: 30px;
+    text-align: center;
+    font-size: 35px;
+    color: white;
+    margin-right: 15%;
+    margin-left: 15%;  
+    height: 15%;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 12px;
+  
+  }
+  .wrapper {
+    background-color:rgba(255,255,255,.6);
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: small;
+    color: white;
+    padding: 30px;
+    margin-right: 15%;
+    margin-left: 15%;  
+    line-height: 1.7em;
+    border: 5px solid rgb(255, 255, 255);
+    border-radius: 12px;
+  }
+  
+  button {
+    background-color: rgba(255,255,255,.5);
+    padding: 5px;
+    outline: none;
+    border: 1px solid rgba(0,0,0,.3);
+    border-radius: 5px;
+  }
+  
+  .wrapper {
+    margin-right: 15%;
+    margin-left: 15%;  
+    height: 80vh;
+    box-sizing: border-box;
+   
+    padding: 0;
+    background-color: rgba(255,255,255,.1);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(255,255,255,.2);
+    border-right: 1px solid rgba(255,255,255,.2);
+  }
+  
+  form {
+    flex: 5;
+    display: block;
+    padding: 15px;
+  }
+  .text-box {
+    font-size: 16px;
+    display: flex;
+    width: 100%;
+  
+  }
+  input#problem {
+    padding-left: 11px;
+    padding-right: 9px;
+    font-size: 16px;
+    height: 47px;
+    display: block;
+    flex: 10;
+    outline: none;
+    margin: 0 10px 0 0;
+    box-sizing: border-box;
+    border: 1px solid #aaa;
+    border-radius: 13px;
+  }
+  
+  input.send-button {
+    display: block;
+    background-color: rgba(255,255,255,.6);
+    flex: 1;
+    border: 1px solid rgba(0,0,0,.2);
+    height: 27px;
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 25px;
+    padding: 0;
+    border-radius: 13px;
+  }
+  
+  div#dialogue {
+    overflow-x: none;
+    overflow-y: auto;
+    display: block;
+    flex: 95;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 15px;
+  }
+  
+  .open-button{
+    background-color: transparent;
+  }
+  
+  
+  
+  
+  
+  </style>
+  </head>
+  
+  
+  
+  
+  
+  
+  <!-- Sidebar -->
+  <div class="w3-sidebar w3-bar-block" style="display:none;z-index:5" id="mySidebar">
+    <button class="w3-bar-item w3-button w3-xxlarge" onclick="w3_close()">Close &times;</button>
+    <a href="#" class="w3-bar-item w3-button">Link 1</a>
+    <a href="#" class="w3-bar-item w3-button">Link 2</a>
+    <a href="#" class="w3-bar-item w3-button">Link 3</a>
+  </div>
+  
+  <!-- Page Content -->
+  <div class="w3-overlay"  style="cursor:pointer" id="myOverlay"></div>
+  
+  <div>
+    
+    <div style="background-color: black;">
+      <div class="bg-animation">
+        
+          <div id="stars"></div>
+          <div id="stars2"></div>
+          <div id="stars3"></div>
+          <div id="stars4"></div>
+      </div>
+  
+          <button class=" button-slid open-button w3-button w3-teal w3-xlarge " onclick="w3_open()">☰</button>
+     <header>
+        <h>Mathematical problem to Picture !</h>
+   </header>
+    
+      <br>
+      
+      <div class='wrapper'>
+        <div id="dialogue"></div>
+        <form method="POST" action="{% url 'calculate' %}">
+            {% csrf_token %}
+            <div class="text-box">
+                <input type="text" name="problem" id="problem"  placeholder="write ur math problem here !">
+                
+                <button class="send-button" >
+                    <img src="https://www.svgrepo.com/show/435419/send.svg" width="24px" height="14px" id="plane">
+                </button>
+                <button class="send-button" >
+                    <img src="https://www.svgrepo.com/show/476625/micro.svg" width="24px" height="14px" id="micro">
+                </button>
+            </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  
+  <div class="microphone">
+    <button id="microphone-button" class="microphone-button">
+      <i class="fa fa-microphone"></i>
+    </button>
+  </div>
+  <p id="text-output"></p>
+  <script>
+
+    
+const microphoneButton = document.getElementById("microphone-button");
+const recognition = new webkitSpeechRecognition();
+
+microphoneButton.addEventListener("click", () => {
+  recognition.start();
+});
+
+recognition.addEventListener("result", (event) => {
+  const speechToText = event.results[0][0].transcript;
+  console.log(speechToText);
+
+  // Send speechToText to your Django API for text conversion
+  fetch("http://127.0.0.1:8000/transcribe-speech/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ speech: speechToText })
+  })
+  .then(response => response.text())
+  .then(data => {
+    console.log(data);
+    // Use the converted text data to update your HTML template
+    // For example, you can display the text in a <p> element with id="text-output"
+    const textOutput = document.getElementById("text-output");
+    textOutput.innerText = data;
+  })
+  .catch(error => {
+    console.error(error);
+  });
+});
+
+
+  </script>
+  
+  
+  
+  
+  
+  <script>
+    function w3_open() {
+      document.getElementById("mySidebar").style.display = "block";
+      document.getElementById("myOverlay").style.display = "none";
+    }
+    
+    function w3_close() {
+      document.getElementById("mySidebar").style.display = "none";
+      document.getElementById("myOverlay").style.display = "none";
+    }
+    </script>
+  
+  </body>
+  
