@@ -430,7 +430,7 @@ def image_generation(seed):
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
                         c_height=metrics[1][0]
-                    Output_List=[draw_parallelogram(metrics[0][0],metrics[0][0],metrics[0][2],metrics[0][2])]
+                    Output_List=[draw_parallelogram(c_height,c_width,height,width)]
                 elif 'rhombus' in problem:
                     #res['type'] = 'rhombus'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
@@ -447,7 +447,7 @@ def image_generation(seed):
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
                         c_height=metrics[1][0]
-                    Output_List=[draw_rhombus(metrics[0][0],metrics[0][0],metrics[0][2],metrics[0][2])]
+                    Output_List=[draw_rhombus(c_height,c_width,height,width)]
                 else:
                     #res['type'] = 'rectangle'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
