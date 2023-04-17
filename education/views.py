@@ -1,4 +1,4 @@
-from education.utils import drawrect, metric_conversion, draw_circle
+from education.utils import draw_parallelogram, draw_rhombus, drawrect, metric_conversion, draw_circle
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from education.models import Teacher,Class,Problem
@@ -430,6 +430,7 @@ def image_generation(seed):
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
                         c_height=metrics[1][0]
+                    Output_List=[draw_parallelogram(metrics[0][0],metrics[0][0],metrics[0][2],metrics[0][2])]
                 elif 'rhombus' in problem:
                     #res['type'] = 'rhombus'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
@@ -446,6 +447,7 @@ def image_generation(seed):
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
                         c_height=metrics[1][0]
+                    Output_List=[draw_rhombus(metrics[0][0],metrics[0][0],metrics[0][2],metrics[0][2])]
                 else:
                     #res['type'] = 'rectangle'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
