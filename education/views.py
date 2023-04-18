@@ -1,8 +1,9 @@
+from education.utils import draw_parallelogram, draw_rhombus, drawrect, metric_conversion, draw_circle
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from education.models import Teacher,Class,Problem
 from education.serializers import TeacherSerializer ,ClassSerializer,ProblemSerializer
-
+import utils.py
 import random
 from education.models import QuizQuestion
 
@@ -271,7 +272,7 @@ def ClassApi(request,id=0):
         classes=Class.objects.get(ClassId=id)
         classes.delete()
         return JsonResponse("Deleted Succeffully!!", safe=False)
-        ########################### ProblemApi   ###############################
+        ############################### ProblemApi   ###############################
 
 @csrf_exempt
 def ProblemApi(request,id=0):
@@ -343,7 +344,7 @@ def detect_language(text):
     lang, confidence = langid.classify(text)
     return lang
 
-action_verbs = ['Provide', 'Zip', 'Train', 'Clean', 'Drink', 'Face', 'Build', 'Control', 'Release', 'Have', 'Play', 'Press', 'Turn', 'Sit down', 'Smell', 'Arrange', 'Ski', 'Result', 'Wonder', 'Expect', 'Visit', 'State', 'Explain', 'Correct', 'Increase', 'Wait', 'Repeat', 'Bathe', 'Run', 'Tell', 'Know', 'See', 'Mind', 'Own', 'Throw away', 'Complain', 'Feel', 'Affect', 'Buy', 'Do', 'Hug', 'Record', 'Replace', 'Sit', 'Plan', 'Admit', 'Invite', 'Pay', 'Try', 'Relate', 'Invent', 'Tend', 'Turn on', 'Order', 'Coach', 'Deliver', 'Limit', 'Apply', 'Reduce', 'Yank', 'Accept', 'Survive', 'Influence', 'Color', 'Remember', 'Form', 'Wash', 'Start', 'Describe', 'Measure', 'Share', 'Climb', 'Cough', 'Involve', 'Touch', 'Suppose', 'Keep', 'Cook', 'Approve', 'Inform', 'Produce', 'Skip', 'Shout', 'Agree', 'Suggest', 'Achieve', 'Offer', 'Cost', 'Arrive', 'Kiss', 'Afford', 'Last', 'Could', 'Understand', 'Protect', 'Answer', 'Stand', 'Point', 'Go', 'Check', 'Happen', 'Exist', 'Receive', 'Rise', 'Collect', 'Stand up', 'Ask', 'Enter', 'Continue', 'Damage', 'Fall', 'Contain', 'Remove', 'Scream', 'Believe', 'Clap', 'Come', 'Fly', 'Whistle', 'Destroy', 'Sing', 'Teach', 'Perform', 'Listen', 'Sneeze', 'Win', 'Supply', 'Leave', 'Enjoy', 'Edit', 'Reach', 'Experience', 'Must', 'Dream', 'Avoid', 'Paint', 'Shake', 'Set', 'Develop', 'Deal', 'Learn', 'Stack', 'Get', 'Carry', 'Follow', 'Speak', 'Dive', 'Write', 'Eat', 'Jump', 'Hold', 'Shop', 'Drive', 'Turn off', 'Show', 'Forgive', 'Live', 'Treat', 'Snore', 'Use', 'Make', 'Express', 'Finish', 'Forget', 'Cut', 'Move', 'Watch', 'Draw', 'Lie', 'Watch TV', 'Regard', 'Discover', 'Improve', 'Deny', 'Allow', 'Smile', 'Bow', 'Love', 'Dance', 'Hope', 'Prevent', 'Argue', 'Fight', 'Need', 'Shoot', 'Succeed', 'Meet', 'Consist', 'Choose', 'Grow', 'Take', 'Lend', 'Walk', 'Open', 'Give', 'Reply', 'Exit', 'Dig', 'Travel', 'Change', 'Think', 'Ride', 'Reveal', 'Identity', 'Return', 'Depend', 'Like', 'Matter', 'Close', 'Become', 'Create', 'Break', 'Send', 'Laugh', 'Cry', 'Hear', 'Encourage', 'Cause', 'Sound', 'Dress', 'Look', 'Say', 'Prefer', 'Care', 'Report', 'Help', 'Call',"Find", "Cross", "Save", "Imitate", "Sleep", "Clear", "Contribute", "Prepare", "Imagine", "Begin", "Crawl", "Solve", "Push", "Sew", "Study", "Mention", "Mean", "Join", "Complete", "Throw", "Read", "Act", "Disappear", "Catch", "Hide", "Knit", "Sell", "Talk", "Want"]
+action_verbs =  ['Clean', 'Drink', 'Play', 'Turn', 'Sit down', 'Smell', 'Ski', 'Wonder', 'Explain', 'Increase', 'Repeat', 'Bathe', 'Run', 'Tell', 'Hug', 'Sit', 'Plan', 'Wash', 'Start', 'Climb', 'Touch', 'Cook', 'Agree', 'Offer', 'Answer', 'Stand', 'Point', 'Check', 'Receive', 'Collect', 'Stand up', 'Ask', 'Enter', 'Continue', 'Rise', 'Leave', 'Enjoy', 'Dream', 'Paint', 'Shake', 'Learn',  'Carry', 'Follow', 'Speak', 'Write', 'Eat', 'Jump', 'Hold', 'Drive', 'Show', 'Use', 'Finish', 'Move', 'Watch', 'Draw', 'Regard', 'Improve', 'Allow', 'Smile', 'Bow', 'Love', 'Dance', 'Hope', 'Meet', 'Choose', 'Grow', 'Take', 'Walk', 'Open', 'Give', 'Reply', 'Exit', 'Travel', 'Change', 'Think', 'Ride', 'Return', 'Like', 'Close', 'Become', 'Create', 'Send', 'Laugh', 'Cry', 'Hear', 'Help', 'Call', 'Find', 'Save', 'Contribute', 'Prepare', 'Begin', 'Solve', 'Study', 'Join', 'Complete', 'Read', 'Act', 'Catch', 'Hide', 'Sell', 'Talk', 'Want']
 action_verbs = [word.lower() for word in action_verbs]
 
 
@@ -383,30 +384,87 @@ def image_generation(seed):
     # Print the predicted class
     class_names = ['Not Geometry', 'Geometry']
     problem_type = class_names[predicted_class]
-    
+    metrics=[]
+
     if (problem_type=='Geometry'):      
-        
-        for sent in doc.sentences:
+        language, _ = langid.classify(w[0])
+        if language != 'en':
+            response = requests.get('https://api.mymemory.translated.net/get?q='+problem+'&langpair='+'ar'+'|en')
+            translated = response.json()['responseData']['translatedText']
+        else:
+            translated=problem
+        translated_doc=nlp(translated)
+        for sent in translated_doc.sentences:
             quants = parser.parse(sent.text)
             for q in quants:
                 if q.unit.entity.name == 'length' :
-                    res['data'].append([float(q.surface.split()[0]), q.surface.split()[1]])
-                    
+                    metrics.append([float(q.surface.split()[0]), q.unit.uri])
+        for i in len(metrics):
+            metrics[i]=metric_conversion(metrics[i])            
         if len(res['data']) > 0:
             if len(res['data'])==1:
                 if 'diameter' in problem:
-                    res['type'] = 'diametre'
+                    #res['type'] = 'diametre'
+                    Output_List=[draw_circle((metrics[0][0])/2,metrics[0][2])]
                 elif 'radius' in problem:
-                    res['type'] = 'radius'
+                    #res['type'] = 'radius'
+                    Output_List=[draw_circle(metrics[0][0],metrics[0][2])]
                 else:
-                    res['type'] = 'square'
+                    #res['type'] = 'square'
+                    Output_List=[drawrect(metrics[0][0],metrics[0][0],metrics[0][2],metrics[0][2])]
+
             elif len(res['data'])==2:
                 if 'parallelogram' in problem:
-                    res['type'] = 'parallelogram'
+                    #res['type'] = 'parallelogram'
+                    if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
+                        height=str(metrics[0][2])
+                        width=str(metrics[1][2])
+                        r_height=metrics[0][1]
+                        r_width=metrics[1][1]
+                        c_height=metrics[0][0]
+                        c_width=metrics[1][0]
+                    else:
+                        width=str(metrics[0][2])
+                        height=str(metrics[1][2])
+                        r_width=metrics[0][1]
+                        r_height=metrics[1][1]
+                        c_width=metrics[0][0]
+                        c_height=metrics[1][0]
+                    Output_List=[draw_parallelogram(c_height,c_width,height,width)]
                 elif 'rhombus' in problem:
-                    res['type'] = 'rhombus'
+                    #res['type'] = 'rhombus'
+                    if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
+                        height=str(metrics[0][2])
+                        width=str(metrics[1][2])
+                        r_height=metrics[0][1]
+                        r_width=metrics[1][1]
+                        c_height=metrics[0][0]
+                        c_width=metrics[1][0]
+                    else:
+                        width=str(metrics[0][2])
+                        height=str(metrics[1][2])
+                        r_width=metrics[0][1]
+                        r_height=metrics[1][1]
+                        c_width=metrics[0][0]
+                        c_height=metrics[1][0]
+                    Output_List=[draw_rhombus(c_height,c_width,height,width)]
                 else:
-                    res['type'] = 'rectangle'
+                    #res['type'] = 'rectangle'
+                    if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
+                        height=str(metrics[0][2])
+                        width=str(metrics[1][2])
+                        r_height=metrics[0][1]
+                        r_width=metrics[1][1]
+                        c_height=metrics[0][0]
+                        c_width=metrics[1][0]
+                    else:
+                        width=str(metrics[0][2])
+                        height=str(metrics[1][2])
+                        r_width=metrics[0][1]
+                        r_height=metrics[1][1]
+                        c_width=metrics[0][0]
+                        c_height=metrics[1][0]
+                    Output_List=[drawrect(c_height,c_width,height,width)]
             elif len(res['data'])==4:
                 if 'trapezium' in problem:
                     res['type'] = 'trapezium'
@@ -459,7 +517,14 @@ def image_generation(seed):
                     del res['data'][i-1]   
     print(res)
     dim_numbers=[]
-    for sent in doc.sentences:
+    language, _ = langid.classify(w[0])
+    if language != 'en':
+        response = requests.get('https://api.mymemory.translated.net/get?q='+problem+'&langpair='+'ar'+'|en')
+        translated = response.json()['responseData']['translatedText']
+    else:
+        translated=problem
+    translated_doc=nlp(translated)
+    for sent in translated_doc.sentences:
         sent=sent.text.replace(',','and')
         quants = parser.parse(sent)
         
@@ -469,12 +534,18 @@ def image_generation(seed):
     print(dim_numbers)
     for w in res['data']:
         if w[1] == 'NOUN':
+            language, _ = langid.classify(w[0])
+            if language != 'en':
+                response = requests.get('https://api.mymemory.translated.net/get?q='+w[0]+'&langpair='+'ar'+'|en')
+                translated = response.json()['responseData']['translatedText']
+            else:
+                translated=w[0]
             url = "https://api.giphy.com/v1/stickers/search?api_key=iidRVNv0y0mmMUNhYrwlVFufRdIeFLJP&q=" + \
-                w[0]+"&limit=1&offset=1&rating=PG"
+                translated+"&limit=1&offset=1&rating=PG"
             response = requests.get(url)
             if (response.json()['data']):
                 w[0] = response.json()['data'][0]['images']['downsized']['url']
-            else:w[1]='NOUN_'
+            else:w[1]=' '
         if w[1] == 'PROPN': #or w[1] == 'X':
             r2 = requests.get("https://api.genderize.io?name="+w[0])
             gender = r2.json()['gender']
@@ -483,8 +554,14 @@ def image_generation(seed):
             else:
                 w[0] = 'https://media.giphy.com/media/TiC9sYLY9nilNnwMLq/giphy.gif'
         if w[1] == 'ADV':
+            language, _ = langid.classify(w[0])
+            if language != 'en':
+                response = requests.get('https://api.mymemory.translated.net/get?q='+w[0]+'&langpair='+'ar'+'|en')
+                translated = response.json()['responseData']['translatedText']
+            else:
+                translated=w[0]
             url = "https://api.giphy.com/v1/stickers/search?api_key=iidRVNv0y0mmMUNhYrwlVFufRdIeFLJP&q=" + \
-                w[0]+"&limit=1&offset=1&rating=PG"  #W[2] better 
+                translated+"&limit=1&offset=1&rating=PG"  #W[2] better 
             response = requests.get(url)
             if (response.json()['data']):
                 w[0] = response.json()['data'][0]['images']['downsized']['url']
