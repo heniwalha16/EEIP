@@ -354,12 +354,14 @@ def image_generation(seed):
     # This sets up a default neural pipeline in Lang
     print(seed)
     lang=detect_language(seed)
+    seed1=seed
+    print(lang)
     if (lang != 'en'):
         response = requests.get('https://api.mymemory.translated.net/get?q='+seed+'&langpair='+lang+'|en')
-        seed  = response.json()['responseData']['translatedText']
+        seed1  = response.json()['responseData']['translatedText']
     if ',' in seed:
         seed=seed.replace(',',' , ')
-    nlp = stanza.Pipeline('en', use_gpu=False,
+    nlp = stanza.Pipeline(lang, use_gpu=False,
                           processors='tokenize,pos,lemma')
     doc = nlp(seed)
     print(doc)
@@ -367,14 +369,14 @@ def image_generation(seed):
 
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('C:/Users/ASUS/Downloads/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('C:/Users/user/Downloads/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
     
     # Example math problem
     problem = seed
 
     # Tokenize the input and convert to tensors
-    input_ids = torch.tensor(tokenizer.encode(problem, add_special_tokens=True)).unsqueeze(0)  # Batch size 1
+    input_ids = torch.tensor(tokenizer.encode(seed1, add_special_tokens=True)).unsqueeze(0)  # Batch size 1
     attention_mask = torch.ones_like(input_ids)
 
     # Pass the input to the model and get the predicted class
@@ -516,6 +518,21 @@ def image_generation(seed):
                     w[0] = res['data'][i-1][0] + ' ' + w[0]
                     w[2] = res['data'][i-1][2] + ' ' + w[2]
                     del res['data'][i-1]   
+
+    for i, w in enumerate(res['data']):
+        if w[1] == 'X':
+            if (i < len(res['data'])-1) and (i>0):
+                print("aaa")
+                if (res['data'][i+1][1] == 'NOUN') :
+                    w[0] = w[0]+' '+res['data'][i+1][0]
+                    w[2] = w[2]+' '+res['data'][i+1][2]
+                    w[1]='NOUN'
+                    del res['data'][i+1]    
+                elif (res['data'][i-1][1] == 'NOUN') :
+                    w[0] = res['data'][i-1][0] + ' ' + w[0]
+                    w[2] = res['data'][i-1][2] + ' ' + w[2]
+                    w[1]="NOUN"
+                    del res['data'][i-1]   
     print(res)
     dim_numbers=[]
     language, _ = langid.classify(w[0])
@@ -543,6 +560,7 @@ def image_generation(seed):
                 translated=w[0]
             url = "https://api.giphy.com/v1/stickers/search?api_key=iidRVNv0y0mmMUNhYrwlVFufRdIeFLJP&q=" + \
                 translated+"&limit=1&offset=1&rating=PG"
+            print(url)
             response = requests.get(url)
             if (response.json()['data']):
                 w[0] = response.json()['data'][0]['images']['downsized']['url']
@@ -573,10 +591,11 @@ def image_generation(seed):
             response = requests.get(url)
             if (response.json()['data']):
                 w[0] = response.json()['data'][0]['images']['downsized']['url']
+        
 
     Output_List=[]
     for w in res['data']:
-        if (w[1]=='NUM') and (int(w[0]) in dim_numbers) and (int(w[0])<15):
+        if (w[1]=='NUM') and (not (int(w[0]) in dim_numbers)) and (int(w[0])<15):
             Output_List.append([w[2],1])
             continue
         if (w[0].startswith('https')):
