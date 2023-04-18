@@ -33,7 +33,7 @@ def chatbot_solution(request):
     chatbot_response =None 
     if api_key is not None and  request.method=="POST" :
         openai.api_key=api_key
-        user_input =request.POST.get('user_input')
+        user_input = request.data.get('user_input')
         prompt =user_input
         response =openai.Completion.create(
             engine='text-davinci-003',
@@ -85,16 +85,16 @@ def transcribe_speech(request):
     # Checks result.
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
         print("Recognized: {}".format(result.text))
-        return HttpResponse(result.text)
+        return JsonResponse({'text': result.text})
     elif result.reason == speechsdk.ResultReason.NoMatch:
         print("No speech could be recognized: {}".format(result.no_match_details))
-        return HttpResponse("No speech could be recognized")
+        return JsonResponse({'error': 'No speech could be recognized'})
     elif result.reason == speechsdk.ResultReason.Canceled:
         cancellation_details = result.cancellation_details
         print("Speech Recognition canceled: {}".format(cancellation_details.reason))
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             print("Error details: {}".format(cancellation_details.error_details))
-            return HttpResponse("Speech Recognition Error")
+            return JsonResponse({'error': 'Speech Recognition Error'})
 
 ########################### extract_text_from_image   ###############################
 
@@ -108,7 +108,7 @@ def extract_text_from_image(request):
         img = Image.open(image)
         # Use pytesseract to extract the text
         pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
-        text = pytesseract.image_to_string(img, lang='ara')
+        text = pytesseract.image_to_string(img, lang='eng')
         # Render the extracted text in a template
         return HttpResponse(text)
     else:
@@ -348,7 +348,7 @@ action_verbs = [word.lower() for word in action_verbs]
 
 
 def image_generation(seed):
-    stanza.download('en')
+    #stanza.download('en')
     
     # This sets up a default neural pipeline in Lang
     print(seed)
@@ -518,8 +518,17 @@ def calculate(request):
   if request.method == 'POST':
     problem = request.POST.get('problem')
     # Appel de votre API pour obtenir le résultat du problème mathématique
+    list_output=image_generation(problem)
+    for i in range(len (list_output)):
+        if list_output[i][1]==1:
+            for j in range (int(list_output[i][0])-1):
+                list_output.insert(i+1,[list_output[i+1][0],0])
+    for i in range(len (list_output)):
+      if "http" in list_output[i][0]:
+        list_output[i][1]=2
     
-    result = image_generation(problem)
+            
+    result = list_output
     # Renvoi du résultat dans le modèle HTML
     return render(request, 'resultat.html', {'result': result,'problem':problem})
   else:
