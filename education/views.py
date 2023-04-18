@@ -3,7 +3,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from education.models import Teacher,Class,Problem
 from education.serializers import TeacherSerializer ,ClassSerializer,ProblemSerializer
-import utils.py
+import education.utils
 import random
 from education.models import QuizQuestion
 
@@ -349,19 +349,20 @@ action_verbs = [word.lower() for word in action_verbs]
 
 
 def image_generation(seed):
-    #stanza.download('en')
+    #stanza.download('ar')
     
     # This sets up a default neural pipeline in Lang
     print(seed)
     lang=detect_language(seed)
     if (lang != 'en'):
         response = requests.get('https://api.mymemory.translated.net/get?q='+seed+'&langpair='+lang+'|en')
-        seed = response.json()['responseData']['translatedText']
+        seed  = response.json()['responseData']['translatedText']
     if ',' in seed:
         seed=seed.replace(',',' , ')
     nlp = stanza.Pipeline('en', use_gpu=False,
                           processors='tokenize,pos,lemma')
     doc = nlp(seed)
+    print(doc)
     res = {'type': None, 'data': []}
 
     # Load the trained model and tokenizer
@@ -387,7 +388,7 @@ def image_generation(seed):
     metrics=[]
 
     if (problem_type=='Geometry'):      
-        language, _ = langid.classify(w[0])
+        language, _ = langid.classify(problem)
         if language != 'en':
             response = requests.get('https://api.mymemory.translated.net/get?q='+problem+'&langpair='+'ar'+'|en')
             translated = response.json()['responseData']['translatedText']
@@ -399,7 +400,7 @@ def image_generation(seed):
             for q in quants:
                 if q.unit.entity.name == 'length' :
                     metrics.append([float(q.surface.split()[0]), q.unit.uri])
-        for i in len(metrics):
+        for i in range(len(metrics)):
             metrics[i]=metric_conversion(metrics[i])            
         if len(res['data']) > 0:
             if len(res['data'])==1:
@@ -488,7 +489,7 @@ def image_generation(seed):
          #   i = int(w[0])
     print(res)
     for i, w in enumerate(res['data']):
-        if w[1] == 'NOUN':
+        if w[1] == 'NOUN' :
             if i < len(res['data'])-1:
                 if res['data'][i+1][1] == 'NOUN':
                     w[0] = w[0]+' '+res['data'][i+1][0]
