@@ -14,14 +14,15 @@ def drawrect(x, y,xstr,ystr):
 
     h = xstr 
     w = ystr 
-
+    recWidth=int(recWidth)
+    recHeight=int(recHeight)
     # Create a new image and draw object
-    img = Image.new('RGB', (recWidth + 80, recHeight + 80), color='white')
+    img = Image.new('RGB', (int(recWidth) + 80, int(recHeight) + 80), color='white')
 
     draw = ImageDraw.Draw(img)
 
     # Draw rectangle with thicker stroke
-    draw.rectangle([(10, 10), (recWidth + 10, recHeight + 10)], width=2, outline='black', fill=None)
+    draw.rectangle([(10, 10), (int(recWidth) + 10, int(recHeight) + 10)], width=2, outline='black', fill=None)
        # draw.rectangle((x1, y1, x2, y2), outline='black', width=3)
 
     # Calculate text position and draw the dimensions
@@ -40,8 +41,8 @@ def drawrect(x, y,xstr,ystr):
     return img_str
 
 import math
-
-def draw_parallelogram(width, height,wstr,hstr, angle_degrees):
+import io
+def draw_parallelogram(width, height,wstr,hstr, angle_degrees=60):
     # Convert angle to radians
     angle = angle_degrees * math.pi / 180.0
 
@@ -77,7 +78,7 @@ def draw_parallelogram(width, height,wstr,hstr, angle_degrees):
     return img_str
 
 
-    import io
+ 
 import base64
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle

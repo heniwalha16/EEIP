@@ -396,7 +396,7 @@ def image_generation(seed):
     class_names = ['Not Geometry', 'Geometry']
     problem_type = class_names[predicted_class]
     metrics=[]
-
+    print(problem_type)
     if (problem_type=='Geometry'):      
         language, _ = langid.classify(problem)
         if language != 'en':
@@ -409,34 +409,36 @@ def image_generation(seed):
             quants = parser.parse(sent.text)
             for q in quants:
                 if q.unit.entity.name == 'length' :
+                    print(metrics)
                     metrics.append([float(q.surface.split()[0]), q.unit.uri])
         for i in range(len(metrics)):
-            metrics[i]=metric_conversion(metrics[i])            
-        if len(res['data']) > 0:
-            if len(res['data'])==1:
+            metrics[i]=metric_conversion(metrics[i])    
+        print(metrics)        
+        if len(metrics) > 0:
+            if len(metrics)==1:
                 if 'diameter' in problem:
                     #res['type'] = 'diametre'
-                    Output_List=[draw_circle((metrics[0][0])/2,metrics[0][2])]
+                    Output_List=[draw_circle((metrics[0][0])/2,str(int(metrics[0][1]))+metrics[0][2])]
                 elif 'radius' in problem:
                     #res['type'] = 'radius'
-                    Output_List=[draw_circle(metrics[0][0],metrics[0][2])]
+                    Output_List=[draw_circle(metrics[0][0],str(int(metrics[0][1]))+metrics[0][2])]
                 else:
                     #res['type'] = 'square'
-                    Output_List=[drawrect(metrics[0][0],metrics[0][0],metrics[0][2],metrics[0][2])]
+                    Output_List=[drawrect(metrics[0][0],metrics[0][0],str(int(metrics[0][1]))+metrics[0][2],str(int(metrics[0][1]))+metrics[0][2])]
 
-            elif len(res['data'])==2:
+            elif len(metrics)==2:
                 if 'parallelogram' in problem:
                     #res['type'] = 'parallelogram'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
-                        height=str(metrics[0][2])
-                        width=str(metrics[1][2])
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_height=metrics[0][1]
                         r_width=metrics[1][1]
                         c_height=metrics[0][0]
                         c_width=metrics[1][0]
                     else:
-                        width=str(metrics[0][2])
-                        height=str(metrics[1][2])
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_width=metrics[0][1]
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
@@ -445,15 +447,15 @@ def image_generation(seed):
                 elif 'rhombus' in problem:
                     #res['type'] = 'rhombus'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
-                        height=str(metrics[0][2])
-                        width=str(metrics[1][2])
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_height=metrics[0][1]
                         r_width=metrics[1][1]
                         c_height=metrics[0][0]
                         c_width=metrics[1][0]
                     else:
-                        width=str(metrics[0][2])
-                        height=str(metrics[1][2])
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_width=metrics[0][1]
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
@@ -462,29 +464,34 @@ def image_generation(seed):
                 else:
                     #res['type'] = 'rectangle'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
-                        height=str(metrics[0][2])
-                        width=str(metrics[1][2])
+                        print(str(metrics[0][1]))
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_height=metrics[0][1]
                         r_width=metrics[1][1]
                         c_height=metrics[0][0]
                         c_width=metrics[1][0]
                     else:
-                        width=str(metrics[0][2])
-                        height=str(metrics[1][2])
+                        print(str(int(metrics[0][1])))
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_width=metrics[0][1]
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
                         c_height=metrics[1][0]
+                    print(c_height,c_width,height,width)
                     Output_List=[drawrect(c_height,c_width,height,width)]
-            elif len(res['data'])==4:
+            elif len(metrics)==4:
                 if 'trapezium' in problem:
                     res['type'] = 'trapezium'
             del doc
-            return res
-
+            print(len(metrics))
+            print(Output_List)
+            return Output_List
 
     else:
         res['type'] = 'entity'
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
     for sent in doc.sentences:
         for word in sent.words:
