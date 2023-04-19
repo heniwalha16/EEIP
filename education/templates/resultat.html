@@ -130,10 +130,14 @@
 }
 
 .item {
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   margin: 5px;
+}  
+#photo-input {
+  display: none;
 }
+  
     </style>
 </head>
 
@@ -169,13 +173,14 @@
       <div class='wrapper'>
         <center>
             <div class="problem">
-                <p>{{ problem }}</p>
+                <p id="problem1" >{{ problem }}</p>
               </div>
             <div class="sequence">
                 {% for item in result %}
-                  {% if item.1 == 0 %}
+                  {% if item.1 == 2 %}
+                  
                     <img class="item" src="{{ item.0 }}" alt="GIF">
-                  {% elif item.1 == 1 %}
+                  {% elif item.1 == 0 %}
                     <p class="item">{{ item.0 }}</p>
                   {% endif %}
                 {% endfor %}
@@ -190,14 +195,64 @@
                 <button class="send-button" >
                     <img src="https://www.svgrepo.com/show/435419/send.svg" width="24px" height="14px" id="plane">
                 </button>
-                <button class="send-button" >
-                    <img src="https://www.svgrepo.com/show/476625/micro.svg" width="24px" height="14px" id="micro">
-                </button>
+          
             </div>
         </form>
+        <center>
+          <div>
+          <button class="send-button"  id="microphone-button" >
+            <img src="https://www.svgrepo.com/show/476625/micro.svg" width="24px" height="14px" id="micro">
+          </button>
+          <button class="send-button" type="button" id="photo-button" onclick="choosePhoto()"> 
+            <img src="https://www.svgrepo.com/show/506616/upload.svg" width="24px" height="14px" id="micro">
+          </button>
+          <input type="file" id="photo-input" onchange="extractText()">
+          <button  class="send-button" onclick="speak1()"> 
+            <img src="https://www.svgrepo.com/show/487818/speak.svg" width="24px" height="14px" id="micro">
+          </button>
+          <button  onclick="chat_solution()">Get solution
+            <img src="https://www.svgrepo.com/show/487818/speak.svg" width="24px" height="14px" id="micro"></button>
+
+          </div>
+        </center>
       </div>
     </div>
 
   </div>
 
+  <script>    
+  function speak1() {
+  const text = document.getElementById("problem1").textContent;
+    console.log(text)
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ar-EG";//
+    speechSynthesis.speak(utterance);
+  }</script>
+  <script src="/static/js/micro.js"></script>
+  
+
+  
+  <p id="solution"></p>
+  <script>function chat_solution() {
+  
+    const userInput = document.getElementById("problem1").textContent;
+    console.log(JSON.stringify({ user_input: userInput }));
+  
+    fetch('/problem_solution/', {
+      method: 'POST',
+      body: JSON.stringify({ user_input: userInput }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.text())
+    .then(solution => {
+      console.log(solution);
+      const solutionElement = document.getElementById('solution');
+      solutionElement.textContent = solution;
+    })
+    .catch(error => console.error(error));
+  }
+  
+  </script>
   

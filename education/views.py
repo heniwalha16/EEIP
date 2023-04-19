@@ -1,9 +1,9 @@
-from education.utils import drawrect, metric_conversion, draw_circle
+from education.utils import draw_parallelogram, draw_rhombus, drawrect, metric_conversion, draw_circle, replace_numbers_with_digits_ar, replace_numbers_with_digits_en
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from education.models import Teacher,Class,Problem
 from education.serializers import TeacherSerializer ,ClassSerializer,ProblemSerializer
-import utils.py
+import education.utils
 import random
 from education.models import QuizQuestion
 
@@ -34,7 +34,7 @@ def chatbot_solution(request):
     chatbot_response =None 
     if api_key is not None and  request.method=="POST" :
         openai.api_key=api_key
-        user_input =request.POST.get('user_input')
+        user_input = request.data.get('user_input')
         prompt =user_input
         response =openai.Completion.create(
             engine='text-davinci-003',
@@ -86,16 +86,16 @@ def transcribe_speech(request):
     # Checks result.
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
         print("Recognized: {}".format(result.text))
-        return HttpResponse(result.text)
+        return JsonResponse({'text': result.text})
     elif result.reason == speechsdk.ResultReason.NoMatch:
         print("No speech could be recognized: {}".format(result.no_match_details))
-        return HttpResponse("No speech could be recognized")
+        return JsonResponse({'error': 'No speech could be recognized'})
     elif result.reason == speechsdk.ResultReason.Canceled:
         cancellation_details = result.cancellation_details
         print("Speech Recognition canceled: {}".format(cancellation_details.reason))
         if cancellation_details.reason == speechsdk.CancellationReason.Error:
             print("Error details: {}".format(cancellation_details.error_details))
-            return HttpResponse("Speech Recognition Error")
+            return JsonResponse({'error': 'Speech Recognition Error'})
 
 ########################### extract_text_from_image   ###############################
 
@@ -109,7 +109,7 @@ def extract_text_from_image(request):
         img = Image.open(image)
         # Use pytesseract to extract the text
         pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
-        text = pytesseract.image_to_string(img, lang='ara')
+        text = pytesseract.image_to_string(img, lang='eng')
         # Render the extracted text in a template
         return HttpResponse(text)
     else:
@@ -349,31 +349,42 @@ action_verbs = [word.lower() for word in action_verbs]
 
 
 def image_generation(seed):
-    stanza.download('en')
+    #stanza.download('ar')
     
     # This sets up a default neural pipeline in Lang
     print(seed)
+    sentences = seed.split('.')
+    if (seed.count('.') >= 2) or ((seed.count('.') < 2)and(seed.count('?')>0)):
+        deleted_sent = sentences.pop(-1)
+        seed = '.'.join(sentences)
     lang=detect_language(seed)
+    if lang=='ar':
+        seed=replace_numbers_with_digits_ar(seed)
+    else:
+        seed=replace_numbers_with_digits_en(seed)
+    seed1=seed
+    print(lang)
     if (lang != 'en'):
         response = requests.get('https://api.mymemory.translated.net/get?q='+seed+'&langpair='+lang+'|en')
-        seed = response.json()['responseData']['translatedText']
+        seed1  = response.json()['responseData']['translatedText']
     if ',' in seed:
         seed=seed.replace(',',' , ')
-    nlp = stanza.Pipeline('en', use_gpu=False,
+    nlp = stanza.Pipeline(lang, use_gpu=False,
                           processors='tokenize,pos,lemma')
     doc = nlp(seed)
+    print(doc)
     res = {'type': None, 'data': []}
 
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('C:/Users/ASUS/Downloads/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('C:/Users/user/Downloads/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
     
     # Example math problem
     problem = seed
 
     # Tokenize the input and convert to tensors
-    input_ids = torch.tensor(tokenizer.encode(problem, add_special_tokens=True)).unsqueeze(0)  # Batch size 1
+    input_ids = torch.tensor(tokenizer.encode(seed1, add_special_tokens=True)).unsqueeze(0)  # Batch size 1
     attention_mask = torch.ones_like(input_ids)
 
     # Pass the input to the model and get the predicted class
@@ -387,7 +398,7 @@ def image_generation(seed):
     metrics=[]
 
     if (problem_type=='Geometry'):      
-        language, _ = langid.classify(w[0])
+        language, _ = langid.classify(problem)
         if language != 'en':
             response = requests.get('https://api.mymemory.translated.net/get?q='+problem+'&langpair='+'ar'+'|en')
             translated = response.json()['responseData']['translatedText']
@@ -399,7 +410,7 @@ def image_generation(seed):
             for q in quants:
                 if q.unit.entity.name == 'length' :
                     metrics.append([float(q.surface.split()[0]), q.unit.uri])
-        for i in len(metrics):
+        for i in range(len(metrics)):
             metrics[i]=metric_conversion(metrics[i])            
         if len(res['data']) > 0:
             if len(res['data'])==1:
@@ -430,6 +441,7 @@ def image_generation(seed):
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
                         c_height=metrics[1][0]
+                    Output_List=[draw_parallelogram(c_height,c_width,height,width)]
                 elif 'rhombus' in problem:
                     #res['type'] = 'rhombus'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
@@ -446,6 +458,7 @@ def image_generation(seed):
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
                         c_height=metrics[1][0]
+                    Output_List=[draw_rhombus(c_height,c_width,height,width)]
                 else:
                     #res['type'] = 'rectangle'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
@@ -486,7 +499,7 @@ def image_generation(seed):
          #   i = int(w[0])
     print(res)
     for i, w in enumerate(res['data']):
-        if w[1] == 'NOUN':
+        if w[1] == 'NOUN' :
             if i < len(res['data'])-1:
                 if res['data'][i+1][1] == 'NOUN':
                     w[0] = w[0]+' '+res['data'][i+1][0]
@@ -513,6 +526,21 @@ def image_generation(seed):
                     w[0] = res['data'][i-1][0] + ' ' + w[0]
                     w[2] = res['data'][i-1][2] + ' ' + w[2]
                     del res['data'][i-1]   
+
+    for i, w in enumerate(res['data']):
+        if w[1] == 'X':
+            if (i < len(res['data'])-1) and (i>0):
+                print("aaa")
+                if (res['data'][i+1][1] == 'NOUN') :
+                    w[0] = w[0]+' '+res['data'][i+1][0]
+                    w[2] = w[2]+' '+res['data'][i+1][2]
+                    w[1]='NOUN'
+                    del res['data'][i+1]    
+                elif (res['data'][i-1][1] == 'NOUN') :
+                    w[0] = res['data'][i-1][0] + ' ' + w[0]
+                    w[2] = res['data'][i-1][2] + ' ' + w[2]
+                    w[1]="NOUN"
+                    del res['data'][i-1]   
     print(res)
     dim_numbers=[]
     language, _ = langid.classify(w[0])
@@ -525,7 +553,7 @@ def image_generation(seed):
     for sent in translated_doc.sentences:
         sent=sent.text.replace(',','and')
         quants = parser.parse(sent)
-        
+        print(quants)
         for q in quants:  
             if q.unit.entity.name != 'dimensionless' :   
                 dim_numbers.append(q.value)
@@ -540,6 +568,7 @@ def image_generation(seed):
                 translated=w[0]
             url = "https://api.giphy.com/v1/stickers/search?api_key=iidRVNv0y0mmMUNhYrwlVFufRdIeFLJP&q=" + \
                 translated+"&limit=1&offset=1&rating=PG"
+            print(url)
             response = requests.get(url)
             if (response.json()['data']):
                 w[0] = response.json()['data'][0]['images']['downsized']['url']
@@ -570,10 +599,11 @@ def image_generation(seed):
             response = requests.get(url)
             if (response.json()['data']):
                 w[0] = response.json()['data'][0]['images']['downsized']['url']
+        
 
     Output_List=[]
     for w in res['data']:
-        if (w[1]=='NUM') and (int(w[0]) in dim_numbers) and (int(w[0])<15):
+        if (w[1]=='NUM') and (not (int(w[0]) in dim_numbers)) and (int(w[0])<15):
             Output_List.append([w[2],1])
             continue
         if (w[0].startswith('https')):
@@ -593,8 +623,17 @@ def calculate(request):
   if request.method == 'POST':
     problem = request.POST.get('problem')
     # Appel de votre API pour obtenir le résultat du problème mathématique
+    list_output=image_generation(problem)
+    for i in range(len (list_output)):
+        if list_output[i][1]==1:
+            for j in range (int(list_output[i][0])-1):
+                list_output.insert(i+1,[list_output[i+1][0],0])
+    for i in range(len (list_output)):
+      if "http" in list_output[i][0]:
+        list_output[i][1]=2
     
-    result = image_generation(problem)
+            
+    result = list_output
     # Renvoi du résultat dans le modèle HTML
     return render(request, 'resultat.html', {'result': result,'problem':problem})
   else:
