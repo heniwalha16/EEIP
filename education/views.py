@@ -1,4 +1,4 @@
-from education.utils import draw_parallelogram, draw_rhombus, drawrect, metric_conversion, draw_circle
+from education.utils import draw_parallelogram, draw_rhombus, drawrect, metric_conversion, draw_circle, replace_numbers_with_digits_ar, replace_numbers_with_digits_en
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from education.models import Teacher,Class,Problem
@@ -353,7 +353,15 @@ def image_generation(seed):
     
     # This sets up a default neural pipeline in Lang
     print(seed)
+    sentences = seed.split('.')
+    if (seed.count('.') >= 2) or ((seed.count('.') < 2)and(seed.count('?')>0)):
+        deleted_sent = sentences.pop(-1)
+        seed = '.'.join(sentences)
     lang=detect_language(seed)
+    if lang=='ar':
+        seed=replace_numbers_with_digits_ar(seed)
+    else:
+        seed=replace_numbers_with_digits_en(seed)
     seed1=seed
     print(lang)
     if (lang != 'en'):
@@ -545,7 +553,7 @@ def image_generation(seed):
     for sent in translated_doc.sentences:
         sent=sent.text.replace(',','and')
         quants = parser.parse(sent)
-        
+        print(quants)
         for q in quants:  
             if q.unit.entity.name != 'dimensionless' :   
                 dim_numbers.append(q.value)
