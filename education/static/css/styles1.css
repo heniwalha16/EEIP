@@ -1,0 +1,102 @@
+/* Import Google font - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Home */
+.home {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+}
+.home::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s ease-out;
+}
+.home.show::before {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#mascot {
+        background-image: url('../images/Mascot.png');
+        background-size: contain;
+        width: 120px;
+        height: 200px;
+        position: absolute;
+        top: 50%;
+        left: -5%;
+        transform: translate(-50%, -50%);
+        transition: all 2s linear;
+        display: none;
+      
+}
+
+#bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+  }
+.text_mascot{
+    --r: 25px; /* the radius */
+  --t: 30px; /* the size of the tail */
+  
+  
+  -webkit-mask: 
+    radial-gradient(var(--t) at var(--_d) 0,#0000 98%,#000 102%) 
+      var(--_d) 100%/calc(100% - var(--r)) var(--t) no-repeat,
+    conic-gradient(at var(--r) var(--r),#000 75%,#0000 0) 
+      calc(var(--r)/-2) calc(var(--r)/-2) padding-box, 
+    radial-gradient(50% 50%,#000 98%,#0000 101%) 
+      0 0/var(--r) var(--r) space padding-box;
+  background-color: #ffffff6c;
+  --_d: 0%;
+  border-left: var(--t) solid #0000;
+  margin-right: var(--t);
+  place-self: start;
+  height: 260px;
+  width: 450px;
+  position: relative;
+  left: 35%;
+  top:160px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.btn1{
+    position: relative;
+    height:30px;
+    width:100px;
+    border-radius: 50px;
+    right:30px;
+    top:15px;
+    background-color: rgba(77, 77, 252, 0.807);
+    color: azure;
+    border-color: azure;
+    
+}
+.btn2{
+    position: relative;
+    height:30px;
+    width:100px;
+    border-radius: 50px;
+    left:30px;
+    top:15px;
+    background-color: rgba(77, 77, 252, 0.807);
+    color: azure;    
+    border-color: azure;
+}

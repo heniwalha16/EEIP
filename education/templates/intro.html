@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!-- Coding by CodingLab || www.codinglabweb.com -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Website with Login & Registration Form</title>
+    <link rel="stylesheet" href="../static/css/styles1.css" />
+    <!-- Unicons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+  </head>
+  <body>
+    
+    <!-- Home -->
+    <section class="home">
+        <video id="bg-video" autoplay muted >
+            <source src="../static/images/Explosion.mp4" type="video/mp4">
+        </video>
+        <div class="mascot" id="mascot"></div>
+        <div class="text_mascot" id="text_mascot">
+            <div style="background-color: aliceblue; position: relative; width: 100%; top: 20%; height:60%; text-align: center; " >
+            <p>Hey there and welcome !</p>
+            <p>My name is Mappi, I'm an AI and i'm</p>
+            <p>gonna help you learn while having fun !</p>
+            <p>First, tell me are you new here ?</p>
+            <input type="button" value="I'm new" class="btn1"  id="btn1" onClick="myFunction()" />
+            <script>
+              function myFunction() {
+                window.location.href = "Register.html";
+              }
+            </script>
+            <input type="button" value="I'm a regular" class="btn2"  id="btn2" onClick="myFunction1()" />
+            <script>
+              function myFunction1() {
+                window.location.href = "login.html";
+              }
+            </script>
+        </div>
+        </div>
+    
+    </section>
+
+    <script src="../static/js/script1.js"></script>
+  </body>
+</html>
+
