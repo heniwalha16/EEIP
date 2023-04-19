@@ -2,18 +2,18 @@ from PIL import Image, ImageDraw
 import io
 import base64
 
-def drawrect(x, y):
+def drawrect(x, y,xstr,ystr):
     d_rect = True
 
-    if (int(x) * int(y)) <= 10000:
-        recWidth = int(x) * 5
-        recHeight = int(y) * 5
+    if x * y <= 10000:
+        recWidth = x * 5
+        recHeight = y * 5
     else:
-        recWidth = int(x)
-        recHeight = int(y)
+        recWidth = x
+        recHeight = y
 
-    h = x 
-    w = y 
+    h = xstr 
+    w = ystr 
 
     # Create a new image and draw object
     img = Image.new('RGB', (recWidth + 80, recHeight + 80), color='white')
@@ -41,7 +41,7 @@ def drawrect(x, y):
 
 import math
 
-def draw_parallelogram(width, height, angle_degrees):
+def draw_parallelogram(width, height,wstr,hstr, angle_degrees):
     # Convert angle to radians
     angle = angle_degrees * math.pi / 180.0
 
@@ -65,10 +65,10 @@ def draw_parallelogram(width, height, angle_degrees):
     # Draw axes with labels
     draw.line([(x1+10, y1+10), (x2+10, y2+10)], fill='black', width=2)
     draw.line([(x2+10, y2+10), (x3+10, y3+10)], fill='black', width=2)
-    draw.text((x2/2+10, 0), str(width), fill='black')
+    draw.text((x2/2+10, 0), wstr, fill='black')
     draw.line([(x1+10, y1+10), (x4+10, y4+10)], fill='black', width=2)
     draw.line([(x4+10, y4+10), (x3+10, y3+10)], fill='black', width=2)
-    draw.text((x4/2-5, y4/2+10), str(height), fill='black')
+    draw.text((x4/2-5, y4/2+10), hstr, fill='black')
 
     # Convert image to base64 string and return
     buffered = io.BytesIO()
@@ -81,7 +81,7 @@ def draw_parallelogram(width, height, angle_degrees):
 import base64
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
-def draw_circle(radius):
+def draw_circle(radius,a):
     # Clear the current figure
     plt.clf()
     
@@ -103,7 +103,7 @@ def draw_circle(radius):
 
 
     # Draw the radius value
-    text = f"Radius = {radius}"
+    text = f"Radius = {a}"
     ax.text((2*radius+80)/2, 10, text, ha='center')
 
     # Save figure to a buffer
@@ -118,7 +118,7 @@ def draw_circle(radius):
 
 import matplotlib.pyplot as plt
 
-def draw_rhombus(diagonal1, diagonal2):
+def draw_rhombus(diagonal1, diagonal2,dstr1, dstr2):
     # Calculate the half-lengths of each diagonal
     half_d1 = diagonal1 / 2
     half_d2 = diagonal2 / 2
@@ -143,8 +143,8 @@ def draw_rhombus(diagonal1, diagonal2):
     ax.plot([half_d1+10, x2+10], [half_d2+10, y2+10], color='black', linewidth=2)
 
     # Add labels for the diagonals
-    ax.text(half_d1/2+10, half_d2+5, str(diagonal2), ha='center', va='bottom')
-    ax.text(half_d1+5, diagonal2/2+10, str(diagonal1), ha='left', va='center')
+    ax.text(half_d1/2+10, half_d2+5, dstr2, ha='center', va='bottom')
+    ax.text(half_d1+5, diagonal2/2+10, dstr1, ha='left', va='center')
 
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight')
