@@ -138,6 +138,23 @@
   display: none;
 }
   
+#togglePainting {
+  background-color: green;
+  color: white;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 10px 20px;
+}    
+#hex {
+      display: none;
+    }
+    #deleteBtn{
+        display: none;
+
+    }
+#widthLine {
+      display: none;
+    }
     </style>
 </head>
 
@@ -185,7 +202,10 @@
                   {% endif %}
                 {% endfor %}
               </div>
+              <div>
+              <canvas id="draw"></canvas></div>
         </center>
+     
         <div id="dialogue"></div>
         <form method="POST" action="{% url 'calculate' %}">
             {% csrf_token %}
@@ -199,6 +219,21 @@
             </div>
         </form>
         <center>
+        <div>
+          <button id="togglePainting">Start Painting</button>
+          <select id="hex" >
+      <option value="red">Red</option>
+      <option value="green">Green</option>
+      <option value="black">Black</option>
+    </select>
+        <select id="widthLine">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        </select>
+      <button id="deleteBtn">Delete</button></div>
+     
+
           <div>
           <button class="send-button"  id="microphone-button" >
             <img src="https://www.svgrepo.com/show/476625/micro.svg" width="24px" height="14px" id="micro">
@@ -233,7 +268,8 @@
 
   
   <p id="solution"></p>
-  <script>function chat_solution() {
+  <script>
+  function chat_solution() {
   
     const userInput = document.getElementById("problem1").textContent;
     console.log(JSON.stringify({ user_input: userInput }));
@@ -252,7 +288,83 @@
       solutionElement.textContent = solution;
     })
     .catch(error => console.error(error));
-  }
+  }</script>
+  <script>
+  var canvas = document.getElementById("draw");
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// add event listener to delete button
+document.getElementById("deleteBtn").addEventListener("click", clearCanvas);
+
+
+    var ctx = canvas.getContext("2d");
+    resize();
+    var isPaintingAllowed = false;
+    // resize canvas when window is resized
+    function resize() {
+      ctx.canvas.width = window.innerWidth;
+      ctx.canvas.height = window.innerHeight;
+    }
+    
+    // initialize position as 0,0
+    var pos = { x: 0, y: 0 };
+    
+    // new position from mouse events
+    function setPosition(e) {
+      pos.x = e.clientX;
+      pos.y = e.clientY;
+    }
+// toggle the painting state when the button is clicked
+document.getElementById("togglePainting").addEventListener("click", function() {
+  isPaintingAllowed = !isPaintingAllowed; // toggle the state
+  var hex = document.getElementById("hex");
+  var widthLine = document.getElementById("widthLine");
+  var deleteBtn = document.getElementById("deleteBtn");
+  widthLine.style.display = isPaintingAllowed ? "block" : "none";
+  deleteBtn.style.display = isPaintingAllowed ? "block" : "none";
+  hex.style.display = isPaintingAllowed ? "block" : "none";
+this.textContent = isPaintingAllowed ? "Stop Painting" : "Start Painting";
+  // change the button text and color based on the new state
+  if (isPaintingAllowed) {
   
+
+    document.getElementById("togglePainting").textContent = "Stop Painting";
+    document.getElementById("togglePainting").style.backgroundColor = "red";
+  } else {
+    document.getElementById("togglePainting").textContent = "Start Painting";
+    document.getElementById("togglePainting").style.backgroundColor = "green";
+  
+  }
+});
+
+    function draw(e) {
+        if (!isPaintingAllowed) return;
+      if (e.buttons !== 1) return; // if mouse is not clicked, do not go further
+    
+      var color = document.getElementById("hex").value;
+      var widthLine = document.getElementById("widthLine").value;
+
+      ctx.beginPath(); // begin the drawing path
+    
+      ctx.lineWidth = widthLine; // width of line
+      ctx.lineCap = "round"; // rounded end cap
+      ctx.strokeStyle = color; // hex color of line
+    
+      ctx.moveTo(pos.x, pos.y); // from position
+      setPosition(e);
+      ctx.lineTo(pos.x, pos.y); // to position
+    
+      ctx.stroke(); // draw it!
+    }
+
+    // add window event listener to trigger when window is resized
+    window.addEventListener("resize", resize);
+    
+    // add event listeners to trigger on different mouse events
+    document.addEventListener("mousemove", draw);
+    document.addEventListener("mousedown", setPosition);
+    document.addEventListener("mouseenter", setPosition);
   </script>
   

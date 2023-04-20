@@ -369,7 +369,7 @@ def image_generation(seed):
 
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('C:/Users/user/Downloads/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('C:/Users/ASUS/Downloads/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
     
     # Example math problem
@@ -623,10 +623,10 @@ def calculate(request):
     for i in range(len (list_output)):
       if "http" in list_output[i][0]:
         list_output[i][1]=2
-    
+    print(list_output)
             
     result = list_output
     # Renvoi du résultat dans le modèle HTML
-    return render(request, 'resultat.html', {'result': result,'problem':problem})
+    return render(request, 'index.html', {'result': result,'problem':problem})
   else:
     return render(request, 'calculate.html')

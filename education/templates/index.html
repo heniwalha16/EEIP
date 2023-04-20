@@ -1,50 +1,939 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>Text 2 Scene</title>
-  <link rel="stylesheet" href="/static/css/main.css">
+<header style="position: fixed;">
+    <title>Text 2 Scene
+    </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous"></script>
+    <script src="/static/js/particles.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.js'></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css" rel="stylesheet">
-  <script src="/static/js/particles.js"></script>
-</head>
-
-<body>
-
-  <div class="container">
-    <h1>
-      <center>Text To Scene</center>
-    </h1>
-    <form method=post>
-      <input type="radio" id="English" name="lang" value="en" checked="checked"><span class="flag-icon flag-icon-us"> </span> English
-       <input  type="radio" id="French" name="lang" value="fr"><span class="flag-icon flag-icon-fr"> </span> French
-      <!-- <input  type="radio" id="French" name="lang" value="ar"><span class="flag-icon flag-icon-tn"> </span> Arabic  -->
+ 
+    <style>body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #000000;
+      
+    }
      
+      
+    .container {
+      text-align: center;
+      
+      width: 940px;
+      height: 500px;
+      top:10%;
+      left:25%;
+      border: 1px solid #541388;
+      border-radius: 20px;
+      border-width: 4px;
+      position: absolute;
+      z-index:100;
+      
+      
+    }
+  
+    
+     .canv{
+      font-size: 25px;
+      
+       
+      top:20%;
+      left:20%;
+      right: 20%;
+      user-select: none;
+      position: absolute;
+      z-index:100;
+      color: white;
+     }
+       
+     .canvas{
+       
+      
+      position: absolute;
+      
+      z-index: -1;
+      
+     }
+     
+    .toolbar{
+        padding: 1em;
+       
+  
+    }
+  
+  .tool{
+    margin: 1em;
+  }
+    h1 { 
+      color: #454e96;
+      display: block;
+      font-size: 48px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      margin-left: 0;
+      margin-right: 0;
+      font-weight: bold;
+  }
+  
+    h2 {
+      font-size: 3em;
+      margin-top: 40px;
+      text-align: center;
+      letter-spacing: -2px;
+    }
+     
+    h3 {
+      font-size: 1.7em;
+      font-weight: 100;
+      margin-top: 30px;
+      text-align: center;
+      letter-spacing: -1px;
+      color: #999;
+    }
+  
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+      
+  }
+  
+  li {
+      float: right;
+  }
+  
+  li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+  }
+  
+  /* Change the link color to #111 (black) on hover */
+  li a:hover {
+      background-color: #111;
+      text-decoration: none;
+  }
+  
+  form label {
+    
+    color: #454e96;
+    font-size: 26px;
+    font-weight: bold;
+    display: block;
+    padding: 10px 0;
+  }
+   
+  
+   
+  form textarea#seed {
+    width: 800px;
+    height: 250px;
+    background-color: #fafafa;
+    border-radius: 3px;
+    border: 1px solid #541388;
+    margin-bottom: 10px;
+    padding: 5px;
+    font-size: 25px;
+  }
+   
+    /* The side navigation menu */
+  .sidenav {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    
+    right: 0;
+    background-color:rgb(23, 162, 184,0.2); /* Black*/
+    text-align: center;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+    margin-top: 0;
+  }
+  
+  /* The navigation menu links */
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  /* When you mouse over the navigation links, change their color */
+  .sidenav a:hover {
+    color: #f1f1f1;
+  }
+  
+  /* Position and style the close button (top right corner) */
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+  
+  /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+  #main {
+    transition: margin-left .5s;
+    padding: 20px;
+  }
+  
+  /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+  .task {
+    
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    vertical-align: middle;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    margin: 0.4rem;
+    height: 4rem;
+    cursor: grab;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .gu-mirror {
+    position: fixed !important;
+    margin: 0 !important;
+    z-index: 9999 !important;
+    opacity: 0.8;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+    filter: alpha(opacity=80);
+  }
+  
+  .gu-hide {
+    display: none !important;
+  }
+  
+  .gu-unselectable {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+  }
+  
+  .gu-transit {
+    opacity: 0.2;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+    filter: alpha(opacity=20);
+  }
+  
+   
+  .effect {
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background-color: #541388;
+    text-transform: capitalize;
+    padding: 20px 0px;
+    width: 150px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .buttons button{
+  width: 100%;
+  color: #fff;
+  border: none;
+  outline: none;
+  padding: 11px 0;
+  font-size: 0.9rem;
+  margin-bottom: 13px;
+  background: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.buttons .clear-canvas{
+  color: #6C757D;
+  border: 1px solid #6C757D;
+  transition: all 0.3s ease;
+}
+.clear-canvas:hover{
+  color: #fff;
+  background: #6C757D;
+}
+.buttons .save-img{
+  background: #4A98F7;
+  border: 1px solid #4A98F7;
+}
+.row{
+  margin-bottom: 20px;
+}
+.row {
+  list-style: none;
+  margin: 10px 0 0 5px;
+}
+.row {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  margin-bottom: 10px;
+}
+  </style>
+</header>
+
+<body onload="createPaint();" >
+    <div id="mySidenav" class="sidenav">
 
 
-      {% block content %}
-      {% for message in form.seed.errors %}
-      <div class="flash">{{ message }}</div>
-      {% endfor %}
+    </div>
+    <div class="d-flex justify-content-center ">
+      <div class="d-flex flex-column mt-3">
+          <div class="p-3 mb-2 bg-info text-white text-align-center"> {{ problem }}</div>
 
 
-
-      {{ form.seed.label }}
-      {{ form.seed }}
-      <div>
-        <button type="submit" class="effect ">Enter</button></div>
-    </form>
-    {% endblock %}
-
+      </div>
   </div>
+  <section class="drawing-board">
+    <canvas id="c" class="canvas"></canvas>
+    <div class="canv " id="d" >
+    
 
-  <script>
-    particlesJS.load('particles-js', '/static/js/particlesjs-config.json', function () {
-      console.log('callback - particles.js config loaded');
-    });
-  </script>
-  <div id="particles-js"></div>
-
+      {% for item in result %}
+      {% if item.1 == 2 %}
+      
+        <img class="item" src="{{ item.0 }}" alt="GIF">
+      {% elif item.1 == 0 %}
+        <p class="item">{{ item.0 }}</p>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark d-flex bd-highlight text-white" id="nav">
+        
+        <img src="/static/images/delete.png" style="width:60px;">
+        <div id="tc" class="p-2 bd-highlight border border-white rounded " style="height: 100px;width: 100px;"></div>
+        <span class="m-3"> Drawing: <input type="checkbox" unchecked data-toggle="toggle" data-onstyle="success"
+                data-offstyle="danger" id="toggle-event"> </span>
+                <div class="row buttons">
+                  <button class="clear-canvas" onclick="emptyc()"> Empty Canvas !</button>
+                  <button class="save-img">Save As Image</button>
+                </div>
+               
+        
+    </nav>
+    <div id="particles-js"></div>
 </body>
+<script>
+    function emptyc() {
+        var canvas = document.getElementById('c');
+        var context = canvas.getContext('2d');
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+</script>
+<script>
+    var draggableElems = Array.prototype.slice.call(document.querySelectorAll('.parent'));
+    draggableElems.push(document.getElementById("add"));
+    draggableElems.push(document.getElementById('tc'));
+
+    var drag = dragula(draggableElems, { revertOnSpill: true })
+        .on('drag', function (el) {
+            el.className = el.className.replace('ex-moved', '');
+
+        }).on('drop', function (el, container, source) {
+            console.log(source)
+            if (container.id == "tc") container.innerHTML = "";
+            if (source.className.includes("parent") && container.className.includes("parent")) drag.cancel();
+            if (source.id == 'add' && container.id != el.src) el.remove()
+
+            if (container.id == "add") drag.cancel();
+            if (source.id == "add" && container.id != 'add') {
+                var tmp = el.cloneNode(el)
+                tmp.className = "task"
+                document.getElementById("add").appendChild(tmp)
+            }
+            el.className += ' ex-moved';
+
+
+        }).on('over', function (el, container) {
+
+            container.className += ' ex-over';
+        }).on('out', function (el, container) {
+
+            container.className = container.className.replace('ex-over', '');
+        });
+    ;
+
+
+</script>
+
+<script>/* Set the width of the side navigation to 250px */
+    function Nav() {
+        if (document.getElementById("mySidenav").style.width == "250px")
+            document.getElementById("mySidenav").style.width = "0"
+        else document.getElementById("mySidenav").style.width = "250px"
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+</script>
+<script>
+    particlesJS.load('particles-js', '/static/js/particlesjs-1-config.json', function () {
+        console.log('callback - particles.js config loaded');
+    });
+</script>
+<script>
+    $(function () {
+        $('#toggle-event').change(function () {
+            var x = document.getElementById('t')
+            var c = document.getElementById('c')
+            console.log(x.style.display)
+            if (x.style.display === "none") {
+                x.style.display = "block";
+                c.style.zIndex = '999'
+            } else {
+                x.style.display = "none";
+                c.style.zIndex = '-1'
+            }
+        })
+    })
+   
+</script>
+<script>/************************************************************************
+  *
+  * Eloquent JavaScript
+  * by Marijn Haverbeke
+  *
+  * Chapter 19
+  * Project: A Paint Program
+  *
+  * Just so you know, most of this code is Marijn's, comments are mine. 
+  * This exercise is meant to be a fun way of exploring how JavaScript can 
+  * interact with form elements while reviewing previous material in the
+  * book. If you want to learn how to program with JavaScript, I sincerely 
+  * hope you check his book out. It's free online:
+  *
+  * http://eloquentjavascript.net/
+  *
+  * but I suggest buying it and marking it all up with your own notes
+  * and thoughts.
+  *
+  * Now, TO THE CODE!!!
+  *
+  * Ryan Boone
+  * falldowngoboone@gmail.com
+  *
+  ***********************************************************************/
+ d_rect=false
+ d_circle=false
+ radius_or_diametre=false
+ var recWidth = 200
+ var recHeight = 200
+ var h=''
+ var w=''
+ function drawLineWithArrows(cx,x0,y0,x1,y1,aWidth,aLength,arrowStart,arrowEnd){
+   var dx=x1-x0;
+   var dy=y1-y0;
+   var angle=Math.atan2(dy,dx);
+   var length=Math.sqrt(dx*dx+dy*dy);
+   //
+   cx.translate(x0,y0);
+   cx.rotate(angle);
+   cx.beginPath();
+   cx.moveTo(0,0);
+   cx.lineTo(length,0);
+   if(arrowStart){
+       cx.moveTo(aLength,-aWidth);
+       cx.lineTo(0,0);
+       cx.lineTo(aLength,aWidth);
+   }
+   if(arrowEnd){
+       cx.moveTo(length-aLength,-aWidth);
+       cx.lineTo(length,0);
+       cx.lineTo(length-aLength,aWidth);
+   }
+   //
+   cx.stroke();
+   cx.setTransform(1,0,0,1,0,0);
+ }
+ // the core of the program; appends the paint interface to the
+ function createPaint() {
+     var canvas =document.getElementById('c')
+     canvas.width=window.innerWidth;
+     canvas.height=window.innerHeight;
+     var cx = canvas.getContext('2d');
+     var toolbar = elt('div', {class: 'toolbar',id:'t',style:'Display:none'});
+     //Draw rectangle or square
+     if(d_rect==true){
+       var xPos = (document.getElementById("c").width/2) - (recWidth/2);
+       var yPos = (document.getElementById("c").height/2) - (recHeight/2);
+       cx.strokeStyle = 'white';
+       cx.lineWidth = 5;
+       cx.strokeRect(xPos,yPos,recWidth,recHeight);
+       cx.lineWidth = 1;
+       drawLineWithArrows(cx,xPos,yPos-30,xPos+recWidth,yPos-30,10,10,true,true)
+       drawLineWithArrows(cx,xPos+recWidth+30,yPos,xPos+recWidth+30,yPos+recHeight,10,10,true,true)
+       cx.font="30px Verdana";
+       cx.fillStyle='white'
+       cx.fillText(h, (xPos+recWidth/2)-50, yPos-40);
+       cx.fillText(w, xPos+recWidth+40, yPos+recHeight/2);
+     }
+     //Draw circle
+     if(d_circle==true){
+       var xPos = (document.getElementById("c").width/2) ;
+       var yPos = (document.getElementById("c").height/2) ;
+       cx.strokeStyle = 'white';
+       cx.lineWidth = 5;
+       cx.beginPath();
+       if(radius_or_diametre==true)
+       cx.arc(xPos, yPos, recHeight, 0, 2 * Math.PI);
+       else
+       cx.arc(xPos, yPos, recHeight*2, 0, 2 * Math.PI);
+       cx.stroke();
+       cx.lineWidth = 2;
+       cx.font="30px Verdana";
+       cx.fillStyle='white'
+       if(radius_or_diametre==true){
+       drawLineWithArrows(cx,xPos-recHeight,yPos,xPos+recHeight,yPos,10,10,true,true)
+       cx.fillText(h, xPos-100, yPos-20);}
+       else{
+       drawLineWithArrows(cx,xPos,yPos,xPos+recHeight*2,yPos,10,10,true,true)
+       cx.fillText(h, xPos+recHeight-200, yPos-20);}
+ 
+     }
+     // calls the every function in controls, passing in context,
+     // then appending the returned results to the toolbar
+     for (var name in controls)
+       toolbar.appendChild(controls[name](cx));
+     var nav=document.getElementById('nav')
+    
+     nav.appendChild(elt('div', null, toolbar));
+   }
+   function draw(x,y,xt,yt){
+     d_rect=true
+     if(parseInt(x)*parseInt(y) <= 10000){
+       recWidth = parseInt(x)*5
+       recHeight = parseInt(y)*5
+     }else{
+     recWidth = parseInt(x)
+     recHeight = parseInt(y)}
+     
+     h=x+' '+xt
+     w=y+' '+yt
+  
+   }
+   function draw_circle(d,dt,flag){
+     d_circle=true
+     radius_or_diametre=flag
+     recHeight=parseInt(d)
+     h=d+' '+dt
+   }
+   
+   /************************************************************************
+    * helper functions
+    ***********************************************************************/
+   
+   // creates an element with a name and object (attributes)
+   // appends all further arguments it gets as child nodes
+   // string arguments create text nodes
+   // ex: elt('div', {class: 'foo'}, 'Hello, world!');
+   function elt(name, attributes) {
+     var node = document.createElement(name);
+     if (attributes) {
+       for (var attr in attributes)
+         if (attributes.hasOwnProperty(attr))
+           node.setAttribute(attr, attributes[attr]);
+     }
+     for (var i = 2; i < arguments.length; i++) {
+       var child = arguments[i];
+       
+       // if this argument is a string, create a text node
+       if (typeof child == 'string')
+         child = document.createTextNode(child);
+       node.appendChild(child);
+     }
+     return node;
+   }
+   
+   // figures out canvas relative coordinates for accurate functionality
+   function relativePos(event, element) {
+     var rect = element.getBoundingClientRect();
+     return {x: Math.floor(event.clientX - rect.left),
+             y: Math.floor(event.clientY - rect.top)};
+   }
+   
+   // registers and unregisters listeners for tools
+   function trackDrag(onMove, onEnd) {
+     function end(event) {
+       removeEventListener('mousemove', onMove);
+       removeEventListener('mouseup', end);
+       if (onEnd)
+         onEnd(event);
+     }
+     addEventListener('mousemove', onMove);
+     addEventListener('mouseup', end);
+   }
+   
+
+   // used by tools.Spray
+   // randomly positions dots
+   function randomPointInRadius(radius) {
+     for (;;) {
+       var x = Math.random() * 2 - 1;
+       var y = Math.random() * 2 - 1;
+       // uses the Pythagorean theorem to test if a point is inside a circle
+       if (x * x + y * y <= 1)
+         return {x: x * radius, y: y * radius};
+     }
+   }
+   
+   /************************************************************************
+    * controls
+    ***********************************************************************/
+   
+   // holds static methods to initialize the various controls;
+   // Object.create() is used to create a truly empty object
+   var controls = Object.create(null);
+   
+   controls.tool = function(cx) {
+     var select = elt('select');
+     
+     // populate the tools
+     for (var name in tools)
+       select.appendChild(elt('option', null, name));
+     
+     // calls the particular method associated with the current tool
+     cx.canvas.addEventListener('mousedown', function(event) {
+       
+       // is the left mouse button being pressed?
+       if (event.which == 1) {
+         
+         // the event needs to be passed to the method to determine
+         // what the mouse is doing and where it is
+         tools[select.value](event, cx);
+         // don't select when user is clicking and dragging
+         event.preventDefault();
+       }
+     });
+     
+     return elt('span', {class: 'tool'}, 'Tool: ', select);
+   };
+   
+   // color module
+   controls.color = function(cx) {
+     var input = elt('input', {type: 'color'});
+     
+     // on change, set the new color style for fill and stroke
+     input.addEventListener('change', function() {
+       cx.fillStyle = input.value;
+       cx.strokeStyle = input.value;
+     });
+     return elt('span', {class: 'tool'}, 'Color: ', input);
+   };
+   
+   // brush size module
+   controls.brushSize = function(cx) {
+     var select = elt('select');
+     
+     // various brush sizes
+     var sizes = [1, 2, 3, 5, 8, 12, 25, 35, 50, 75, 100];
+     
+     // build up a select group of size options
+     sizes.forEach(function(size) {
+       select.appendChild(elt('option', {value: size}, size + ' pixels'));
+     });
+     
+     // on change, set the new stroke thickness
+     select.addEventListener('change', function() {
+       cx.lineWidth = select.value;
+     });
+     return elt('span',{class: 'tool'}, 'Brush size: ', select);
+   };
+   
+
+   /************************************************************************
+    * tools
+    ***********************************************************************/
+   
+   // drawing tools
+   var tools = Object.create(null);
+   
+   // line tool
+   // onEnd is for the erase function, which uses it to reset
+       // the globalCompositeOperation to source-over
+   tools.Line = function(event, cx, onEnd) {
+     cx.lineCap = 'round';
+     
+     // mouse position relative to the canvas
+     var pos = relativePos(event, cx.canvas);
+     trackDrag(function(event) {
+       cx.beginPath();
+       
+       // move to current mouse position
+       cx.moveTo(pos.x, pos.y);
+       
+       // update mouse position
+       pos = relativePos(event, cx.canvas);
+       
+       // line to updated mouse position
+       cx.lineTo(pos.x, pos.y);
+       
+       // stroke the line
+       cx.stroke();
+     }, onEnd);
+   };
+   
+   // erase tool
+   tools.Erase = function(event, cx) {
+     
+     // globalCompositeOperation determines how drawing operations
+     // on a canvas affect what's already there
+     // 'destination-out' makes pixels transparent, 'erasing' them
+     // NOTE: this has been deprecated
+     cx.globalCompositeOperation = 'destination-out';
+     tools.Line(event, cx, function() {
+       cx.globalCompositeOperation = 'source-over';
+     });
+   };
+   
+   // text tool
+   tools.Text = function(event, cx) {
+     var text = prompt('Text:', '');
+     if (text) {
+       var pos = relativePos(event, cx.canvas);
+       // for simplicity, text size is brush size, locked to sans-serif
+       cx.font = Math.max(7, cx.lineWidth) + 'px sans-serif';
+       cx.fillText(text, pos.x, pos.y);
+     }
+   }
+   
+   // spray paint tool
+   tools.Spray = function(event, cx) {
+     var radius = cx.lineWidth / 2;
+     var area = radius * radius * Math.PI;
+     var dotsPerTick = Math.ceil(area / 30);
+     
+     var currentPos = relativePos(event, cx.canvas);
+     var spray = setInterval(function() {
+       for (var i = 0; i < dotsPerTick; i++) {
+         var offset = randomPointInRadius(radius);
+         cx.fillRect(currentPos.x + offset.x, 
+                     currentPos.y + offset.y, 1, 1);
+       }
+     }, 25);
+     trackDrag(function(event) {
+       currentPos = relativePos(event, cx.canvas);
+     }, function() {
+       clearInterval(spray);
+     });
+   };
+   
+   /************************************************************************
+    * exercises
+    ***********************************************************************/
+   
+   /**
+    * allows the user to click and drag out a rectangle on the canvas
+    *
+    * @param {Object} event - mousedown event (specifically left button)
+    * @param {Object} cx - the canvas 2d context object
+    */
+   tools.Rectangle = function(event, cx) {
+     var leftX, rightX, topY, bottomY
+     var clientX = event.clientX,
+         clientY = event.clientY;
+     
+     // placeholder rectangle
+     var placeholder = elt('div', {class: 'placeholder'});
+     
+     // cache the relative position of mouse x and y on canvas
+     var initialPos = relativePos(event, cx.canvas);
+     
+     // used for determining correct placeholder position
+     var xOffset = clientX - initialPos.x,
+         yOffset = clientY - initialPos.y;
+     
+     trackDrag(function(event) {
+       document.body.appendChild(placeholder);
+       
+       var currentPos = relativePos(event, cx.canvas);
+       var startX = initialPos.x,
+           startY = initialPos.y;
+           
+       // assign leftX, rightX, topY and bottomY
+       if (startX < currentPos.x) {
+         leftX = startX;
+         rightX = currentPos.x;
+       } else {
+         leftX = currentPos.x;
+         rightX = startX;
+       }
+   
+       if (startY < currentPos.y) {
+         topY = startY;
+         bottomY = currentPos.y;
+       } else {
+         topY = currentPos.y;
+         bottomY = startY;
+       }
+     
+         // set the style to reflect current fill
+       placeholder.style.background = cx.fillStyle;
+       
+         // set div.style.left to leftX, width to rightX - leftX
+       placeholder.style.left = leftX + xOffset + 'px';
+       placeholder.style.top = topY + yOffset + 'px';
+       placeholder.style.width = rightX - leftX + 'px';
+       placeholder.style.height = bottomY - topY + 'px';	
+     }, function() {
+       
+       // add rectangle to canvas with leftX, rightX, topY and bottomY
+       cx.fillRect(leftX, topY, rightX - leftX, bottomY - topY);
+       
+         // destroy placeholder
+       document.body.removeChild(placeholder);
+     });
+   };
+   
+   /**
+    * allows the user to load the color of a specific pixel
+    *
+    * @param {Object} event - mousedown event (specifically left button)
+    * @param {Object} cx - the canvas 2d context object
+    */
+   // TODO: rewrite with pixel object
+   // tools['Pick Color'] = function(event, cx) {
+   //   try {
+   //     var colorPos = relativePos(event, cx.canvas),
+   //         // returns an array [r, g, b, opacity];
+   //         imageData = cx.getImageData(colorPos.x, colorPos.y, 1, 1),
+   //         colorVals = imageData.data,
+   //         color = '';
+       
+   //     // build the color
+   //     color += 'rgb(';
+       
+   //     // only need first three args
+   //     for (var i = 0; i < colorVals.length - 1; i++) {
+   //       color += colorVals[i];
+         
+   //       // only need two commas
+   //       if (i < 2)
+   //         color += ',';
+   //     }
+   //     color += ')';
+       
+   //     cx.fillStyle = color;
+   //     cx.strokeStyle = color;
+       
+   //   } catch(e) {
+   //     if (e instanceof SecurityError)
+   //         alert('Whoops! Looks like you don\'t have permission to do that!');
+   //       else
+   //         throw e;
+   //   }
+   // };
+   
+   // helpers for flood fill
+   
+   // iterates over N, S, E and W neighbors and performs a function fn
+   function forEachNeighbor(point, fn) {
+     fn({x: point.x - 1, y: point.y});
+     fn({x: point.x + 1, y: point.y});
+     fn({x: point.x, y: point.y - 1});
+     fn({x: point.x, y: point.y + 1});
+   }
+   
+   // checks if 2 points in data, point1 and point2, have the same color
+   function isSameColor(data, point1, point2) {
+     var offset1 = (point1.x + point1.y * data.width) * 4;
+     var offset2 = (point2.x + point2.y * data.width) * 4;
+     
+     for (var i = 0; i < 4; i++) {
+       if (data.data[offset1 + i] != data.data[offset2 + i]) {
+         return false;
+       }
+     }
+     return true;
+   }
+   
+   // end flood fill helpers
+   
+   // NOTE: in my first attempt, I was creating Pixel objects and pushing them
+   // to isPainted instead of Booleans; that wasn't a great idea...
+   // I suspect there was too much initialization for the browser to handle
+   // and it choked fatally :(
+   
+   // I think I would still like to see this done with a Pixel object, if not
+   // merely for the ability to extend it to done some more advanced things
+   
+   /**
+    * paints all adjacent matching pixels
+    */
+   tools["Flood Fill"] = function(event, cx) {
+     var imageData = cx.getImageData(0, 0, cx.canvas.width, cx.canvas.height),
+         // get sample point at current position, {x: int, y: int}
+             sample = relativePos(event, cx.canvas),
+         isPainted = new Array(imageData.width * imageData.height),
+         toPaint = [sample];
+     
+     // while toPaint.length > 0
+     while(toPaint.length) {
+       // current point to check
+       var current = toPaint.pop(),
+           id = current.x + current.y * imageData.width;
+       
+       // check if current has already been painted
+       if (isPainted[id]) continue;
+       else {
+         
+         // if it hasn't, paint current and set isPainted to true
+         cx.fillRect(current.x, current.y, 1, 1);
+         isPainted[id] = true;
+       }
+       
+       // for every neighbor (new function)
+       forEachNeighbor(current, function(neighbor) {
+         if (neighbor.x >= 0 && neighbor.x < imageData.width &&
+             neighbor.y >= 0 && neighbor.y < imageData.height &&
+             isSameColor(imageData, sample, neighbor)) {
+           toPaint.push(neighbor);
+         }
+       });
+     }
+   };
+   
+   // initialize the app
+   
+   
+   
+   /************************************************************************
+    * resources
+    *
+    * Canvas Rendering Context 2D API
+    * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+    *
+    * Eloquent JavaScript Ch 19, Project: A Paint Program
+    * http://eloquentjavascript.net/19_paint.html
+    ***********************************************************************/
+   
+   </script>
 
 </html>
