@@ -316,7 +316,9 @@ def ProblemApi(request,id=0):
 
     elif request.method=='POST':
         problem_data=JSONParser().parse(request)
+        print(problem_data)
         problem_serializer = ProblemSerializer(data=problem_data)
+        print(problem_serializer)
         if problem_serializer.is_valid():
             problem_serializer.save()
             return JsonResponse("Added Successfully!!" , safe=False)

@@ -69,7 +69,7 @@ class Class(models.Model):
 class Problem(models.Model):
     id = models.AutoField(primary_key=True)
     base64image = models.TextField()  # Assumes usage of base64-encoded images as text
-    Class = models.ForeignKey(Class, on_delete=models.CASCADE)
+    Class = models.ForeignKey(Class, on_delete=models.CASCADE, null=True, default=None)
 
     # Add other fields as needed
 
