@@ -2,26 +2,27 @@ from PIL import Image, ImageDraw
 import io
 import base64
 
-def drawrect(x, y):
+def drawrect(x, y,xstr,ystr):
     d_rect = True
 
-    if (int(x) * int(y)) <= 10000:
-        recWidth = int(x) * 5
-        recHeight = int(y) * 5
+    if x * y <= 10000:
+        recWidth = x * 5
+        recHeight = y * 5
     else:
-        recWidth = int(x)
-        recHeight = int(y)
+        recWidth = x
+        recHeight = y
 
-    h = x 
-    w = y 
-
+    h = xstr 
+    w = ystr 
+    recWidth=int(recWidth)
+    recHeight=int(recHeight)
     # Create a new image and draw object
-    img = Image.new('RGB', (recWidth + 80, recHeight + 80), color='white')
+    img = Image.new('RGB', (int(recWidth) + 80, int(recHeight) + 80), color='white')
 
     draw = ImageDraw.Draw(img)
 
     # Draw rectangle with thicker stroke
-    draw.rectangle([(10, 10), (recWidth + 10, recHeight + 10)], width=2, outline='black', fill=None)
+    draw.rectangle([(10, 10), (int(recWidth) + 10, int(recHeight) + 10)], width=2, outline='black', fill=None)
        # draw.rectangle((x1, y1, x2, y2), outline='black', width=3)
 
     # Calculate text position and draw the dimensions
@@ -40,8 +41,8 @@ def drawrect(x, y):
     return img_str
 
 import math
-
-def draw_parallelogram(width, height, angle_degrees):
+import io
+def draw_parallelogram(width, height,wstr,hstr, angle_degrees=60):
     # Convert angle to radians
     angle = angle_degrees * math.pi / 180.0
 
@@ -65,10 +66,10 @@ def draw_parallelogram(width, height, angle_degrees):
     # Draw axes with labels
     draw.line([(x1+10, y1+10), (x2+10, y2+10)], fill='black', width=2)
     draw.line([(x2+10, y2+10), (x3+10, y3+10)], fill='black', width=2)
-    draw.text((x2/2+10, 0), str(width), fill='black')
+    draw.text((x2/2+10, 0), wstr, fill='black')
     draw.line([(x1+10, y1+10), (x4+10, y4+10)], fill='black', width=2)
     draw.line([(x4+10, y4+10), (x3+10, y3+10)], fill='black', width=2)
-    draw.text((x4/2-5, y4/2+10), str(height), fill='black')
+    draw.text((x4/2-5, y4/2+10), hstr, fill='black')
 
     # Convert image to base64 string and return
     buffered = io.BytesIO()
@@ -77,11 +78,11 @@ def draw_parallelogram(width, height, angle_degrees):
     return img_str
 
 
-    import io
+ 
 import base64
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
-def draw_circle(radius):
+def draw_circle(radius,a):
     # Clear the current figure
     plt.clf()
     
@@ -103,7 +104,7 @@ def draw_circle(radius):
 
 
     # Draw the radius value
-    text = f"Radius = {radius}"
+    text = f"Radius = {a}"
     ax.text((2*radius+80)/2, 10, text, ha='center')
 
     # Save figure to a buffer
@@ -118,7 +119,7 @@ def draw_circle(radius):
 
 import matplotlib.pyplot as plt
 
-def draw_rhombus(diagonal1, diagonal2):
+def draw_rhombus(diagonal1, diagonal2,dstr1, dstr2):
     # Calculate the half-lengths of each diagonal
     half_d1 = diagonal1 / 2
     half_d2 = diagonal2 / 2
@@ -143,8 +144,8 @@ def draw_rhombus(diagonal1, diagonal2):
     ax.plot([half_d1+10, x2+10], [half_d2+10, y2+10], color='black', linewidth=2)
 
     # Add labels for the diagonals
-    ax.text(half_d1/2+10, half_d2+5, str(diagonal2), ha='center', va='bottom')
-    ax.text(half_d1+5, diagonal2/2+10, str(diagonal1), ha='left', va='center')
+    ax.text(half_d1/2+10, half_d2+5, dstr2, ha='center', va='bottom')
+    ax.text(half_d1+5, diagonal2/2+10, dstr1, ha='left', va='center')
 
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight')
@@ -172,4 +173,183 @@ def metric_conversion(l):
             break
     return [num2,l[0],l[1]]
 
-                
+import re
+
+def replace_numbers_with_digits_en(paragraph):
+    number_mapping = {
+        'zero': '0',
+        'one': '1',
+        'two': '2',
+        'three': '3',
+        'four': '4',
+        'five': '5',
+        'six': '6',
+        'seven': '7',
+        'eight': '8',
+        'nine': '9',
+        'ten': '10',
+        'eleven': '11',
+        'twelve': '12',
+        'thirteen': '13',
+        'fourteen': '14',
+        'fifteen': '15',
+        'sixteen': '16',
+        'seventeen': '17',
+        'eighteen': '18',
+        'nineteen': '19',
+        'twenty': '20',
+        'thirty': '30',
+        'forty': '40',
+        'fifty': '50',
+        'sixty': '60',
+        'seventy': '70',
+        'eighty': '80',
+        'ninety': '90'
+    }
+
+    tens_mapping = {
+        'twenty': '2',
+        'thirty': '3',
+        'forty': '4',
+        'fifty': '5',
+        'sixty': '6',
+        'seventy': '7',
+        'eighty': '8',
+        'ninety': '9'
+    }
+
+    pattern = '|'.join(r'\b{}\b'.format(re.escape(k)) for k in number_mapping.keys())
+    # Compile a regex pattern to match whole words of the numbers
+
+    def replace(match):
+        matched_word = match.group(0)
+        if matched_word in tens_mapping:
+            return tens_mapping[matched_word] + '0'
+        else:
+            return number_mapping[matched_word]
+
+    # Define a callback function to replace the matched words with their corresponding digits
+
+    result = re.sub(pattern, replace, paragraph, flags=re.IGNORECASE)
+    # Use the 're.sub' function to replace the matched words with digits, ignoring the case
+
+    return result
+
+
+
+import re
+
+def replace_numbers_with_digits_ar(paragraph):
+    number_mapping = {
+        'صفر': '0',
+        'واحد': '1',
+        'اثنان': '2',
+        'ثلاثة': '3',
+        'أربعة': '4',
+        'خمسة': '5',
+        'ستة': '6',
+        'سبعة': '7',
+        'ثمانية': '8',
+        'تسعة': '9',
+        'عشرة': '10',
+        'أحد عشر': '11',
+        'اثنا عشر': '12',
+        'ثلاثة عشر': '13',
+        'أربعة عشر': '14',
+        'خمسة عشر': '15',
+        'ستة عشر': '16',
+        'سبعة عشر': '17',
+        'ثمانية عشر': '18',
+        'تسعة عشر': '19',
+        'عشرون': '20',
+        'واحد وعشرون': '21',
+        'اثنان وعشرون': '22',
+        'ثلاثة وعشرون': '23',
+        'أربعة وعشرون': '24',
+        'خمسة وعشرون': '25',
+        'ستة وعشرون': '26',
+        'سبعة وعشرون': '27',
+        'ثمانية وعشرون': '28',
+        'تسعة وعشرون': '29',
+        'ثلاثين': '30',
+        'واحد وثلاثين': '31',
+        'اثنان وثلاثين': '32',
+        'ثلاثة وثلاثين': '33',
+        'أربعة وثلاثين': '34',
+        'خمسة وثلاثين': '35',
+        'ستة وثلاثين': '36',
+        'سبعة وثلاثين': '37',
+        'ثمانية وثلاثين': '38',
+        'تسعة وثلاثين': '39',
+        'أربعين': '40',
+        'واحد وأربعين': '41',
+        'اثنان وأربعين': '42',
+        'ثلاثة وأربعين': '43',
+        'أربعة وأربعين': '44',
+        'خمسة وأربعين': '45',
+        'ستة وأربعين': '46',
+        'سبعة وأربعين': '47',
+        'ثمانية وأربعين': '48',
+        'تسعة وأربعين': '49',
+        'خمسين': '50',
+        'اثنان وخمسين': '52',
+        'ثلاثة وخمسين': '53',
+        'أربعة وخمسين': '54',
+        'خمسة وخمسين': '55',
+        'ستة وخمسين': '56',
+        'سبعة وخمسين': '57',
+        'ثمانية وخمسين': '58',
+        'تسعة وخمسين': '59',
+        'ستين': '60',
+        'واحد وستين': '61',
+        'اثنان وستين': '62',
+        'ثلاثة وستين': '63',
+        'أربعة وستين': '64',
+        'خمسة وستين': '65',
+        'ستة وستين': '66',
+        'سبعة وستين': '67',
+        'ثمانية وستين': '68',
+        'تسعة وستين': '69',
+        'سبعين': '70',
+        'واحد وسبعين': '71',
+        'اثنان وسبعين': '72',
+        'ثلاثة وسبعين': '73',
+        'أربعة وسبعين': '74',
+        'خمسة وسبعين': '75',
+        'ستة وسبعين': '76',
+        'سبعة وسبعين': '77',
+        'ثمانية وسبعين': '78',
+        'تسعة وسبعين': '79',
+        'ثمانين': '80',
+        'واحد وثمانين': '81',
+        'اثنان وثمانين': '82',
+        'ثلاثة وثمانين': '83',
+        'أربعة وثمانين': '84',
+        'خمسة وثمانين': '85',
+        'ستة وثمانين': '86',
+        'سبعة وثمانين': '87',
+        'ثمانية وثمانين': '88',
+        'تسعة وثمانين': '89',
+        'تسعين': '90',
+        'واحد وتسعين': '91',
+        'اثنان وتسعين': '92',
+        'ثلاثة وتسعين': '93',
+        'أربعة وتسعين': '94',
+        'خمسة وتسعين': '95',
+        'ستة وتسعين': '96',
+        'سبعة وتسعين': '97',
+        'ثمانية وتسعين': '98',
+        'تسعة وتسعين': '99'
+    }
+    pattern = '|'.join(r'\b{}\b'.format(re.escape(k)) for k in number_mapping.keys())
+    # Compile a regex pattern to match whole words of the numbers
+
+    def replace(match):
+        return number_mapping[match.group(0)]
+
+    # Define a callback function to replace the matched words with their corresponding digits
+
+    result = re.sub(pattern, replace, paragraph)
+    # Use the 're.sub' function to replace the matched words with digits
+
+    return result
