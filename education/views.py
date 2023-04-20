@@ -1,11 +1,11 @@
 from education.utils import draw_parallelogram, draw_rhombus, drawrect, metric_conversion, draw_circle, replace_numbers_with_digits_ar, replace_numbers_with_digits_en
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
-from education.models import Teacher,Class,Problem
-from education.serializers import TeacherSerializer ,ClassSerializer,ProblemSerializer
+from education.models import Student, Teacher,Class,Problem
+from education.serializers import StudentSerializer, TeacherSerializer ,ClassSerializer,ProblemSerializer
 import education.utils
 import random
-from education.models import QuizQuestion
+#from education.models import QuizQuestion
 
 from django.core.files.storage import default_storage
 from django.shortcuts import redirect, render
@@ -157,6 +157,7 @@ def text_to_speech(request):
 #     return render(request, 'quiz.html', {'message': message})
 
 import random
+'''
 from .models import QuizQuestion
 
 def quiz_view(request):
@@ -210,7 +211,37 @@ def quiz_results(request):
     else:
         return redirect('quiz_view')
  
+'''
+########################### StudentApi   ###############################
 
+@csrf_exempt
+def StudentApi(request,id=0):
+    if request.method=='GET':
+        student = Student.objects.all()
+        student_serializer = StudentSerializer(student, many=True)
+        return JsonResponse(student_serializer.data, safe=False)
+
+    if request.method=='POST':
+        student_data=JSONParser().parse(request)
+        student_serializer = StudentSerializer(data=student_data)
+        if student_serializer.is_valid():
+            student_serializer.save()
+            return JsonResponse("Added Successfully!!" , safe=False)
+        return JsonResponse("Failed to Add.",safe=False)
+    
+    elif request.method=='PUT':
+        student_data = JSONParser().parse(request)
+        student=Student.objects.get(id=student_data['id'])
+        student_serializer=StudentSerializer(student,data=student_data)
+        if student_serializer.is_valid():
+            student_serializer.save()
+            return JsonResponse("Updated Successfully!!", safe=False)
+        return JsonResponse("Failed to Update.", safe=False)
+
+    elif request.method=='DELETE':
+        student=Student.objects.get(id=id)
+        student.delete()
+        return JsonResponse("Deleted Succeffully!!!", safe=False)
 ########################### teacherApi   ###############################
 
 @csrf_exempt
@@ -230,7 +261,7 @@ def teacherApi(request,id=0):
     
     elif request.method=='PUT':
         teacher_data = JSONParser().parse(request)
-        teacher=Teacher.objects.get(TeacherId=teacher_data['TeacherId'])
+        teacher=Teacher.objects.get(id=teacher_data['id'])
         teacher_serializer=TeacherSerializer(teacher,data=teacher_data)
         if teacher_serializer.is_valid():
             teacher_serializer.save()
@@ -238,7 +269,7 @@ def teacherApi(request,id=0):
         return JsonResponse("Failed to Update.", safe=False)
 
     elif request.method=='DELETE':
-        teacher=Teacher.objects.get(TeacherId=id)
+        teacher=Teacher.objects.get(id=id)
         teacher.delete()
         return JsonResponse("Deleted Succeffully!!", safe=False)
 ################################ ClassApi   #####################################
@@ -246,8 +277,7 @@ def teacherApi(request,id=0):
 @csrf_exempt
 def ClassApi(request,id=0):
     if request.method=='GET':
-        classes=Class.objects.filter(teacher=id)
-        #classes = Class.objects.all()
+        classes = Class.objects.all()
         classes_serializer = ClassSerializer(classes, many=True)
         return JsonResponse(classes_serializer.data, safe=False)
 
@@ -261,7 +291,7 @@ def ClassApi(request,id=0):
     
     elif request.method=='PUT':
         class_data = JSONParser().parse(request)
-        classes=Class.objects.get(ClassId=class_data['ClassId'])
+        classes=Class.objects.get(id=class_data['id'])
         class_serializer=ClassSerializer(classes,data=class_data)
         if class_serializer.is_valid():
             class_serializer.save()
@@ -269,9 +299,11 @@ def ClassApi(request,id=0):
         return JsonResponse("Failed to Update.", safe=False)
 
     elif request.method=='DELETE':
-        classes=Class.objects.get(ClassId=id)
+        classes=Class.objects.get(id=id)
         classes.delete()
         return JsonResponse("Deleted Succeffully!!", safe=False)
+    
+    
         ############################### ProblemApi   ###############################
 
 @csrf_exempt
@@ -292,7 +324,7 @@ def ProblemApi(request,id=0):
     
     elif request.method=='PUT':
         problem_data = JSONParser().parse(request)
-        problems=Problem.objects.get(ProblemId=problem_data['ProblemId'])
+        problems=Problem.objects.get(id=problem_data['id'])
         problem_serializer=ProblemSerializer(problems,data=problem_data)
         if problem_serializer.is_valid():
             problem_serializer.save()
@@ -300,7 +332,7 @@ def ProblemApi(request,id=0):
         return JsonResponse("Failed to Update.", safe=False)
 
     elif request.method=='DELETE':
-        problems=Problem.objects.get(ProblemId=id)
+        problems=Problem.objects.get(id=id)
         problems.delete()
         return JsonResponse("Deleted Succeffully!!", safe=False)
     
