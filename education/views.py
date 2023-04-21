@@ -743,18 +743,15 @@ class LoginSystem:
         time.sleep(6)
         # End the process
         process.terminate()
-        print(1)
         # Inheriting the class called VideoStream and its
         # methods here from the videoStream module to capture the video stream
         faces = vs.encode_faces()
         encoded_faces = list(faces.values())
         faces_name = list(faces.keys())
         video_frame = True
-        print(2)
         # stream = 0 refers to the default camera of a system
         video_stream = vs.VideoStream(stream=0)
         video_stream.start()
-        print(3)
         while True:
             if video_stream.stopped is True:
                 break
@@ -778,7 +775,6 @@ class LoginSystem:
                         best_match_index = np.argmin(face_distances)
                         if matches[best_match_index]:
                             name = faces_name[best_match_index]
-
                         face_names.append(name)
                     
 
@@ -786,6 +782,7 @@ class LoginSystem:
 
                 for (top, right, bottom, left), faceID in zip(face_locations,\
                 face_names):
+                    
                     # Draw a rectangular box around the face
                     cv2.rectangle(frame, (left-20, top-20), (right+20, \
                     bottom+20), (0, 255, 0), 2)
@@ -798,9 +795,9 @@ class LoginSystem:
                     cv2.putText(frame, "Face Detected", (left -20, bottom + 15), \
                     font, 0.85, (255, 255, 255), 2)
                     
+
                     # Call the function for attendance
                     self.status = self.isPresent(faceID)
-
             # delay for processing a frame 
             delay = 0.04
             time.sleep(delay)
@@ -812,9 +809,9 @@ class LoginSystem:
             # and all cv2 window will be closed.
             if self.status == True:
                 print('mawjoud')
-                #process = self.playVoice("Voices/voice2.mp3")
-                #time.sleep(4)
-                #process.terminate()
+                process = self.playVoice("education/Voices/voice2.mp3")
+                time.sleep(4)
+                process.terminate()
                 break
         video_stream.stop()
 
@@ -826,17 +823,34 @@ class LoginSystem:
     # A Function to check if the user id of the detected face is matching 
     # with the database or not. If yes, the function returns the value True.
     def isPresent(self, UID):
+        
         try:
-            connection = pymysql.connect(host=cr.host, user=cr.username, password=cr.password, database=cr.database)
-            curs = connection.cursor()
-            curs.execute("select * from employee_register where uid=%s", UID)
-            row = curs.fetchone()
+            #connection = pymysql.connect(host=cr.host, user=cr.username, password=cr.password, database=cr.database)
+            #curs = connection.cursor()
+            #curs.execute("select * from employee_register where uid=%s", UID)
+            #row = curs.fetchone()
+            #if row == None:
+            #    pass
+            #else:
+            #    connection.close()
+            #    return True
+            students = Student.objects.all()
+            student_serializer = StudentSerializer(students, many=True)
+            list_students=student_serializer.data
+            teachers = Teacher.objects.all()
+            teacher_serializer = TeacherSerializer(teachers, many=True)
+            list_teacher=teacher_serializer.data      
+            listall=list_students+list_teacher
+            
+            dict_list_all = [dict(item) for item in listall]
+            for dictionary in dict_list_all:
+                if str(dictionary.get('id')) == str(UID):
+                    
+                    return True
+                else:
+                    pass
+            
 
-            if row == None:
-                pass
-            else:
-                connection.close()
-                return True
         except Exception as e:
                 print(str(e))
                 #messagebox.showerror("Error!",f"Error due to {str(e)}",parent=self.window)
@@ -852,7 +866,7 @@ class LoginSystem:
 def login_employee(request):
     # Get the button clicked from the form
     if request.method == 'POST':
-        Button = request.POST.get('button')
+        Button = request.POST.get('button') 
         print(Button)
         login_system = LoginSystem(root=None)
         print(Button)

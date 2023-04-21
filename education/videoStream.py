@@ -49,6 +49,7 @@ def encode_faces():
             if f.endswith(".jpg") or f.endswith(".png"):
                 face = fr.load_image_file(path+"/" + f)
                 encoding = fr.face_encodings(face)[0]
+                
                 encoded_data[f.split(".")[0]] = encoding
 
     # return encoded data of the images
