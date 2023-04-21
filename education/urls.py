@@ -25,7 +25,8 @@ urlpatterns=[
     path('calculate/', views.calculate, name='calculate'),
 
     #path('quiz/results/', views.quiz_results, name='quiz_results'),
-    path('image_generation/', views.image_generation)
+    path('image_generation/', views.image_generation),
+    path('login_employee/', views.login_employee, name='login_employee')
 
     ]
 

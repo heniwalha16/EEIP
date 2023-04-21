@@ -688,4 +688,185 @@ def intro(request):
             return render(request, 'login.html')
     else:
         return render(request, 'intro.html')
+##############face recognition#########
+import cv2
+import time
+import pymysql
+import numpy as np
+from tkinter import *
+import education.settings as st
+import education.credentials as cr
+import face_recognition as f
+import education.videoStream as vs
+import multiprocessing as mp
+from datetime import datetime
+from tkinter import messagebox
+from playsound import playsound
 
+# The LoginSystem class
+class LoginSystem:
+    
+    def __init__(self, root):
+        # Window settings
+        '''self.window = root
+        self.window.title("Login System")
+        self.window.geometry("780x480")
+        self.window.config(bg=st.color1)
+        self.window.resizable(width = False, height = False)'''
+
+        # Declaring a variable with a default value
+        self.status = False
+
+         # Left Frame
+        '''self.frame1 = Frame(self.window, bg=st.color1)
+        self.frame1.place(x=0, y=0, width=540, relheight = 1)'''
+
+        # Right Frame
+        '''self.frame2 = Frame(self.window, bg = st.color2)
+        self.frame2.place(x=540,y=0,relwidth=1, relheight=1)'''
+
+        # Calling the function called buttons()
+        #self.buttons()
+        '''loginButton = Button(self.frame2, text="Login", font=(st.font3, 12), bd=2, cursor="hand2", width=7, command=self.loginEmployee)
+        loginButton.place(x=74, y=40) 
+      '''
+
+
+    # A Function to login into the system through face recognition method 
+    def loginEmployee(self):
+        # Clear the screen first
+        #self.clearScreen()
+
+        # Call a function called playVoice() to play a sound in a different
+        # process
+        process = self.playVoice("education/Voices/voice1.mp3")
+        time.sleep(6)
+        # End the process
+        process.terminate()
+        print(1)
+        # Inheriting the class called VideoStream and its
+        # methods here from the videoStream module to capture the video stream
+        faces = vs.encode_faces()
+        encoded_faces = list(faces.values())
+        faces_name = list(faces.keys())
+        video_frame = True
+        print(2)
+        # stream = 0 refers to the default camera of a system
+        video_stream = vs.VideoStream(stream=0)
+        video_stream.start()
+        print(3)
+        while True:
+            if video_stream.stopped is True:
+                break
+            else :
+                
+                frame = video_stream.read()
+
+                if video_frame:
+                    face_locations = f.face_locations(frame)
+                    unknown_face_encodings = f.face_encodings(frame, face_locations)
+                    
+                    face_names = []
+                    for face_encoding in unknown_face_encodings:
+                        # Comapring the faces
+                        matches = f.compare_faces(encoded_faces, \
+                        face_encoding)
+                        name = "Unknown"
+
+                        face_distances = f.face_distance(encoded_faces,\
+                        face_encoding)
+                        best_match_index = np.argmin(face_distances)
+                        if matches[best_match_index]:
+                            name = faces_name[best_match_index]
+
+                        face_names.append(name)
+                    
+
+                video_frame = not video_frame
+
+                for (top, right, bottom, left), faceID in zip(face_locations,\
+                face_names):
+                    # Draw a rectangular box around the face
+                    cv2.rectangle(frame, (left-20, top-20), (right+20, \
+                    bottom+20), (0, 255, 0), 2)
+                    # Draw a Label for showing the name of the person
+                    cv2.rectangle(frame, (left-20, bottom -15), \
+                    (right+20, bottom+20), (0, 255, 0), cv2.FILLED)
+                    font = cv2.FONT_HERSHEY_DUPLEX
+                    # Showing the face_id of the detected person through 
+                    # the WebCam
+                    cv2.putText(frame, "Face Detected", (left -20, bottom + 15), \
+                    font, 0.85, (255, 255, 255), 2)
+                    
+                    # Call the function for attendance
+                    self.status = self.isPresent(faceID)
+
+            # delay for processing a frame 
+            delay = 0.04
+            time.sleep(delay)
+
+            cv2.imshow('frame' , frame)
+            key = cv2.waitKey(1)
+            # If self.status is True(which means the face is identified)
+            # a voice will play in the background, the look will be break,
+            # and all cv2 window will be closed.
+            if self.status == True:
+                print('mawjoud')
+                #process = self.playVoice("Voices/voice2.mp3")
+                #time.sleep(4)
+                #process.terminate()
+                break
+        video_stream.stop()
+
+        # closing all windows 
+        cv2.destroyAllWindows()
+        # Calling a function to show the status after entering an employee
+        #self.employeeEntered()
+
+    # A Function to check if the user id of the detected face is matching 
+    # with the database or not. If yes, the function returns the value True.
+    def isPresent(self, UID):
+        try:
+            connection = pymysql.connect(host=cr.host, user=cr.username, password=cr.password, database=cr.database)
+            curs = connection.cursor()
+            curs.execute("select * from employee_register where uid=%s", UID)
+            row = curs.fetchone()
+
+            if row == None:
+                pass
+            else:
+                connection.close()
+                return True
+        except Exception as e:
+                print(str(e))
+                #messagebox.showerror("Error!",f"Error due to {str(e)}",parent=self.window)
+
+    # A Function to play voice in a different process
+    def playVoice(self, voice):
+        process = mp.Process(target=playsound, args=(voice,))
+        process.start()
+        return process
+
+
+
+def login_employee(request):
+    # Get the button clicked from the form
+    if request.method == 'POST':
+        Button = request.POST.get('button')
+        print(Button)
+        login_system = LoginSystem(root=None)
+        print(Button)
+        if(Button==None):
+            return render(request, 'login.html')
+        else:
+            # Call the loginEmployee function
+            login_system.loginEmployee()
+            if login_system.status:
+                #If the face is identified, redirect to the success page
+                return render(request, 'calculate.html')
+            else:
+                return render(request, 'login.html')
+    else:
+        return render(request, 'login.html')
+            
+      
