@@ -1,11 +1,11 @@
-from education.utils import draw_parallelogram, draw_rhombus, drawrect, metric_conversion, draw_circle
+from education.utils import draw_parallelogram, draw_rhombus, drawrect, metric_conversion, draw_circle, replace_numbers_with_digits_ar, replace_numbers_with_digits_en
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
-from education.models import Teacher,Class,Problem
-from education.serializers import TeacherSerializer ,ClassSerializer,ProblemSerializer
+from education.models import Student, Teacher,Class,Problem
+from education.serializers import StudentSerializer, TeacherSerializer ,ClassSerializer,ProblemSerializer
 import education.utils
 import random
-from education.models import QuizQuestion
+#from education.models import QuizQuestion
 
 from django.core.files.storage import default_storage
 from django.shortcuts import redirect, render
@@ -157,6 +157,7 @@ def text_to_speech(request):
 #     return render(request, 'quiz.html', {'message': message})
 
 import random
+'''
 from .models import QuizQuestion
 
 def quiz_view(request):
@@ -210,7 +211,37 @@ def quiz_results(request):
     else:
         return redirect('quiz_view')
  
+'''
+########################### StudentApi   ###############################
 
+@csrf_exempt
+def StudentApi(request,id=0):
+    if request.method=='GET':
+        student = Student.objects.all()
+        student_serializer = StudentSerializer(student, many=True)
+        return JsonResponse(student_serializer.data, safe=False)
+
+    if request.method=='POST':
+        student_data=JSONParser().parse(request)
+        student_serializer = StudentSerializer(data=student_data)
+        if student_serializer.is_valid():
+            student_serializer.save()
+            return JsonResponse("Added Successfully!!" , safe=False)
+        return JsonResponse("Failed to Add.",safe=False)
+    
+    elif request.method=='PUT':
+        student_data = JSONParser().parse(request)
+        student=Student.objects.get(id=student_data['id'])
+        student_serializer=StudentSerializer(student,data=student_data)
+        if student_serializer.is_valid():
+            student_serializer.save()
+            return JsonResponse("Updated Successfully!!", safe=False)
+        return JsonResponse("Failed to Update.", safe=False)
+
+    elif request.method=='DELETE':
+        student=Student.objects.get(id=id)
+        student.delete()
+        return JsonResponse("Deleted Succeffully!!!", safe=False)
 ########################### teacherApi   ###############################
 
 @csrf_exempt
@@ -230,7 +261,7 @@ def teacherApi(request,id=0):
     
     elif request.method=='PUT':
         teacher_data = JSONParser().parse(request)
-        teacher=Teacher.objects.get(TeacherId=teacher_data['TeacherId'])
+        teacher=Teacher.objects.get(id=teacher_data['id'])
         teacher_serializer=TeacherSerializer(teacher,data=teacher_data)
         if teacher_serializer.is_valid():
             teacher_serializer.save()
@@ -238,7 +269,7 @@ def teacherApi(request,id=0):
         return JsonResponse("Failed to Update.", safe=False)
 
     elif request.method=='DELETE':
-        teacher=Teacher.objects.get(TeacherId=id)
+        teacher=Teacher.objects.get(id=id)
         teacher.delete()
         return JsonResponse("Deleted Succeffully!!", safe=False)
 ################################ ClassApi   #####################################
@@ -246,8 +277,7 @@ def teacherApi(request,id=0):
 @csrf_exempt
 def ClassApi(request,id=0):
     if request.method=='GET':
-        classes=Class.objects.filter(teacher=id)
-        #classes = Class.objects.all()
+        classes = Class.objects.all()
         classes_serializer = ClassSerializer(classes, many=True)
         return JsonResponse(classes_serializer.data, safe=False)
 
@@ -261,7 +291,7 @@ def ClassApi(request,id=0):
     
     elif request.method=='PUT':
         class_data = JSONParser().parse(request)
-        classes=Class.objects.get(ClassId=class_data['ClassId'])
+        classes=Class.objects.get(id=class_data['id'])
         class_serializer=ClassSerializer(classes,data=class_data)
         if class_serializer.is_valid():
             class_serializer.save()
@@ -269,9 +299,11 @@ def ClassApi(request,id=0):
         return JsonResponse("Failed to Update.", safe=False)
 
     elif request.method=='DELETE':
-        classes=Class.objects.get(ClassId=id)
+        classes=Class.objects.get(id=id)
         classes.delete()
         return JsonResponse("Deleted Succeffully!!", safe=False)
+    
+    
         ############################### ProblemApi   ###############################
 
 @csrf_exempt
@@ -284,7 +316,9 @@ def ProblemApi(request,id=0):
 
     elif request.method=='POST':
         problem_data=JSONParser().parse(request)
+        print(problem_data)
         problem_serializer = ProblemSerializer(data=problem_data)
+        print(problem_serializer)
         if problem_serializer.is_valid():
             problem_serializer.save()
             return JsonResponse("Added Successfully!!" , safe=False)
@@ -292,7 +326,7 @@ def ProblemApi(request,id=0):
     
     elif request.method=='PUT':
         problem_data = JSONParser().parse(request)
-        problems=Problem.objects.get(ProblemId=problem_data['ProblemId'])
+        problems=Problem.objects.get(id=problem_data['id'])
         problem_serializer=ProblemSerializer(problems,data=problem_data)
         if problem_serializer.is_valid():
             problem_serializer.save()
@@ -300,7 +334,7 @@ def ProblemApi(request,id=0):
         return JsonResponse("Failed to Update.", safe=False)
 
     elif request.method=='DELETE':
-        problems=Problem.objects.get(ProblemId=id)
+        problems=Problem.objects.get(id=id)
         problems.delete()
         return JsonResponse("Deleted Succeffully!!", safe=False)
     
@@ -353,7 +387,15 @@ def image_generation(seed):
     
     # This sets up a default neural pipeline in Lang
     print(seed)
+    sentences = seed.split('.')
+    if (seed.count('.') >= 2) or ((seed.count('.') < 2)and(seed.count('?')>0)):
+        deleted_sent = sentences.pop(-1)
+        seed = '.'.join(sentences)
     lang=detect_language(seed)
+    if lang=='ar':
+        seed=replace_numbers_with_digits_ar(seed)
+    else:
+        seed=replace_numbers_with_digits_en(seed)
     seed1=seed
     print(lang)
     if (lang != 'en'):
@@ -369,7 +411,7 @@ def image_generation(seed):
 
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('C:/Users/ASUS/Downloads/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('C:/Users/Asus/Downloads/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
     
     # Example math problem
@@ -388,7 +430,7 @@ def image_generation(seed):
     class_names = ['Not Geometry', 'Geometry']
     problem_type = class_names[predicted_class]
     metrics=[]
-
+    print(problem_type)
     if (problem_type=='Geometry'):      
         language, _ = langid.classify(problem)
         if language != 'en':
@@ -401,34 +443,36 @@ def image_generation(seed):
             quants = parser.parse(sent.text)
             for q in quants:
                 if q.unit.entity.name == 'length' :
+                    print(metrics)
                     metrics.append([float(q.surface.split()[0]), q.unit.uri])
         for i in range(len(metrics)):
-            metrics[i]=metric_conversion(metrics[i])            
-        if len(res['data']) > 0:
-            if len(res['data'])==1:
+            metrics[i]=metric_conversion(metrics[i])    
+        print(metrics)        
+        if len(metrics) > 0:
+            if len(metrics)==1:
                 if 'diameter' in problem:
                     #res['type'] = 'diametre'
-                    Output_List=[draw_circle((metrics[0][0])/2,metrics[0][2])]
+                    Output_List=[draw_circle((metrics[0][0])/2,str(int(metrics[0][1]))+metrics[0][2])]
                 elif 'radius' in problem:
                     #res['type'] = 'radius'
-                    Output_List=[draw_circle(metrics[0][0],metrics[0][2])]
+                    Output_List=[draw_circle(metrics[0][0],str(int(metrics[0][1]))+metrics[0][2])]
                 else:
                     #res['type'] = 'square'
-                    Output_List=[drawrect(metrics[0][0],metrics[0][0],metrics[0][2],metrics[0][2])]
+                    Output_List=[drawrect(metrics[0][0],metrics[0][0],str(int(metrics[0][1]))+metrics[0][2],str(int(metrics[0][1]))+metrics[0][2])]
 
-            elif len(res['data'])==2:
+            elif len(metrics)==2:
                 if 'parallelogram' in problem:
                     #res['type'] = 'parallelogram'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
-                        height=str(metrics[0][2])
-                        width=str(metrics[1][2])
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_height=metrics[0][1]
                         r_width=metrics[1][1]
                         c_height=metrics[0][0]
                         c_width=metrics[1][0]
                     else:
-                        width=str(metrics[0][2])
-                        height=str(metrics[1][2])
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_width=metrics[0][1]
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
@@ -437,15 +481,15 @@ def image_generation(seed):
                 elif 'rhombus' in problem:
                     #res['type'] = 'rhombus'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
-                        height=str(metrics[0][2])
-                        width=str(metrics[1][2])
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_height=metrics[0][1]
                         r_width=metrics[1][1]
                         c_height=metrics[0][0]
                         c_width=metrics[1][0]
                     else:
-                        width=str(metrics[0][2])
-                        height=str(metrics[1][2])
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_width=metrics[0][1]
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
@@ -454,29 +498,34 @@ def image_generation(seed):
                 else:
                     #res['type'] = 'rectangle'
                     if(metrics[0][1]==max(metrics[0][1],metrics[1][1])):
-                        height=str(metrics[0][2])
-                        width=str(metrics[1][2])
+                        print(str(metrics[0][1]))
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_height=metrics[0][1]
                         r_width=metrics[1][1]
                         c_height=metrics[0][0]
                         c_width=metrics[1][0]
                     else:
-                        width=str(metrics[0][2])
-                        height=str(metrics[1][2])
+                        print(str(int(metrics[0][1])))
+                        height=str(int(metrics[0][1]))+str(metrics[0][2])
+                        width=str(int(metrics[1][1]))+str(metrics[1][2])
                         r_width=metrics[0][1]
                         r_height=metrics[1][1]
                         c_width=metrics[0][0]
                         c_height=metrics[1][0]
+                    print(c_height,c_width,height,width)
                     Output_List=[drawrect(c_height,c_width,height,width)]
-            elif len(res['data'])==4:
+            elif len(metrics)==4:
                 if 'trapezium' in problem:
                     res['type'] = 'trapezium'
             del doc
-            return res
-
+            print(len(metrics))
+            print(Output_List)
+            return Output_List
 
     else:
         res['type'] = 'entity'
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
     for sent in doc.sentences:
         for word in sent.words:
@@ -545,7 +594,7 @@ def image_generation(seed):
     for sent in translated_doc.sentences:
         sent=sent.text.replace(',','and')
         quants = parser.parse(sent)
-        
+        print(quants)
         for q in quants:  
             if q.unit.entity.name != 'dimensionless' :   
                 dim_numbers.append(q.value)
@@ -623,10 +672,20 @@ def calculate(request):
     for i in range(len (list_output)):
       if "http" in list_output[i][0]:
         list_output[i][1]=2
-    print(list_output)
+    
             
     result = list_output
     # Renvoi du résultat dans le modèle HTML
     return render(request, 'index.html', {'result': result,'problem':problem})
   else:
     return render(request, 'calculate.html')
+def intro(request):
+    if request.method == 'POST':
+        btn1 = request.POST.get('btn1')
+        if(btn1==None):
+             return render(request, 'Register.html')
+        else:
+            return render(request, 'login.html')
+    else:
+        return render(request, 'intro.html')
+

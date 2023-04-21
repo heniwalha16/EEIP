@@ -3,6 +3,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 from . import views 
 urlpatterns=[
+    path('intro/',views.intro,name='intro'),
+
     path('problem_solution/',views.chatbot_solution),
     path('problem_translation/',views.chatbot_translation),
     path('transcribe-speech/', views.transcribe_speech, name='transcribe-speech'),
@@ -12,7 +14,7 @@ urlpatterns=[
     path('teacher/',views.teacherApi),
     path('teacher/<str:id>/', views.teacherApi, name='student_api'),
     path('student/',views.StudentApi),
-    path('student/<str:id>/', views.StudentApi, name='tudent_api'),
+    path('student/<str:id>/', views.StudentApi, name='student_api'),
     path('Class/',views.ClassApi),
     path('Class/<str:id>/', views.ClassApi, name='Class_api'),
     path('Problem/',views.ProblemApi),

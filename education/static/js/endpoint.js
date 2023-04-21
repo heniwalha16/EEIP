@@ -48,3 +48,23 @@ function speak() {
   speechSynthesis.speak(utterance);
   
 }
+function chat_solution() {
+  
+  const userInput = document.getElementById("problem1").textContent;
+  console.log(JSON.stringify({ user_input: userInput }));
+
+  fetch('/problem_solution/', {
+    method: 'POST',
+    body: JSON.stringify({ user_input: userInput }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.text())
+  .then(solution => {
+    console.log(solution);
+    const solutionElement = document.getElementById('solution');
+    solutionElement.textContent = solution;
+  })
+  .catch(error => console.error(error));
+}

@@ -1,242 +1,317 @@
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #8782d9;
-    
-  }
-   
-    
-  .container {
-    text-align: center;
-    
-    width: 940px;
-    height: 500px;
-    top:10%;
-    left:25%;
-    border: 1px solid #541388;
-    border-radius: 20px;
-    border-width: 4px;
-    position: absolute;
-    z-index:100;
-    
-    
-  }
-
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #000000;
   
-   .canv{
-    font-size: 25px;
-    
-     
-    top:20%;
-    left:20%;
-    right: 20%;
-    user-select: none;
-    position: absolute;
-    z-index:100;
-    color: white;
-   }
-     
-   .canvas{
-     
-    
-    position: absolute;
-    
-    z-index: -1;
-    
-   }
-   
-  .toolbar{
-      padding: 1em;
-     
+}
+ 
+  
+.container {
+  text-align: center;
+  
+  width: 940px;
+  height: 500px;
+  top:10%;
+  left:25%;
+  border: 1px solid #541388;
+  border-radius: 20px;
+  border-width: 4px;
+  position: absolute;
+  z-index:100;
+  
+  
+}
 
-  }
+
+ .canv{
+  font-size: 25px;
+  
+   
+  top:20%;
+  left:20%;
+  right: 20%;
+  user-select: none;
+  position: absolute;
+  z-index:100;
+  color: white;
+ }
+   
+ .canvas{
+   
+  
+  position: absolute;
+  
+  z-index: -1;
+  
+ }
+ 
+.toolbar{
+    padding: 1em;
+   
+
+}
 
 .tool{
-  margin: 1em;
+margin: 1em;
 }
-  h1 { 
-    color: #454e96;
-    display: block;
-    font-size: 48px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    margin-left: 0;
-    margin-right: 0;
-    font-weight: bold;
+h1 { 
+  color: #454e96;
+  display: block;
+  font-size: 48px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
 }
 
-  h2 {
-    font-size: 3em;
-    margin-top: 40px;
-    text-align: center;
-    letter-spacing: -2px;
-  }
-   
-  h3 {
-    font-size: 1.7em;
-    font-weight: 100;
-    margin-top: 30px;
-    text-align: center;
-    letter-spacing: -1px;
-    color: #999;
-  }
+h2 {
+  font-size: 3em;
+  margin-top: 40px;
+  text-align: center;
+  letter-spacing: -2px;
+}
+ 
+h3 {
+  font-size: 1.7em;
+  font-weight: 100;
+  margin-top: 30px;
+  text-align: center;
+  letter-spacing: -1px;
+  color: #999;
+}
 
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  
 }
 
 li {
-    float: right;
+  float: right;
 }
 
 li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
 
 /* Change the link color to #111 (black) on hover */
 li a:hover {
-    background-color: #111;
-    text-decoration: none;
+  background-color: #111;
+  text-decoration: none;
 }
 
 form label {
-  
-  color: #454e96;
-  font-size: 26px;
-  font-weight: bold;
-  display: block;
-  padding: 10px 0;
-}
- 
 
- 
-form textarea#seed {
-  width: 800px;
-  height: 250px;
-  background-color: #fafafa;
-  border-radius: 3px;
-  border: 1px solid #541388;
-  margin-bottom: 10px;
-  padding: 5px;
-  font-size: 25px;
+color: #454e96;
+font-size: 26px;
+font-weight: bold;
+display: block;
+padding: 10px 0;
 }
- 
-  /* The side navigation menu */
+
+
+
+form textarea#seed {
+width: 800px;
+height: 250px;
+background-color: #fafafa;
+border-radius: 3px;
+border: 1px solid #541388;
+margin-bottom: 10px;
+padding: 5px;
+font-size: 25px;
+}
+
+/* The side navigation menu */
 .sidenav {
-  height: 100%; /* 100% Full-height */
-  width: 0; /* 0 width - change this with JavaScript */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Stay on top */
-  
-  right: 0;
-  background-color:rgb(23, 162, 184,0.2); /* Black*/
-  text-align: center;
-  overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 60px; /* Place content 60px from the top */
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
-  margin-top: 0;
+height: 100%; /* 100% Full-height */
+width: 0; /* 0 width - change this with JavaScript */
+position: fixed; /* Stay in place */
+z-index: 1; /* Stay on top */
+
+right: 0;
+background-color:rgb(23, 162, 184,0.2); /* Black*/
+text-align: center;
+overflow-x: hidden; /* Disable horizontal scroll */
+padding-top: 60px; /* Place content 60px from the top */
+transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+margin-top: 0;
 }
 
 /* The navigation menu links */
 .sidenav a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
+padding: 8px 8px 8px 32px;
+text-decoration: none;
+font-size: 25px;
+color: #818181;
+display: block;
+transition: 0.3s;
 }
 
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover {
-  color: #f1f1f1;
+color: #f1f1f1;
 }
 
 /* Position and style the close button (top right corner) */
 .sidenav .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
+position: absolute;
+top: 0;
+right: 25px;
+font-size: 36px;
+margin-left: 50px;
 }
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
-  transition: margin-left .5s;
-  padding: 20px;
+transition: margin-left .5s;
+padding: 20px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
+.sidenav {padding-top: 15px;}
+.sidenav a {font-size: 18px;}
 }
 .task {
-  
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  vertical-align: middle;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  margin: 0.4rem;
-  height: 4rem;
-  cursor: grab;
-  text-align: center;
-  vertical-align: middle;
+
+-webkit-box-pack: center;
+-ms-flex-pack: center;
+justify-content: center;
+vertical-align: middle;
+-webkit-transition: all 0.3s;
+transition: all 0.3s;
+margin: 0.4rem;
+height: 4rem;
+cursor: grab;
+text-align: center;
+vertical-align: middle;
 }
 .gu-mirror {
-  position: fixed !important;
-  margin: 0 !important;
-  z-index: 9999 !important;
-  opacity: 0.8;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-  filter: alpha(opacity=80);
+position: fixed !important;
+margin: 0 !important;
+z-index: 9999 !important;
+opacity: 0.8;
+-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+filter: alpha(opacity=80);
 }
 
 .gu-hide {
-  display: none !important;
+display: none !important;
 }
 
 .gu-unselectable {
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  user-select: none !important;
+-webkit-user-select: none !important;
+-moz-user-select: none !important;
+-ms-user-select: none !important;
+user-select: none !important;
 }
 
 .gu-transit {
-  opacity: 0.2;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-  filter: alpha(opacity=20);
+opacity: 0.2;
+-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+filter: alpha(opacity=20);
 }
 
- 
+
 .effect {
-  text-align: center;
-  display: inline-block;
-  text-decoration: none;
-  color: white;
-  background-color: #541388;
-  text-transform: capitalize;
-  padding: 20px 0px;
-  width: 150px;
-  border-radius: 6px;
-  cursor: pointer;
+text-align: center;
+display: inline-block;
+text-decoration: none;
+color: white;
+background-color: #541388;
+text-transform: capitalize;
+padding: 20px 0px;
+width: 150px;
+border-radius: 6px;
+cursor: pointer;
 }
-button :hover{
-cursor: grab;
+.buttons button{
+width: 100%;
+color: #fff;
+border: none;
+outline: none;
+padding: 11px 0;
+font-size: 0.9rem;
+margin-bottom: 13px;
+background: none;
+border-radius: 4px;
+cursor: pointer;
+}
+.buttons .clear-canvas{
+color: #6C757D;
+border: 1px solid #6C757D;
+transition: all 0.3s ease;
+}
+.clear-canvas:hover{
+color: #fff;
+background: #6C757D;
+}
+.buttons .save-img{
+background: #4A98F7;
+border: 1px solid #4A98F7;
+}
+.row{
+margin-bottom: 20px;
+}
+.row {
+list-style: none;
+margin: 10px 0 0 5px;
+}
+.row {
+display: flex;
+cursor: pointer;
+align-items: center;
+margin-bottom: 10px;
+}
+.item {
+width: 100px;
+height: 100px;
+margin: 5px;
+}  
+.sequence {
+display: flex;
+justify-content: center;
+align-items: center;
+}
+.text-box {
+font-size: 16px;
+display: flex;
+width: 100%;
+
+}
+input#problem {
+padding-left: 11px;
+padding-right: 9px;
+font-size: 16px;
+height: 47px;
+display: block;
+flex: 10;
+outline: none;
+margin: 0 10px 0 0;
+box-sizing: border-box;
+border: 1px solid #aaa;
+border-radius: 13px;
 }
 
-
+input.send-button {
+display: block;
+background-color: rgba(255,255,255,.6);
+flex: 1;
+border: 1px solid rgba(0,0,0,.2);
+height: 27px;
+box-sizing: border-box;
+font-size: 16px;
+line-height: 25px;
+padding: 0;
+border-radius: 13px;
+}
