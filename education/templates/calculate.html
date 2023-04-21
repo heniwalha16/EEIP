@@ -1,188 +1,177 @@
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="../static/css/styles2.css" />
+</head>
+<script>
+  function myFunction() {
+    window.location.href = "game.html";
+  }
+</script>
+<script>
+  function myFunction1() {
+    window.location.href = "ttt.html";
+  }
+</script>
+<script>
+  function myFunction2() {
+    window.location.href = "index1.html";
+  }
+</script>
+<script>
+  function myFunction3() {
+    window.location.href = "login.html";
+  }
+</script>
+  <body >
 
-  <style>* {
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  
-  /* Style the header */
-  header {
-    background-color: rgb(65, 100, 153);
-    padding: 30px;
-    text-align: center;
-    font-size: 35px;
-    color: white;
-    margin-right: 15%;
-    margin-left: 15%;  
-    height: 15%;
-    border: 2px solid rgb(255, 255, 255);
-    border-radius: 12px;
-  
-  }
-  .wrapper {
-    background-color:rgba(255,255,255,.6);
-    font-family: Verdana,Arial,Helvetica,sans-serif;
-    font-size: small;
-    color: white;
-    padding: 30px;
-    margin-right: 15%;
-    margin-left: 15%;  
-    line-height: 1.7em;
-    border: 5px solid rgb(255, 255, 255);
-    border-radius: 12px;
-  }
-  
-  button {
-    background-color: rgba(255,255,255,.5);
-    padding: 5px;
-    outline: none;
-    border: 1px solid rgba(0,0,0,.3);
-    border-radius: 5px;
-  }
-  
-  .wrapper {
-    margin-right: 15%;
-    margin-left: 15%;  
-    height: 80vh;
-    box-sizing: border-box;
-   
-    padding: 0;
-    background-color: rgba(255,255,255,.1);
-    display: flex;
-    flex-direction: column;
-    border-left: 1px solid rgba(255,255,255,.2);
-    border-right: 1px solid rgba(255,255,255,.2);
-  }
-  
-  form {
-    flex: 5;
-    display: block;
-    padding: 15px;
-  }
-  .text-box {
-    font-size: 16px;
-    display: flex;
-    width: 100%;
-  
-  }
-  input#problem {
-    padding-left: 11px;
-    padding-right: 9px;
-    font-size: 16px;
-    height: 47px;
-    display: block;
-    flex: 10;
-    outline: none;
-    margin: 0 10px 0 0;
-    box-sizing: border-box;
-    border: 1px solid #aaa;
-    border-radius: 13px;
-  }
-  
-  input.send-button {
-    display: block;
-    background-color: rgba(255,255,255,.6);
-    flex: 1;
-    border: 1px solid rgba(0,0,0,.2);
-    height: 27px;
-    box-sizing: border-box;
-    font-size: 16px;
-    line-height: 25px;
-    padding: 0;
-    border-radius: 13px;
-  }
-  
-  div#dialogue {
-    overflow-x: none;
-    overflow-y: auto;
-    display: block;
-    flex: 95;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 15px;
-  }
-  
-  .open-button{
-    background-color: transparent;
-  }
-  
-  
-  #photo-input {
-  display: none;
-}
-  
-  
-  </style>
-
-  </head>
-  
-  
-  
-  
-  
-  
-
-  
-  <!-- Page Content -->
-
-  
-
+  <div >
+      <video id="bg-video" autoplay muted loop>
+          <source src="../static/images/video.mp4" type="video/mp4">
+        </video>
+   <header> <h>Mathematical problem to Picture !</h></header>
+   <div class="mascot_game">
+    <img src="../static/images/Mascot.png" width="120" height="200" position="absolute">
+  </div>     
+    <br>
     
-    <div style="background-color: black;">
-  
-     <header> <h>Mathematical problem to Picture !</h></header>
-    
-      <br>
-      
-      <div class='wrapper'>
-        <div id="dialogue"></div>
-        <form method="POST" action="{% url 'calculate' %}">
-            {% csrf_token %}
-            <div class="text-box">
-              
-                <input type="text" name="problem" id="problem"  placeholder="write ur math problem here !">
-                
-                
-                
-                <button class="send-button" >
-                    <img src="https://www.svgrepo.com/show/435419/send.svg" width="24px" height="14px" id="plane">
-                </button>
-      
-            </div>
-        </form>
-        <center>
-          <div>
-          <button class="send-button"  id="microphone-button" >
-            <img src="https://www.svgrepo.com/show/476625/micro.svg" width="24px" height="14px" id="micro">
-          </button>
-          <button class="send-button" type="button" id="photo-button" onclick="choosePhoto()"> 
-            <img src="https://www.svgrepo.com/show/506616/upload.svg" width="24px" height="14px" id="micro">
-          </button>
-          <input type="file" id="photo-input" onchange="extractText()">
-          <button  class="send-button" onclick="speak()"> 
-            <img src="https://www.svgrepo.com/show/487818/speak.svg" width="24px" height="14px" id="micro">
-          </button>
-
-          </div>
-        </center>
+    <div class="sidebar">
+      <div class="logo-details">
+        <i class='bx bxl-c-plus-plus icon'></i>
+          <div class="logo_name">M4PI</div>
+          <i class='bx bx-menu' id="btn" ></i>
       </div>
+      <ul class="nav-list">
+        <li>
+            <i class='bx bx-search' ></i>
+           <input type="text" placeholder="Search...">
+           <span class="tooltip">Search</span>
+        </li>
+        <li>
+          <a href="#" onclick="myFunction2()">
+            <i class='bx bx-joystick' ></i>
+            <span class="links_name">Tik Tac Toe</span>
+          </a>
+           <span class="tooltip">Tik Tac Toe</span>
+        </li>
+        <li>
+         <a href="#" onclick="myFunction1()">
+          <i class='bx bx-dice-5'  ></i>
+           <span class="links_name">Math Quiz</span>
+         </a>
+         <span class="tooltip">Math Quiz</span>
+       </li>
+       <li>
+         <a href="#" onclick="myFunction()">
+           <i class='bx bx-joystick' ></i>
+           <span class="links_name">Rock Paper Scissors</span>
+         </a>
+         <span class="tooltip">Rock Paper Scissors</span>
+       </li>
+       <li>
+         <a href="#">
+           <i class='bx bx-palette' ></i>
+           <span class="links_name">Paint</span>
+         </a>
+         <span class="tooltip">Paint</span>
+       </li>
+       <li>
+         <a href="#">
+           <i class='bx bx-folder' ></i>
+           <span class="links_name">File Manager</span>
+         </a>
+         <span class="tooltip">Files</span>
+       </li>
+       <li>
+         <a href="#">
+           <i class='bx bx-cart-alt' ></i>
+           <span class="links_name">Order</span>
+         </a>
+         <span class="tooltip">Order</span>
+       </li>
+       <li>
+         <a href="#">
+           <i class='bx bx-heart' ></i>
+           <span class="links_name">Saved</span>
+         </a>
+         <span class="tooltip">Saved</span>
+       </li>
+       <li>
+         <a href="#" onclick="myFunction3()" >
+           <i class='bx bx-log-out'></i>
+           <span class="links_name">Log-Out</span>
+         </a>
+         <span class="tooltip">Log-Out</span>
+       </li>
+      </ul>
     </div>
-    
+    <script>
+    let sidebar = document.querySelector(".sidebar");
+    let closeBtn = document.querySelector("#btn");
+    let searchBtn = document.querySelector(".bx-search");
   
+    closeBtn.addEventListener("click", ()=>{
+      sidebar.classList.toggle("open");
+      menuBtnChange();//calling the function(optional)
+    });
+  
+    searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
+      sidebar.classList.toggle("open");
+      menuBtnChange(); //calling the function(optional)
+    });
+  
+    // following are the code to change sidebar button(optional)
+    function menuBtnChange() {
+     if(sidebar.classList.contains("open")){
+       closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
+     }else {
+       closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
+     }
+    }
+    </script>
+    
+    <div class='wrapper'>
+      <div id="dialogue"></div>
+      <form method="POST" action="{% url 'calculate' %}">
+          <p style="position: relative; bottom: 15px;">{% csrf_token %}</p>
+          <div class="text-box">
+            
+              <input type="text" name="problem" id="problem"  placeholder="write ur math problem here !">
+              
+              
+              
+              <button class="send-button" >
+                  <img src="https://www.svgrepo.com/show/435419/send.svg" width="24px" height="14px" id="plane">
+              </button>
+    
+          </div>
+      </form>
+      <center>
+        <div>
+        <button class="microphone-button"  id="microphone-button" >
+          <img src="https://www.svgrepo.com/show/476625/micro.svg" width="24px" height="14px" id="micro">
+        </button>
+        <button class="photo-button" type="button" id="photo-button" onclick="choosePhoto()"> 
+          <img src="https://www.svgrepo.com/show/506616/upload.svg" width="24px" height="14px" id="micro">
+        </button>
+        <input type="file" id="photo-input" onchange="extractText()">
+        <button  class="extract-button" onclick="speak()"> 
+          <img src="https://www.svgrepo.com/show/487818/speak.svg" width="24px" height="14px" id="micro">
+        </button>
 
+        </div>
+      </center>
+    </div>
   </div>
-  <script src="/static/js/endpoint.js"></script>
   
-  
-  
-  
- 
-    
+  <script src="../static/js/endpoint.js"></script>
 
 
-  </body>
+
+
+
+  
+
+
+</body>

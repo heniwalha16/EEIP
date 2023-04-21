@@ -1,0 +1,449 @@
+/* Google Font Link */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+  }
+  /* Style the header */
+  header {
+    background-color: #BB68F9;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    color: white;
+    align-items: center;
+    justify-content: center;  
+    height: 80px;
+    width:65%;
+    border: 5px solid rgb(255, 255, 255);
+    border-radius: 12px;
+    position: relative;
+    left: 19.5%;
+    margin-top: 10px;
+    
+  }
+  .mascot_game {
+    position:absolute;
+    right:3%;
+    top: 35%;
+  }
+  .mascot_game img{
+    width:160px; 
+    height:260px; 
+    position:absolute;
+    animation: fadeInFromTop .5s linear forwards, floating ease 4s infinite;
+    right:10%;
+  }
+  @keyframes fadeInFromTop{
+    from{
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes floating{
+    0%{
+      transform: translate(0%,0%) rotate(360deg);
+    }
+    25%{
+      transform: translate(5%,15%) rotate(360deg);
+    }
+    50%{
+      transform: translate(10%,5%) rotate(360deg);
+    }
+    75%{
+      transform: translate(0%,15%) rotate(360deg);
+    }
+    100%{
+      transform: translate(0%,0%) rotate(360deg);
+    }
+  }
+  
+  .wrapper {
+    background-color:transparent;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: small;
+    color: white;
+    padding: 30px;
+
+    border: 5px solid rgb(255, 255, 255);
+    border-radius: 12px;
+    height: 80vh;
+    box-sizing: border-box;
+    position: fixed;
+    width:65%;
+    background-color: rgba(255,255,255,.1);
+    flex-direction: column;
+    
+    left:300px
+  }
+  
+  
+  
+  
+  
+  form {
+    padding: 15px;
+    height: 25%;
+  }
+ .text-box{
+    right:10px;
+    position: relative;
+    bottom: 10px;
+ }
+  input#problem {
+    padding:10px;
+    font-size: 14px;
+    height: 55px;
+    display: block;
+    flex: 10;
+    outline: none;
+    margin: 0 10px 0 0;
+    box-sizing: border-box;
+    border: 4px solid #BB68F9;
+    border-radius: 13px;
+    width: 100%;
+  }
+  
+  .send-button {
+   
+    border: 4px solid  #BB68F9;
+    height: 55px;
+    width: 70px;
+    font-size: 16px;
+    line-height: 25px;
+    padding: 0;
+    border-bottom-right-radius: 13px;
+    border-top-right-radius: 13px;
+    position: relative;
+    bottom:55px;
+    left:94%;
+
+    
+  }
+  .send-button img{
+    height: 30px;
+    width: 30px;
+  }
+  
+  .microphone-button {
+   
+   border: 4px solid  #BB68F9;
+   height: 45px;
+   width: 45px;
+   font-size: 16px;
+   line-height: 25px;
+   padding: 0;
+   border-radius: 45px;
+   position: relative;
+   bottom:20px;
+   right:20px
+
+   
+ }
+ .microphone-button img{
+   height: 25px;
+   width: 25px;
+ }
+ .photo-button {
+    border: 4px solid  #BB68F9;
+   height: 45px;
+   width: 45px;
+   font-size: 16px;
+   line-height: 25px;
+   padding: 0;
+   border-radius: 45px;
+   position: relative;
+   bottom:20px;
+ 
+
+   
+ }
+ .photo-button img{
+   height: 25px;
+   width: 25px;
+ }
+ .extract-button {
+   
+    border: 4px solid  #BB68F9;
+   height: 45px;
+   width: 45px;
+   font-size: 16px;
+   line-height: 25px;
+   padding: 0;
+   border-radius: 45px;
+   position: relative;
+   bottom:20px;
+   left:20px
+   
+
+   
+ }
+ .extract-button img{
+   height: 25px;
+   width: 25px;
+ }
+  
+  div#dialogue {
+    height: 70%;
+    width: 100%;
+    border-radius: 13px;
+  }
+  
+  .open-button{
+    background-color: transparent;
+  }
+  
+  
+  #photo-input {
+  display: none;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins" , sans-serif;
+}
+.sidebar{
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 90px;
+  background: #BB68F9;
+  padding: 6px 14px;
+  z-index: 99;
+  transition: all 0.5s ease;
+}
+.sidebar.open{
+  width: 250px;
+}
+.sidebar .logo-details{
+  height: 60px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.sidebar .logo-details .icon{
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.sidebar .logo-details .logo_name{
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.sidebar.open .logo-details .icon,
+.sidebar.open .logo-details .logo_name{
+  opacity: 1;
+}
+.sidebar .logo-details #btn{
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 22px;
+  transition: all 0.4s ease;
+  font-size: 23px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+.sidebar.open .logo-details #btn{
+  text-align: right;
+}
+.sidebar i{
+  color: #fff;
+  height: 60px;
+  min-width: 50px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 60px;
+  align-self: center;
+}
+.sidebar .nav-list{
+  margin-top: 30px;
+  height: 100%;
+}
+.sidebar .nav-list li{
+  position: relative;
+  height: 50px;
+  width: 100%;
+  margin: 0 5px;
+  list-style: none;
+  line-height: 50px;
+  border-radius: 12px;
+  justify-content: space-between;
+}
+.sidebar li .tooltip{
+  position: absolute;
+  top: -20px;
+  left: calc(100% + 15px);
+  z-index: 3;
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0s;
+}
+.sidebar li:hover .tooltip{
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.4s ease;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.sidebar.open li .tooltip{
+  display: none;
+}
+.sidebar input{
+  font-size: 15px;
+  color: #BB68F9;
+  font-weight: 400;
+  outline: none;
+  height: 50px;
+  width: 100%;
+  width: 50px;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.5s ease;
+  background: #FFF;
+  margin-bottom: 30px;
+}
+.sidebar.open input{
+  padding: 0 20px 0 50px;
+  width: 100%;
+}
+.sidebar .bx-search{
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  font-size: 22px;
+  background: #BB68F9;
+  color: #FFF;
+}
+.sidebar.open .bx-search:hover{
+  background: #BB68F9;
+  color: #fff;
+}
+.sidebar .bx-search:hover{
+  background: #FFF;
+  color: #BB68F9;
+}
+.sidebar .nav-list li a{
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.4s ease;
+}
+.sidebar .nav-list li a:hover{
+    background: #fff;
+    color: #BB68F9;
+    height: fit-content;
+  
+}
+
+.sidebar li a .links_name{
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s;
+}
+.sidebar.open li a .links_name{
+  opacity: 1;
+  pointer-events: auto;
+}
+.sidebar li a:hover .links_name,
+.sidebar li a:hover i{
+  transition: all 0.5s ease;
+  color: #11101D;
+}
+.sidebar .nav-list li a i{
+  height: 50px;
+  min-width: 50px;
+  font-size: 18px;
+  border-radius: 12px;
+  line-height: 50px;
+  text-align: center;
+}
+.sidebar li.profile{
+  position: fixed;
+  height: 60px;
+  width: 78px;
+  left: 0;
+  bottom: -8px;
+  padding: 10px 14px;
+  background: #1d1b31;
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+.sidebar.open li.profile{
+  width: 250px;
+  bottom:20px;
+  right:20px
+}
+.sidebar li .profile-details{
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.sidebar li.profile .name,
+.sidebar li.profile .job{
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+}
+.sidebar li.profile .job{
+  font-size: 12px;
+}
+.sidebar .profile #log_out{
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: #1d1b31;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 0px;
+  transition: all 0.5s ease;
+}
+.sidebar.open .profile #log_out{
+  width: 50px;
+  background: none;
+}
+@media (max-width: 420px) {
+  .sidebar li .tooltip{
+    display: none;
+  }
+}
+  
