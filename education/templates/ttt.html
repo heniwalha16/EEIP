@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+ <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      object-fit: cover;
+    }
+
+    #content {
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+      color: #fff;
+      font-size: 24px;
+    }
+  </style>
+<video id="video-background" autoplay loop muted>
+    <source src="../static/images/video.mp4" type="video/mp4">
+    <!-- Add additional video formats for cross-browser support (e.g., WebM, Ogg) -->
+    <!-- <source src="path/to/your/video.webm" type="video/webm"> -->
+    <!-- <source src="path/to/your/video.ogg" type="video/ogg"> -->
+  </video>
+<div id="content">
+<head>
+  <title>Math Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 50px;
+    }
+
+    #quiz-container {
+      position: relative;
+      bottom: 120px;
+      width: 40%;
+      left:30%
+
+    }
+
+    #question-container {
+      margin-top: 20px;
+      position: relative;
+      border: 2px solid white;
+      bottom: 280px;
+      width:40%;
+      left:30%;
+      font-size: 32px;
+      font-style: italic;
+      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      background-color: #fff;
+      color: #BB68F9;
+      border-radius: 5px;
+    }
+
+    #answer-input {
+      margin-top: 10px;
+      padding: 5px;
+      font-size: 18px;
+      border-radius: 5px;
+      color: #BB68F9;
+      font-style: italic;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    #submit-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color:#BB68F9;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      border-radius: 5px;
+      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-style: italic;
+      
+      
+    }
+    #restart-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color:#BB68F9;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      position: relative;
+      bottom: 20px;
+      left:45%;
+      display: none;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-style: italic;
+    }
+
+    #result-container {
+      margin-top: 30px;
+      font-size: 30px;
+      bottom: 50px;
+      position: relative;
+      font-style: italic;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      color:#BB68F9;
+    }
+   
+
+    .container{
+    display: flex;
+    width: 320px;
+    padding: 50px 0;
+    border-radius: 8px;
+    background: transparent;
+    row-gap: 30px;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    height: 220px;
+    top:40px  
+}
+.circular-progress{
+    position: relative;
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    background: conic-gradient(#BB68F9 3.6deg, #ededed 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.circular-progress::before{
+    content: "";
+    position: absolute;
+    height: 180px;
+    width: 180px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+.progress-value{
+    position: relative;
+    font-size: 40px;
+    font-weight: 600;
+    color: #7d2ae8;
+}
+.text{
+    font-size: 30px;
+    font-weight: 500;
+    color: #606060;
+}
+header {
+  background-color: #BB68F9;
+  padding: 20px;
+  text-align: center;
+  font-size: 35px;
+  color: white;
+  align-items: center;
+  justify-content: center;  
+  height: 40px;
+  width:65%;
+  border: 5px solid rgb(255, 255, 255);
+  border-radius: 12px;
+  position: relative;
+  left:15%;
+  margin-top: 10px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-style: italic;
+  
+}
+ 
+
+  </style>
+</head>
+<body>
+  <header> <h>Math Quizz &#10133 &#10134  </h></header>
+  <div class="container">
+    <div class="circular-progress">
+        <span class="progress-value">0%</span>
+    </div>
+</div>
+  <div id="quiz-container">
+    <input type="number" id="answer-input" placeholder="Enter your answer" />
+    <button id="submit-btn">Submit</button>
+  </div>
+  <div id="question-container"></div>
+  <div id="result-container"></div>
+  <div>
+  <button id="restart-button">Restart Quiz</button>
+  </div>
+  <script>
+    var questions = [];
+    var currentQuestionIndex = 0;
+    var score = 0;
+    let circularProgress = document.querySelector(".circular-progress"),
+    progressValue = document.querySelector(".progress-value");
+
+    let progressStartValue = 0,    
+    progressEndValue = 100,    
+    speed = 100;
+    
+  
+
+    // Generate random math operations
+    function generateQuestions() {
+      for (var i = 0; i < 10; i++) {
+        var num1 = Math.floor(Math.random() * 101); // Random number between 0 and 100
+        var num2 = Math.floor(Math.random() * 101);
+        var operator = Math.random() < 0.33 ? '+' : (Math.random() < 0.66 ? '-' : '*'); // Randomly select addition, subtraction, or multiplication
+        var question = num1 + ' ' + operator + ' ' + num2;
+        questions.push(question);
+      }
+    }
+
+    // Display current question
+    function displayQuestion() {
+      var questionContainer = document.getElementById('question-container');
+      var answerInput = document.getElementById('answer-input');
+      var submitBtn = document.getElementById('submit-btn');
+      var resultContainer = document.getElementById('result-container');
+
+      questionContainer.innerText = questions[currentQuestionIndex];
+      answerInput.value = '';
+      resultContainer.innerText = '';
+
+      // Enable/disable input and submit button based on current question index
+      if (currentQuestionIndex === questions.length - 1) {
+        answerInput.disabled = true;
+        submitBtn.innerText = 'Finish';
+      } else {
+        answerInput.disabled = false;
+        submitBtn.innerText = 'Submit';
+      }
+    }
+
+    // Check answer and display result
+    function checkAnswer() {
+      var answerInput = document.getElementById('answer-input');
+      var resultContainer = document.getElementById('result-container');
+
+      var userAnswer = parseInt(answerInput.value);
+      var correctAnswer;
+      const restartButton = document.getElementById('restart-button');
+
+      // Evaluate the current question
+      eval('correctAnswer = ' + questions[currentQuestionIndex]);
+      
+
+     
+      if (userAnswer === correctAnswer) {
+        resultContainer.innerText = 'Correct!';
+        score++;
+      } else {
+        resultContainer.innerText = 'Incorrect. The correct answer is ' + correctAnswer;
+      }
+
+      
+      if(progressStartValue<100 && currentQuestionIndex<9){
+        currentQuestionIndex++; 
+        progressStartValue= progressStartValue + 10;
+       progressValue.textContent = `${progressStartValue}%`
+        circularProgress.style.background = `conic-gradient(#7d2ae8 ${progressStartValue * 3.6}deg, #ededed 0deg)`
+      }
+    
+      if (currentQuestionIndex === questions.length -1) {
+        
+        // Display final score when all questions are answered
+        if(score<5){
+
+       
+        resultContainer.innerText = 'Quiz Completed! Your score is ' + score + ' out of 10. Quite low . Try again';
+        }
+        if(score>5 && score<8){
+
+       
+          resultContainer.innerText = 'Quiz Completed! Your score is ' + score + ' out of 10. Not bad. Try again';
+        }
+        if(score>8){       
+        resultContainer.innerText = 'Quiz Completed! Your score is ' + score + ' out of 10. Good . You can try again';
+        }
+        restartButton.style.display="block";
+        restartButton.addEventListener('click', function(){
+          location.reload();
+        });
+        
+        submitBtn.pointer-events==none;
+       
+}
+else {
+// Display next question
+displayQuestion();
+}
+}
+// Start quiz
+function startQuiz() {
+  generateQuestions();
+  displayQuestion();
+}
+
+// Attach event listener to submit button
+document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+
+// Start quiz when the page loads
+window.onload = startQuiz;
+  </script>
+</body>
+</div>
+</html>
