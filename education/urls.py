@@ -23,6 +23,11 @@ urlpatterns=[
 #    path('quiz/', views.quiz_view, name='quiz_view'),
     #path('main/', views.home, name='main_view'),
     path('calculate/', views.calculate, name='calculate'),
+    path('Tik_Tac_Toe/', views.Tik_Tac_Toe, name='Tik_Tac_Toe'),
+    path('MathQuiz/', views.MathQuiz, name='MathQuiz'),
+    path('RockPaperScissors/', views.RockPaperScissors, name='RockPaperScissors'),
+    path('LogOut/', views.LogOut, name='LogOut'),
+
 
     #path('quiz/results/', views.quiz_results, name='quiz_results'),
     path('image_generation/', views.image_generation),

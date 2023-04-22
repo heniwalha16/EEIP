@@ -49,27 +49,43 @@
            <span class="tooltip">Search</span>
         </li>
         <li>
-          <a href="#" onclick="myFunction2()">
-            <i class='bx bx-joystick' ></i>
-            <span class="links_name">Tik Tac Toe</span>
-          </a>
-           <span class="tooltip">Tik Tac Toe</span>
+          <form method="POST" action="{% url 'Tik_Tac_Toe' %}">
+            {% csrf_token %}
+            <a>
+              
+              <button name="Tik_Tac_Toe" style="background: transparent; border-color: transparent;" >
+                <i class='bx bx-joystick' ></i></button>
+              <span class="links_name">Tik Tac Toe</span>
+            </a>
+            <span class="tooltip">Tik Tac Toe</span>
+          </form>
         </li>
         <li>
-         <a href="#" onclick="myFunction1()">
-          <i class='bx bx-dice-5'  ></i>
-           <span class="links_name">Math Quiz</span>
-         </a>
-         <span class="tooltip">Math Quiz</span>
+          <form method="POST" action="{% url 'MathQuiz' %}">
+            {% csrf_token %}
+            <a>            
+              <button name="MathQuiz" style="background: transparent; border-color: transparent;" >
+                <i class='bx bx-dice-5'  ></i>
+              </button>
+              <span class="links_name">MathQuiz</span>
+              </a>
+            <span class="tooltip">MathQuiz</span>
+          </form>
        </li>
        <li>
-         <a href="#" onclick="myFunction()">
-           <i class='bx bx-joystick' ></i>
-           <span class="links_name">Rock Paper Scissors</span>
-         </a>
-         <span class="tooltip">Rock Paper Scissors</span>
-       </li>
-       <li>
+        <form method="POST" action="{% url 'RockPaperScissors' %}">
+          {% csrf_token %}
+          <a>            
+            <button name="MathQuiz" style="background: transparent; border-color: transparent;" >
+              <i class='bx bx-joystick' ></i>
+
+            </button>
+            <span class="links_name">Rock Paper Scissors</span>
+          </a>
+          <span class="tooltip">Rock Paper Scissors</span>
+        </form>
+     </li>
+
          <a href="#">
            <i class='bx bx-palette' ></i>
            <span class="links_name">Paint</span>
@@ -98,11 +114,17 @@
          <span class="tooltip">Saved</span>
        </li>
        <li>
-         <a href="#" onclick="myFunction3()" >
+        <form method="POST" action="{% url 'LogOut' %}">
+          {% csrf_token %}
+         <a >
+          <button name="MathQuiz" style="background: transparent; border-color: transparent;" >
+
            <i class='bx bx-log-out'></i>
+          </button>
            <span class="links_name">Log-Out</span>
          </a>
          <span class="tooltip">Log-Out</span>
+        </form>
        </li>
       </ul>
     </div>
@@ -134,7 +156,8 @@
     <div class='wrapper'>
       <div id="dialogue"></div>
       <form method="POST" action="{% url 'calculate' %}">
-          <p style="position: relative; bottom: 15px;">{% csrf_token %}</p>
+        {% csrf_token %}
+          <p style="position: relative; bottom: 15px;"></p>
           <div class="text-box">
             
               <input type="text" name="problem" id="problem"  placeholder="write ur math problem here !">

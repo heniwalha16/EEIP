@@ -882,5 +882,26 @@ def login_employee(request):
                 return render(request, 'login.html')
     else:
         return render(request, 'login.html')
+def Tik_Tac_Toe(request):
+    if request.method == 'POST':
+         return render(request, 'Tik_Tac_Toe.html')
+    else:
+         return render(request, 'calculate.html')
+def MathQuiz(request):
+    if request.method == 'POST':
+         return render(request, 'ttt.html')
+    else:
+         return render(request, 'calculate.html')
+def RockPaperScissors(request):
+    if request.method == 'POST':
+         return render(request, 'game.html')
+    else:
+         return render(request, 'calculate.html')
+def LogOut(request):
+    if request.method == 'POST':
+         return render(request, 'login.html')
+    else:
+         return render(request, 'calculate.html')
+        
             
       
