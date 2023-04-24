@@ -32,7 +32,14 @@
         <i class="uil uil-times form_close"></i>
                 <!-- Signup From -->
         <div class="form signup_form">
-          <form method="POST" action="{% url 'intro' %}">
+          {% if messages %}
+          <ul class="messages">
+           {% for message in messages %}
+           <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+           {% endfor %}
+            </ul>
+          {% endif %}
+          <form method="POST" action="{% url 'register_user' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <h2>Signup</h2>
 
@@ -54,12 +61,10 @@
                 <i class="uil uil-arrow"></i>
             </div>
             <div class="input_box">
-                  <input type="text" placeholder="picture" name="picture" required />
+              <input type="file" name="picture" required />
+
+                  
                   <i class="uil uil-arrow"></i>
-            </div>
-            <div class="input_box">
-              <input type="text" placeholder="Class" name="Class" required />
-              <i class="uil uil-arrow"></i>
             </div>
 
             <button class="button">Signup Now</button>

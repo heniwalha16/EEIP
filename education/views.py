@@ -3,6 +3,8 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from education.models import Student, Teacher,Class,Problem
 from education.serializers import StudentSerializer, TeacherSerializer ,ClassSerializer,ProblemSerializer
+from django.contrib import messages
+
 import education.utils
 import random
 #from education.models import QuizQuestion
@@ -663,6 +665,9 @@ from django.shortcuts import render
 def calculate(request):
   if request.method == 'POST':
     problem = request.POST.get('problem')
+    role =request.POST.get("role")
+    FirstName =request.POST.get("FirstName")
+    LastName =request.POST.get("LastName")
     # Appel de votre API pour obtenir le résultat du problème mathématique
     list_output=image_generation(problem)
     for i in range(len (list_output)):
@@ -676,9 +681,18 @@ def calculate(request):
             
     result = list_output
     # Renvoi du résultat dans le modèle HTML
-    return render(request, 'index.html', {'result': result,'problem':problem})
+    print(int(role))
+    if(int(role)==2): # teacher 
+        return render(request, 'index.html', {'result': result,'problem':problem,"role":role})
+    else: # student 
+        return render(request, 'calculate.html', {'result': result,'problem':problem ,"role":role,
+                                                  "FirstName":FirstName,"LastName":LastName
+                                                  })
+
+        
+  
   else:
-    return render(request, 'calculate.html')
+    return render(request, 'calculate.html',{"role":role})
 def intro(request):
     if request.method == 'POST':
         btn1 = request.POST.get('btn1')
@@ -861,23 +875,49 @@ class LoginSystem:
         process.start()
         return process
 
-
-
+from io import BytesIO
+def save_image_from_base64(image_data, directory, filename):
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        file_path = os.path.join(directory, filename)
+        with open(file_path, "wb") as f:
+            f.write(image_data)
+        return file_path
+    except Exception as e:
+        print(str(e))
+        return None
+def save_images(list,name):
+    for dictionary in list:
+        b64_string = str(dictionary.get('picture'))
+        # decode the base64 string to binary image data
+        binary_data = base64.b64decode(b64_string)
+        # open the image using PIL
+        save_image_from_base64(binary_data, "education/Images"+name, str(dictionary.get('id'))+".png")
 def login_employee(request):
-    # Get the button clicked from the form
+    role=0
+    students = Student.objects.all()
+    student_serializer = StudentSerializer(students, many=True)
+    list_students=student_serializer.data
+    teachers = Teacher.objects.all()
+    teacher_serializer = TeacherSerializer(teachers, many=True)
+    list_teacher=teacher_serializer.data  
+    listall=list_students +list_teacher
+    
+        
     if request.method == 'POST':
         Button = request.POST.get('button') 
-        print(Button)
         login_system = LoginSystem(root=None)
-        print(Button)
         if(Button==None):
             return render(request, 'login.html')
-        else:
+        else:          
+            save_images(listall,"")
             # Call the loginEmployee function
             login_system.loginEmployee()
             if login_system.status:
+                #os.rmdir("education/Images")
                 #If the face is identified, redirect to the success page
-                return render(request, 'calculate.html')
+                return render(request, 'calculate.html',{"role":1})
             else:
                 return render(request, 'login.html')
     else:
@@ -902,6 +942,106 @@ def LogOut(request):
          return render(request, 'login.html')
     else:
          return render(request, 'calculate.html')
+def login_user(request):
+    if request.method=='POST':
+        role=0
+        email = request.POST.get('email')
+        password=request.POST.get('password')
+        students = Student.objects.all()
+        student_serializer = StudentSerializer(students, many=True)
+        list_students=student_serializer.data
+        dict_list_student= [dict(item) for item in list_students]
+        for dictionary in dict_list_student:
+            if (str(dictionary.get('email')) == str(email) and (str(dictionary.get('password')) == str(password))):
+                role=1 #role=1 si le user est un student
+                return render(request, 'calculate.html',
+                              {"role":role,"FirstName":str(dictionary.get('FirstName')),
+                               "LastName":str(dictionary.get('LastName'))})
+        teachers = Teacher.objects.all()
+        teacher_serializer = TeacherSerializer(teachers, many=True)
+        list_teacher=teacher_serializer.data      
+        dict_list_teacher = [dict(item) for item in list_teacher]
+        for dictionary in dict_list_teacher:
+            if (str(dictionary.get('email')) == str(email) and (str(dictionary.get('password')) == str(password))):
+                role=2#role=1 si le user est un teacher  
+                return render(request, 'calculate.html',
+                              {"role":role,"FirstName":str(dictionary.get('FirstName')),
+                               "LastName":str(dictionary.get('LastName'))})
+            
+        messages.error(request, 'login password or email incorrect')
+
         
+        return redirect('login_user')        
+    else:
+        return render(request, 'login.html')
+def email_existe(email):
+    students = Student.objects.all()
+    student_serializer = StudentSerializer(students, many=True)
+    list_students=student_serializer.data
+    teachers = Teacher.objects.all()
+    teacher_serializer = TeacherSerializer(teachers, many=True)
+    list_teacher=teacher_serializer.data      
+    listall=list_students+list_teacher
+    dict_list_all = [dict(item) for item in listall]
+    for dictionary in dict_list_all:
+        if str(dictionary.get('email')) == str(email) :
+            return True
+    return False
+def class_existe(Class):
+    Classrooms = Class.objects.all()
+    Classroom_serializer = ClassSerializer(Classrooms, many=True)
+    list_Classrooms=Classroom_serializer.data
+    dict_list_all = [dict(item) for item in list_Classrooms]
+    for dictionary in dict_list_all:
+        if str(dictionary.get('Class')) == str(Class) :
+            return True
+    return False
+
+import base64
+
+
+def register_user(request):
+    if request.method=='POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        FirstName = request.POST.get('FirstName')
+        LastName = request.POST.get('LastName')
+        picture = request.FILES['picture']
+        file_content = picture.read()
+        b64_content = base64.b64encode(file_content).decode('utf-8')
+        print(b64_content)
+        if (email_existe(email)):
+            messages.error(request, 'email exist')
+            return redirect('register_user') 
+        #elif not (class_existe(Class)):
+        #    messages.error(request, "class doesn't exist")
+         #   return redirect('register_user') 
+
+        else :
+            student_data =    {
+            "password": password,
+            "email": email,
+            "FirstName": FirstName,
+          "LastName": LastName,
+           "picture": b64_content
+         }
+            student_serializer = StudentSerializer(data=student_data)
+            if student_serializer.is_valid():
+                student_serializer.save()
+                messages.success(request, 'Registration successful!')
+                return redirect('login_user')
+            else:
+                messages.error(request, 'Registration failed. Please try again.')
+                return redirect('register_user')
+ 
+
+
+    else:
+        return render(request, 'register.html')
+
+
+
+    
+
             
       

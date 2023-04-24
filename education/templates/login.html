@@ -28,12 +28,18 @@
       <div class="mascot_login">
         <img src="../static/images/Mascot.png" width="120" height="200" position="absolute">
       </div>
-      
+      {% if messages %}
+      <ul class="messages">
+       {% for message in messages %}
+       <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+       {% endfor %}
+        </ul>
+      {% endif %}
       <div class="form_container">
         <i class="uil uil-times form_close"></i>
         <!-- Login From -->
         <div class="form login_form">
-          <form method="POST" action="{% url 'login_employee' %}">
+          <form method="POST" action="{% url 'login_user' %}">
             {% csrf_token %}            <h2>Login</h2>
 
             <div class="input_box">

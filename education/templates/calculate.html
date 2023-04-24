@@ -3,6 +3,19 @@
 <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="../static/css/styles2.css" />
+<style>
+  .item {
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+  color: #ffffff;
+}  
+.sequence {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
 </head>
 <script>
   function myFunction() {
@@ -35,7 +48,7 @@
     <img src="../static/images/Mascot.png" width="120" height="200" position="absolute">
   </div>     
     <br>
-    
+
     <div class="sidebar">
       <div class="logo-details">
         <i class='bx bxl-c-plus-plus icon'></i>
@@ -85,38 +98,10 @@
           <span class="tooltip">Rock Paper Scissors</span>
         </form>
      </li>
-
-         <a href="#">
-           <i class='bx bx-palette' ></i>
-           <span class="links_name">Paint</span>
-         </a>
-         <span class="tooltip">Paint</span>
-       </li>
-       <li>
-         <a href="#">
-           <i class='bx bx-folder' ></i>
-           <span class="links_name">File Manager</span>
-         </a>
-         <span class="tooltip">Files</span>
-       </li>
-       <li>
-         <a href="#">
-           <i class='bx bx-cart-alt' ></i>
-           <span class="links_name">Order</span>
-         </a>
-         <span class="tooltip">Order</span>
-       </li>
-       <li>
-         <a href="#">
-           <i class='bx bx-heart' ></i>
-           <span class="links_name">Saved</span>
-         </a>
-         <span class="tooltip">Saved</span>
-       </li>
-       <li>
+     <li>
         <form method="POST" action="{% url 'LogOut' %}">
           {% csrf_token %}
-         <a >
+         <a>
           <button name="MathQuiz" style="background: transparent; border-color: transparent;" >
 
            <i class='bx bx-log-out'></i>
@@ -125,8 +110,18 @@
          </a>
          <span class="tooltip">Log-Out</span>
         </form>
-       </li>
-      </ul>
+      </li>
+      <li>
+       <a>
+        <button name="MathQuiz" style="background: transparent; border-color: transparent;" >
+
+         <i class='bx '></i>
+        </button>
+         <span class="links_name">{{FirstName}} {{LastName}}</span>
+       </a>
+       
+      </li>
+    </ul>
     </div>
     <script>
     let sidebar = document.querySelector(".sidebar");
@@ -154,7 +149,20 @@
     </script>
     
     <div class='wrapper'>
-      <div id="dialogue"></div>
+      <div id="dialogue">      
+        <div class="canv  sequence" id="d" >
+    
+
+        {% for item in result %}
+        {% if item.1 == 2 %}
+        
+          <img class="item" src="{{ item.0 }}" alt="GIF">
+        {% elif item.1 == 0 %}
+          <p class="item">{{ item.0 }}</p>
+        {% endif %}
+      {% endfor %}
+    </div></div>
+
       <form method="POST" action="{% url 'calculate' %}">
         {% csrf_token %}
           <p style="position: relative; bottom: 15px;"></p>
@@ -162,7 +170,9 @@
             
               <input type="text" name="problem" id="problem"  placeholder="write ur math problem here !">
               
-              
+              <input name="role" value="{{ role }}" style="display: none;"></input>
+
+
               
               <button class="send-button" >
                   <img src="https://www.svgrepo.com/show/435419/send.svg" width="24px" height="14px" id="plane">

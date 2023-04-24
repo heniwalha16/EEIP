@@ -446,4 +446,14 @@
     display: none;
   }
 }
-  
+.item {
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+  color: #111;
+}  
+.sequence {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

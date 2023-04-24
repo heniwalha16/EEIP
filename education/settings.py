@@ -1,13 +1,11 @@
-# Color and Font settings (Do not change anything here)
 
-# Color options
-color1 = "white"
-color2 = "sky blue"
-color3 = "black"
-color4 = "gray45"
-color5 = "green"
-# Font options
-font1 = "times new roman"
-font2 = "helvetica"
-font3 = "kokila"
-font4 = "Courier"
+# Emailing settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'louhichihedi27@gmail.com'
+EMAIL_HOST_USER = 'louhichihedi27@gmail.com'
+EMAIL_HOST_PASSWORD = 'hrfahsivjbxqooax'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+PASSWORD_RESET_TIMEOUT = 14400

@@ -84,7 +84,6 @@ class Student(models.Model):
     FirstName = models.CharField(max_length=100)
     LastName = models.CharField(max_length=100)
     picture = models.TextField()  # Assumes usage of Django's built-in ImageField
-    Class = models.ForeignKey(Class, on_delete=models.CASCADE)
-
+    Class = models.ForeignKey(Class, on_delete=models.CASCADE, null=True, default=None)
     def __str__(self):
         return self.username

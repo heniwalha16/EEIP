@@ -27,6 +27,8 @@ urlpatterns=[
     path('MathQuiz/', views.MathQuiz, name='MathQuiz'),
     path('RockPaperScissors/', views.RockPaperScissors, name='RockPaperScissors'),
     path('LogOut/', views.LogOut, name='LogOut'),
+    path('login/', views.login_user, name='login_user'),
+    path('register/', views.register_user, name='register_user'),
 
 
     #path('quiz/results/', views.quiz_results, name='quiz_results'),
