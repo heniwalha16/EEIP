@@ -42,7 +42,7 @@ class VideoStream:
 
 def encode_faces():
     encoded_data = {}
-    path="C:/Users/ASUS/Desktop/Educational-Interactive-Intelligent-Platform/education/Images"
+    path="education\Images"
 
     for dirpath, dnames, fnames in os.walk(path):
         for f in fnames:

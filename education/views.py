@@ -721,29 +721,12 @@ from playsound import playsound
 class LoginSystem:
     
     def __init__(self, root):
-        # Window settings
-        '''self.window = root
-        self.window.title("Login System")
-        self.window.geometry("780x480")
-        self.window.config(bg=st.color1)
-        self.window.resizable(width = False, height = False)'''
+    
 
         # Declaring a variable with a default value
         self.status = False
 
-         # Left Frame
-        '''self.frame1 = Frame(self.window, bg=st.color1)
-        self.frame1.place(x=0, y=0, width=540, relheight = 1)'''
-
-        # Right Frame
-        '''self.frame2 = Frame(self.window, bg = st.color2)
-        self.frame2.place(x=540,y=0,relwidth=1, relheight=1)'''
-
-        # Calling the function called buttons()
-        #self.buttons()
-        '''loginButton = Button(self.frame2, text="Login", font=(st.font3, 12), bd=2, cursor="hand2", width=7, command=self.loginEmployee)
-        loginButton.place(x=74, y=40) 
-      '''
+     
 
 
     # A Function to login into the system through face recognition method 
@@ -839,15 +822,7 @@ class LoginSystem:
     def isPresent(self, UID):
         
         try:
-            #connection = pymysql.connect(host=cr.host, user=cr.username, password=cr.password, database=cr.database)
-            #curs = connection.cursor()
-            #curs.execute("select * from employee_register where uid=%s", UID)
-            #row = curs.fetchone()
-            #if row == None:
-            #    pass
-            #else:
-            #    connection.close()
-            #    return True
+           
             students = Student.objects.all()
             student_serializer = StudentSerializer(students, many=True)
             list_students=student_serializer.data
