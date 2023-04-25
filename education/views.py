@@ -1016,7 +1016,35 @@ def register_user(request):
 
     else:
         return render(request, 'register.html')
+from django.shortcuts import render
+from django.conf import settings
+import json
+@csrf_exempt
 
+def chatbot_api(request):
+    chatbot_response =None 
+    api_key = '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'
+    if api_key is not None and  request.method=="POST" :
+        openai.api_key=api_key
+        user_input =request.POST.get('user_input')
+        prompt =user_input
+        response =openai.Completion.create(
+            engine='text-davinci-003',
+            prompt='answer this like a chatbot for a web application:'+ prompt,
+            max_tokens=256,
+            #stop="."
+            temperature=0.5
+        )
+
+        
+        chatbot_response = response["choices"][0]["text"]
+        return JsonResponse({'response': chatbot_response})
+    else:
+        return render(request, 'chatbot.html')
+
+
+
+    
 
 
     
