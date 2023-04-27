@@ -410,10 +410,10 @@ def image_generation(seed):
     doc = nlp(seed)
     print(doc)
     res = {'type': None, 'data': []}
-    '''
+    
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('C:/Users/Asus/Downloads/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('C:/Users/Heni/Documents/studies/4DS/PI/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
     
     # Example math problem
@@ -431,10 +431,10 @@ def image_generation(seed):
     # Print the predicted class
     class_names = ['Not Geometry', 'Geometry']
     problem_type = class_names[predicted_class]
-    '''
-    problem = seed
+    
+    #problem = seed
     metrics=[] 
-    problem_type='Not Geometry'
+    #problem_type='Not Geometry'
     print(problem_type)
     if (problem_type=='Geometry'):      
         language, _ = langid.classify(problem)
