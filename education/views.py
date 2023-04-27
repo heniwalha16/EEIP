@@ -740,7 +740,7 @@ class LoginSystem:
         # Call a function called playVoice() to play a sound in a different
         # process
         process = self.playVoice("education/Voices/voice1.mp3")
-        time.sleep(6)
+        time.sleep(4)
         # End the process
         process.terminate()
         # Inheriting the class called VideoStream and its
@@ -810,7 +810,7 @@ class LoginSystem:
             if self.status == True:
                 print('mawjoud')
                 process = self.playVoice("education/Voices/voice2.mp3")
-                time.sleep(4)
+                time.sleep(2)
                 process.terminate()
                 break
         video_stream.stop()
