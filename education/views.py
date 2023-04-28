@@ -1040,7 +1040,7 @@ def chatbot_api(request):
         chatbot_response = response["choices"][0]["text"]
         return JsonResponse({'response': chatbot_response})
     else:
-        return render(request, 'chatbot.html')
+        return render(request, 'login.html')
 
 
 
