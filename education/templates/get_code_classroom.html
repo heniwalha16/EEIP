@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enter Classroom Code</title>
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="../static/css/styles2.css" />
+</head>
+<body>
+    <div >
+        <video id="bg-video" autoplay muted loop>
+            <source src="../static/images/video.mp4" type="video/mp4">
+          </video>
+     <header> <h>Classroom code </code></h></header>
+     <div class="mascot_game">
+      <img src="../static/images/Mascot.png" width="120" height="200" position="absolute">
+    </div>     
+      <br>
+  
+      <div class="sidebar">
+        <div class="logo-details">
+          <i class='bx bxl-c-plus-plus icon'></i>
+            <div class="logo_name">M4PI</div>
+            <i class='bx bx-menu' id="btn" ></i>
+        </div>
+        <ul class="nav-list">
+          <li>
+              <i class='bx bx-search' ></i>
+             <input type="text" placeholder="Search...">
+             <span class="tooltip">Search</span>
+          </li>
+          <li>
+            <form method="POST" action="{% url 'Tik_Tac_Toe' %}">
+              <a style="height: 50px;  position: relative; right: 16px; margin-top: 10px;">
+               {% csrf_token %}
+                <button name="Tik_Tac_Toe" style="background: transparent; border-color: transparent; text-align: center;" >
+                  <i class='bx bx-joystick' style="position: relative; right:5px" ></i></button>
+                <span class="links_name">Tik Tac Toe</span>
+              </a>
+              <span class="tooltip">Tik Tac Toe</span>
+            </form>
+          </li>
+          <li>
+            <form method="post" action="{% url 'MemoryGame' %}">
+            <a style="height: 50; position: relative; right: 16px; margin-top: 10px; ">
+            {% csrf_token %}
+             <button name="MemoryGame" style="background: transparent; border-color: transparent;" >
+      
+              <i class='bx bxs-game' ></i>
+             </button>
+              <span class="links_name">Memory Game</span>
+              <span class="tooltip">Memory Game</span>
+            </a>
+        </form>
+            
+           </li>
+          <li>
+            <form method="POST" action="{% url 'MathQuiz' %}">
+            <a style="height: 50px; position: relative; right: 16px; margin-top: 10px;">   
+               {% csrf_token %}
+                <button name="MathQuiz" style="background: transparent; border-color: transparent; text-align: center;" >
+                  <i class='bx bx-dice-5' style="position: relative; right:5px"  ></i>
+                </button>
+                <span class="links_name">MathQuiz</span>
+              </a>
+              <span class="tooltip">MathQuiz</span>
+            </form>
+         </li>
+         <li>
+          <form method="POST" action="{% url 'RockPaperScissors' %}">
+          <a style="height: 50px; position: relative; right: 16px; margin-top: 10px; text-align: center;">   
+             {% csrf_token %}
+                     
+              <button name="MathQuiz" style="background: transparent; border-color: transparent; text-align: center;" >
+                <i class='bx bx-joystick' style="position: relative; right:5px" ></i>
+  
+              </button>
+              <span class="links_name">Rock Paper Scissors</span>
+          </a>
+            <span class="tooltip">Rock Paper Scissors</span>
+          </form>
+       </li>
+       <li>
+          <form method="POST" action="{% url 'LogOut' %}">
+          <a style="height: 50px; position: relative; right: 16px; margin-top: 10px;">
+            {% csrf_token %}
+           
+            <button name="MathQuiz" style="background: transparent; border-color: transparent;  " >
+  
+             <i class='bx bx-log-out' style="position: relative; right:5px"></i>
+            </button>
+             <span class="links_name">Log-Out</span>
+          </a>
+           <span class="tooltip">Log-Out</span>
+          </form>
+        </li>
+        <li>
+         <a style="height: 50; position: relative; right: 16px; margin-top: 10px; top:300px">
+          <button name="MathQuiz" style="background: transparent; border-color: transparent;" >
+  
+           <i class='bx '></i>
+          </button>
+           <span class="links_name">{{FirstName}} {{LastName}}</span>
+         </a>
+         
+        </li>
+      </ul>
+      </div>
+      </div>
+  <div class="code-container"> 
+  <form action="{% url 'getClassProblems' %}" method="post">
+    {% csrf_token %}
+    <label for="code" style="color: #FFF; font-size: 24px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; position: relative; right: 40px;">Classroom Code :</label>
+    <input type="text" id="code" name="Code" style="position: relative; width: 300px ; height: 40px; border-radius: 5px; color: #BB68F9; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 20px; align-items: center; text-align: center; border: 2px solid #BB68F9; right: 20px;"><br><br>
+    <input type="submit" value="Submit" style="position: relative; left:500px; bottom: 63px; width: 150px; height:40px; border-radius: 5px; color: #FFF; background-color: #BB68F9; font-size: 20px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; border: 2px solid white; ">
+  </form>
+</div> 
+  <style>
+    .code-container{
+        position: relative;
+        left: 32%;
+        top:200px
+    }
+     .sidebar{
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 90px;
+  background: #BB68F9;
+  padding: 6px 14px;
+  z-index: 99;
+  transition: all 0.5s ease;
+}
+.sidebar.open{
+  width: 250px;
+}
+.sidebar .logo-details{
+  height: 60px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.sidebar .logo-details .icon{
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.sidebar .logo-details .logo_name{
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.sidebar.open .logo-details .icon,
+.sidebar.open .logo-details .logo_name{
+  opacity: 1;
+}
+.sidebar .logo-details #btn{
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 22px;
+  transition: all 0.4s ease;
+  font-size: 23px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+.sidebar.open .logo-details #btn{
+  text-align: right;
+}
+.sidebar form a button i{
+  color: #fff;
+  height: 60px;
+  width: 50px;
+  font-size: 28px;
+  text-align: center;
+  align-self: center;
+}
+.sidebar .nav-list{
+  margin-top: 30px;
+  height: 100%;
+}
+.sidebar .nav-list li{
+  position: relative;
+  height: 50px;
+  width: 100%;
+  margin: 0 5px;
+  list-style: none;
+  line-height: 50px;
+  border-radius: 12px;
+  justify-content: space-between;
+}
+.sidebar li .tooltip{
+  position: absolute;
+  top: -20px;
+  left: calc(100% + 15px);
+  z-index: 3;
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0s;
+}
+.sidebar li:hover .tooltip{
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.4s ease;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.sidebar.open li .tooltip{
+  display: none;
+}
+.sidebar input{
+  font-size: 15px;
+  color: #BB68F9;
+  font-weight: 400;
+  outline: none;
+  height: 50px;
+  width: 100%;
+  width: 50px;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.5s ease;
+  background: #FFF;
+  margin-bottom: 30px;
+}
+.sidebar.open input{
+  padding: 0 20px 0 50px;
+  width: 100%;
+}
+.sidebar .bx-search{
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  font-size: 22px;
+  background: #BB68F9;
+  color: #FFF;
+}
+.sidebar.open .bx-search:hover{
+  background: #BB68F9;
+  color: #fff;
+}
+.sidebar .bx-search:hover{
+  background: #FFF;
+  color: #BB68F9;
+}
+.sidebar .nav-list li form a{
+  color: #FFF;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  min-width: 50px;
+  margin-bottom: 10px;
+}
+.sidebar .nav-list li form a:hover{
+    background: #fff;
+}
+
+
+.sidebar li a .links_name{
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s;
+}
+.sidebar.open li a .links_name{
+  opacity: 1;
+  pointer-events: auto;
+}
+.sidebar.open li a {
+  width: 220px;
+  height:60px
+}
+.sidebar li a:hover .links_name,
+.sidebar li a:hover i{
+  transition: all 0.5s ease;
+  color: #BB68F9;
+}
+.sidebar .nav-list li a i{
+  height: 50px;
+  min-width: 50px;
+  font-size: 18px;
+  border-radius: 12px;
+  line-height: 50px;
+  text-align: center;
+  left:-1px
+}
+.sidebar li.profile{
+  position: fixed;
+  height: 60px;
+  width: 78px;
+  left: 0;
+  bottom: -8px;
+  padding: 10px 14px;
+  background: #1d1b31;
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+.sidebar.open li.profile{
+  width: 250px;
+  bottom:20px;
+  right:20px
+}
+.sidebar li .profile-details{
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.sidebar li.profile .name,
+.sidebar li.profile .job{
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+}
+.sidebar li.profile .job{
+  font-size: 12px;
+}
+.sidebar .profile #log_out{
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: #1d1b31;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 0px;
+  transition: all 0.5s ease;
+}
+.sidebar.open .profile #log_out{
+  width: 50px;
+  background: none;
+}
+@media (max-width: 420px) {
+  .sidebar li .tooltip{
+    display: none;
+  }
+}
+      
+  </style>
+  <script>
+    let sidebar = document.querySelector(".sidebar");
+    let closeBtn = document.querySelector("#btn");
+    let searchBtn = document.querySelector(".bx-search");
+  
+    closeBtn.addEventListener("click", ()=>{
+      sidebar.classList.toggle("open");
+      menuBtnChange();//calling the function(optional)
+    });
+  
+    searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
+      sidebar.classList.toggle("open");
+      menuBtnChange(); //calling the function(optional)
+    });
+  
+    // following are the code to change sidebar button(optional)
+    function menuBtnChange() {
+     if(sidebar.classList.contains("open")){
+       closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
+     }else {
+       closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
+     }
+    }
+    
+  </script>
+</body>
+</html>

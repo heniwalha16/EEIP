@@ -8,6 +8,209 @@
     <link rel="stylesheet" href="../static/css/style4.css">
 </head>
 <body>
+    <style>
+        /* latin */
+    @font-face {
+        font-family: 'Fascinate Inline';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('Fascinate Inline'), local('FascinateInline-Regular'), url(font/jVyR7mzzB3zc-jp6QCAu60poNqIy5grIfA.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    
+    }
+      #bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        min-height: 100%;
+        z-index: -1;
+      }  
+    
+    .container{
+        width: 450px;
+        height: 450px;
+        display: block;
+        margin: 25px auto;
+        position: relative;
+    }
+    
+    #cvs{
+        position: absolute;
+        border: 1px solid #000;
+    }
+    
+    .options{
+        position: absolute;
+        width: 450px;
+        height: 450px;
+        background-color:#BB68F9;
+        
+    }
+    
+    .options h1{
+        text-align: center;
+        font-size: 65px;
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        color: rgb(255, 252, 252);
+        margin: 30px 0 20px 0;
+    }
+    
+    .options h2{
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    .options div{
+        display: inline-block;
+    }
+    
+    .options .computer, .x{
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        padding: 5px;
+        background-color: #FFF;
+        color: #000;
+        font-size: 1.5em;
+        border-radius: 5px;
+        margin-left: 70px;
+        width: 150px;
+        text-align: center;
+        cursor: pointer;
+        border: 1px solid #000;
+    }
+    
+    .options .friend, .o{
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        padding: 5px;
+        background-color: #FFF;
+        color: #000;
+        font-size: 1.5em;
+        border-radius: 5px;
+        margin-left: 10px;
+        width: 150px;
+        text-align: center;
+        cursor: pointer;
+        border: 1px solid #000;
+        
+    }
+    
+    .options .friend:hover, .computer:hover, .x:hover, .o:hover{
+        background-color: #011627;
+        color: #FFF;
+    }
+    
+    .options .play{
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: 1.5em;
+        width: 70px;
+        display: block;
+        margin: 25px auto;
+        border-radius: 5px;
+        border: 1px solid #011627;
+        text-align: center;
+        padding: 10px;
+        background-color: #011627;
+        color: #FFF;
+        cursor: pointer;
+        transition: 100ms width ease-in;
+    }
+    .options .play:hover{
+        width: 110px;
+    }
+    
+    .active{
+        background-color: #011627 !important;
+        color: #FFF !important;
+    }
+    
+    .hide{
+        display: none;
+    }
+    
+    .gameover{
+        position: absolute;
+        width: 450px;
+        height: 450px;
+        background-color:#BB68F9;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        color: #FFF;
+        
+    }
+    .gameover h1{
+        text-align: center;
+        font-size: 36px;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        color: #fff;
+        margin: 40px 0 20px 0;
+        font-style: italic;
+    }
+    
+    .gameover .winner-img{
+        display: block;
+        margin: 20px auto;
+    }
+    
+    .gameover .play{
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: 24px;
+        width: 200px;
+        position: relative;
+        margin: 25px auto;
+        border-radius: 5px;
+        border: 1px solid #fff;
+        text-align: center;
+        padding: 10px;
+        background-color: #fff;
+        color: #BB68F9;
+        cursor: pointer;
+        transition: 100ms width ease-in;
+        top:10%;
+    }
+    .gameover .play:hover{
+        width: 200px;
+    }
+    .mascot_game {
+        position:absolute;
+        right:15%;
+        top: 35%;
+      }
+      .mascot_game img{
+        width:160px; 
+        height:260px; 
+        position:absolute;
+        animation: fadeInFromTop .5s linear forwards, floating ease 4s infinite;
+        right:10%;
+      }
+      @keyframes fadeInFromTop{
+        from{
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to{
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes floating{
+        0%{
+          transform: translate(0%,0%) rotate(360deg);
+        }
+        25%{
+          transform: translate(5%,15%) rotate(360deg);
+        }
+        50%{
+          transform: translate(10%,5%) rotate(360deg);
+        }
+        75%{
+          transform: translate(0%,15%) rotate(360deg);
+        }
+        100%{
+          transform: translate(0%,0%) rotate(360deg);
+        }
+      }
+    </style>
     <video id="bg-video" autoplay muted loop>
         <source src="../static/images/video.mp4" type="video/mp4">
       </video>
@@ -35,4 +238,277 @@
     <script src="../static/js/options.js"></script>
     <script src="../static/js/game2.js"></script>
 </body>
+
+<script>
+    function init(player, OPPONENT){
+    // SELECT CANAVS
+    const canvas = document.getElementById("cvs");
+    const ctx = canvas.getContext("2d");
+
+    // BOARD VARIABLES
+    let board = [];
+    const COLUMN = 3;
+    const ROW = 3;
+    const SPACE_SIZE = 150;
+
+    // STORE PLAYER'S MOVES
+    let gameData = new Array(9);
+    
+    // By default the first player to play is the human
+    let currentPlayer = player.man;
+
+    // load X & O images
+    const xImage = new Image();
+    xImage.src = "../static/images/X.png";
+
+    const oImage = new Image();
+    oImage.src = "../static/images/O.png";
+
+    // Win combinations
+    const COMBOS = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+
+    // FOR GAME OVER CHECK
+    let GAME_OVER = false;
+    
+    // DRAW THE BOARD
+    function drawBoard(){
+        // WE give every space a unique id
+        // So we know exactly where to put the player's move on the gameData Array
+        let id = 0
+        for(let i = 0; i < ROW; i++){
+            board[i] = [];
+            for(let j = 0; j < COLUMN; j++){
+                board[i][j] = id;
+                id++;
+
+                // draw the spaces
+                ctx.strokeStyle = "#fff";
+                ctx.strokeRect(j * SPACE_SIZE, i * SPACE_SIZE, SPACE_SIZE, SPACE_SIZE);
+            }
+        }
+    }
+    drawBoard();
+
+    // ON PLAYER'S CLICK
+    canvas.addEventListener("click", function(event){
+        
+        // IF IT's A GAME OVER? EXIT
+        if(GAME_OVER) return;
+
+        // X & Y position of mouse click relative to the canvas
+        let X = event.clientX - canvas.getBoundingClientRect().x;
+        let Y = event.clientY - canvas.getBoundingClientRect().y;
+
+        // WE CALCULATE i & j of the clicked SPACE
+        let i = Math.floor(Y/SPACE_SIZE);
+        let j = Math.floor(X/SPACE_SIZE);
+
+        // Get the id of the space the player clicked on
+        let id = board[i][j];
+
+        // Prevent the player to play the same space twice
+        if(gameData[id]) return;
+
+        // store the player's move to gameData
+        gameData[id] = currentPlayer;
+        
+        // draw the move on board
+        drawOnBoard(currentPlayer, i, j);
+
+        // Check if the play wins
+        if(isWinner(gameData, currentPlayer)){
+            showGameOver(currentPlayer);
+            GAME_OVER = true;
+            return;
+        }
+
+        // check if it's a tie game
+        if(isTie(gameData)){
+            showGameOver("tie");
+            GAME_OVER = true;
+            return;
+        }
+
+        if( OPPONENT == "computer"){
+            // get id of space using minimax algorithm
+            let id = minimax( gameData, player.computer ).id;
+
+            // store the player's move to gameData
+            gameData[id] = player.computer;
+            
+            // get i and j of space
+            let space = getIJ(id);
+
+            // draw the move on board
+            drawOnBoard(player.computer, space.i, space.j);
+
+            // Check if the play wins
+            if(isWinner(gameData, player.computer)){
+                showGameOver(player.computer);
+                GAME_OVER = true;
+                return;
+            }
+
+            // check if it's a tie game
+            if(isTie(gameData)){
+                showGameOver("tie");
+                GAME_OVER = true;
+                return;
+            }
+        }else{
+            // GIVE TURN TO THE OTHER PLAYER
+            currentPlayer = currentPlayer == player.man ? player.friend : player.man;
+        }
+
+    });
+
+    // MINIMAX
+    function minimax(gameData, PLAYER){
+        // BASE
+        if( isWinner(gameData, player.computer) ) return { evaluation : +10 };
+        if( isWinner(gameData, player.man)      ) return { evaluation : -10 };
+        if( isTie(gameData)                     ) return { evaluation : 0 };
+
+        // LOOK FOR EMTY SPACES
+        let EMPTY_SPACES = getEmptySpaces(gameData);
+
+        // SAVE ALL MOVES AND THEIR EVALUATIONS
+        let moves = [];
+
+        // LOOP OVER THE EMPTY SPACES TO EVALUATE THEM
+        for( let i = 0; i < EMPTY_SPACES.length; i++){
+            // GET THE ID OF THE EMPTY SPACE
+            let id = EMPTY_SPACES[i];
+
+            // BACK UP THE SPACE
+            let backup = gameData[id];
+
+            // MAKE THE MOVE FOR THE PLAYER
+            gameData[id] = PLAYER;
+
+            // SAVE THE MOVE'S ID AND EVALUATION
+            let move = {};
+            move.id = id;
+            // THE MOVE EVALUATION
+            if( PLAYER == player.computer){
+                move.evaluation = minimax(gameData, player.man).evaluation;
+            }else{
+                move.evaluation = minimax(gameData, player.computer).evaluation;
+            }
+
+            // RESTORE SPACE
+            gameData[id] = backup;
+
+            // SAVE MOVE TO MOVES ARRAY
+            moves.push(move);
+        }
+
+        // MINIMAX ALGORITHM
+        let bestMove;
+
+        if(PLAYER == player.computer){
+            // MAXIMIZER
+            let bestEvaluation = -Infinity;
+            for(let i = 0; i < moves.length; i++){
+                if( moves[i].evaluation > bestEvaluation ){
+                    bestEvaluation = moves[i].evaluation;
+                    bestMove = moves[i];
+                }
+            }
+        }else{
+            // MINIMIZER
+            let bestEvaluation = +Infinity;
+            for(let i = 0; i < moves.length; i++){
+                if( moves[i].evaluation < bestEvaluation ){
+                    bestEvaluation = moves[i].evaluation;
+                    bestMove = moves[i];
+                }
+            }
+        }
+
+        return bestMove;
+    }
+
+    // GET EMPTY SPACES
+    function getEmptySpaces(gameData){
+        let EMPTY = [];
+
+        for( let id = 0; id < gameData.length; id++){
+            if(!gameData[id]) EMPTY.push(id);
+        }
+
+        return EMPTY;
+    }
+
+    // GET i AND j of a SPACE
+    function getIJ(id){
+        for(let i = 0; i < board.length; i++){
+            for(let j = 0; j < board[i].length; j++){
+                if(board[i][j] == id) return { i : i, j : j}
+            }
+        }
+    }
+
+    // check for a winner
+    function isWinner(gameData, player){
+        for(let i = 0; i < COMBOS.length; i++){
+            let won = true;
+
+            for(let j = 0; j < COMBOS[i].length; j++){
+                let id = COMBOS[i][j];
+                won = gameData[id] == player && won;
+            }
+
+            if(won){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Check for a tie game
+    function isTie(gameData){
+        let isBoardFill = true;
+        for(let i = 0; i < gameData.length; i++){
+            isBoardFill = gameData[i] && isBoardFill;
+        }
+        if(isBoardFill){
+            return true;
+        }
+        return false;
+    }
+
+    // SHOW GAME OVER
+    function showGameOver(player){
+        let message = player == "tie" ? "Oops No Winner" : "The Winner is";
+        let imgSrc = `../static/images/${player}.png`;
+
+        gameOverElement.innerHTML = `
+            <h1>${message}</1>
+            <img class="winner-img" src=${imgSrc} </img>
+            <div class="play" onclick="location.reload()">Play Again!</div>
+        `;
+
+        gameOverElement.classList.remove("hide");
+    }
+
+    // draw on board
+    function drawOnBoard(player, i, j){
+        let img = player == "X" ? xImage : oImage;
+
+        // the x,y positon of the image are the x,y of the clicked space
+        ctx.drawImage(img, j * SPACE_SIZE, i * SPACE_SIZE);
+    }
+}
+
+</script>
 </html>

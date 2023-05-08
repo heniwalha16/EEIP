@@ -30,6 +30,10 @@ urlpatterns=[
     path('LogOut/', views.LogOut, name='LogOut'),
     path('login/', views.login_user, name='login_user'),
     path('register/', views.register_user, name='register_user'),
+    path('save_screenshot/', views.save_screenshot, name='save_screenshot'),
+    path('getClassProblems/', views.getClassProblems, name='getClassProblems'),
+    path('addClassroom/',views.addClassroom, name='addClassroom'),
+    path('MemoryGame/', views.MemoryGame, name='MemoryGame'),
 
 
     #path('quiz/results/', views.quiz_results, name='quiz_results'),

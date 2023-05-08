@@ -1,3 +1,4 @@
 education/models/en/pretrain/ewt.pt
+education/bert_math_problem_classification.pt
 education\__pycache__
 *.pyc

@@ -54,7 +54,7 @@ class Teacher(models.Model):
     picture = models.TextField() # Assumes usage of Django's built-in ImageField
 
     def __str__(self):
-        return self.name
+        return self.FirstName
 
 # Define Class model
 class Class(models.Model):
@@ -86,4 +86,4 @@ class Student(models.Model):
     picture = models.TextField()  # Assumes usage of Django's built-in ImageField
     Class = models.ForeignKey(Class, on_delete=models.CASCADE, null=True, default=None)
     def __str__(self):
-        return self.username
+        return self.FirstName

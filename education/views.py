@@ -413,7 +413,7 @@ def image_generation(seed):
     
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('C:/Users/Heni/Documents/studies/4DS/PI/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('C:/Users/MSI/Documents/GitHub/Educational-Interactive-Intelligent-Platform/education/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
     
     # Example math problem
@@ -706,7 +706,7 @@ def intro(request):
     else:
         return render(request, 'intro.html')
 ##############face recognition#########
-import cv2
+'''import cv2
 import time
 import pymysql
 import numpy as np
@@ -851,7 +851,7 @@ class LoginSystem:
     def playVoice(self, voice):
         process = mp.Process(target=playsound, args=(voice,))
         process.start()
-        return process
+        return process'''
 
 from io import BytesIO
 def save_image_from_base64(image_data, directory, filename):
@@ -920,6 +920,12 @@ def LogOut(request):
          return render(request, 'login.html')
     else:
          return render(request, 'calculate.html')
+def MemoryGame(request):
+    if request.method == 'POST':
+         return render(request, 'memory.html')
+    else:
+         return render(request, 'calculate.html')    
+
 def login_user(request):
     if request.method=='POST':
         role=0
@@ -1041,7 +1047,113 @@ def chatbot_api(request):
         return JsonResponse({'response': chatbot_response})
     else:
         return render(request, 'login.html')
+#################################Classroom#################################################""
+def code_class_existe(code):
+    Classrooms = Class.objects.all()
+    Classroom_serializer = ClassSerializer(Classrooms, many=True)
+    list_Classrooms=Classroom_serializer.data
+    dict_list_all = [dict(item) for item in list_Classrooms]
+    print(dict_list_all)
+    for dictionary in dict_list_all:
+        print(str(dictionary.get('code')))
+        print(code)
+        if str(dictionary.get('code')) == str(code) :
+            return True
+    return False
+import base64
+import pyautogui
+import io
+from PIL import Image
+def save_screenshot(request):
+    print("a")
+    if request.method == 'POST':
+        print("a")
+        Code = request.POST.get('Code')
+        ###
+        ss = pyautogui.screenshot()
+        width, height = ss.size
+        left = 50
+        top = 50
+        right = width - 400
+        bottom = height - 400
+        cropped = ss.crop((left, top, right, bottom))
+        img_bytes = io.BytesIO()
+        cropped.save(img_bytes, format='PNG')
+        img_bytes = img_bytes.getvalue()
 
+        img_b64 = base64.b64encode(img_bytes).decode('utf-8')
+    
+        classes = Class.objects.all()
+        class_serializer = ClassSerializer(classes, many=True)
+        list_classes=class_serializer.data
+        dict_list_class= [dict(item) for item in list_classes]
+        for dictionary in dict_list_class:
+            if (str(dictionary.get('code')) == str(Code)):
+                class_found = dictionary
+        # Save the screenshot data to a file or a database
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print("naraaa el code:")
+        print(Code)
+        if code_class_existe(Code):
+            problem =    {
+            "base64image": img_b64,
+           "Class": class_found.get('id')
+         }
+            problem_serializer = ProblemSerializer(data=problem)
+            print(problem_serializer)
+            if problem_serializer.is_valid():
+                print("aaaaaaaaaa")
+                problem_serializer.save()
+            print(problem_serializer.is_valid())
+            print(class_found.get('id'))
+            return render(request, 'screenshot.html')
+    else:
+        return render(request, 'screenshot.html')
+    
+###################################GET CODE AND DISPLAY PROBLEMS IN CLASSROOM#####################################
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def getClassProblems(request):
+    if request.method=='POST':
+        code = request.POST.get('Code')
+        problems = Problem.objects.filter(Class__code=code) # filter problems by class code
+        problem_serializer = ProblemSerializer(problems, many=True)
+        list_problems = problem_serializer.data
+        base64images = [image["base64image"] for image in list_problems]
+        print(list_problems)
+        return render(request, 'classroom.html', {'problems': base64images})
+    else:
+        return render(request, 'get_code_classroom.html')
+
+
+
+###################################GET CODE AND ADD CLASSROOM#####################################
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def addClassroom(request):
+    if request.method=='POST':
+        code = request.POST.get('Code')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # get teacher object by email and password
+        try:
+            teacher = Teacher.objects.get(email=email, password=password)
+        except Teacher.DoesNotExist:
+            return HttpResponse('Teacher not found', status=404)
+
+        # create new class object with given code and teacher
+        new_class = Class.objects.create(code=code, teacher=teacher)
+
+        # return success message
+        return render(request, 'get_code_classroom.html')
+
+        # handle invalid request method
+    return render(request, 'create_classroom.html')    
+
+            
 
 
     
