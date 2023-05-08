@@ -1064,6 +1064,7 @@ import base64
 import pyautogui
 import io
 from PIL import Image
+import time
 def save_screenshot(request):
     print("a")
     if request.method == 'POST':
@@ -1072,10 +1073,10 @@ def save_screenshot(request):
         ###
         ss = pyautogui.screenshot()
         width, height = ss.size
-        left = 50
-        top = 50
-        right = width - 400
-        bottom = height - 400
+        left = 450
+        top = 270
+        right = width - 600
+        bottom = height - 550
         cropped = ss.crop((left, top, right, bottom))
         img_bytes = io.BytesIO()
         cropped.save(img_bytes, format='PNG')
@@ -1103,12 +1104,13 @@ def save_screenshot(request):
             print(problem_serializer)
             if problem_serializer.is_valid():
                 print("aaaaaaaaaa")
+                print(pyautogui.size())
                 problem_serializer.save()
             print(problem_serializer.is_valid())
             print(class_found.get('id'))
-            return render(request, 'screenshot.html')
+            return render(request, 'calculate.html')
     else:
-        return render(request, 'screenshot.html')
+        return render(request, 'index.html')
     
 ###################################GET CODE AND DISPLAY PROBLEMS IN CLASSROOM#####################################
 from django.shortcuts import render
