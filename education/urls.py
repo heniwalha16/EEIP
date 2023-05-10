@@ -34,6 +34,8 @@ urlpatterns=[
     path('getClassProblems/', views.getClassProblems, name='getClassProblems'),
     path('addClassroom/',views.addClassroom, name='addClassroom'),
     path('MemoryGame/', views.MemoryGame, name='MemoryGame'),
+    path('get/<str:id>/', views.deepFakeVideoGet, name='deepFakeVideoGet'),
+    path('deepFakeVideo/', views.deepFakeVideo, name='deepFakeVideo'),
 
 
     #path('quiz/results/', views.quiz_results, name='quiz_results'),

@@ -257,6 +257,7 @@
 }
 </style>
 </head>
+
 <script>
   function myFunction() {
     window.location.href = "game.html";
@@ -476,7 +477,25 @@
           <img src="https://www.svgrepo.com/show/487818/speak.svg" width="24px" height="14px" id="micro">
         </button>
 
-        </div>
+        <form id="my-form" method="post" action="{% url 'deepFakeVideo' %}">
+        {% csrf_token %}
+        <input type="hidden" name="scripts" id="scripts">
+        <script>
+          document.getElementById('my-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        document.getElementById('scripts').value = document.getElementById('problem').value;
+        this.submit();
+    });
+       </script>
+        <button type="submit"  class="video-button" style="bottom:80px; position: relative; left:180px; height: 40px; width: 150px; background-color: white; color: #BB68F9; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; border-radius: 10px; border: 1px solid white;">
+        Generate a video
+        </button>
+        </form>
+        {% if id %}
+        <form method="get" action="{% url 'deepFakeVideoGet' id=id %}">
+          <button class="get-button" style="bottom: 210px; position: relative; right:240px; height: 40px; width:200px; background-color: white; color: #BB68F9; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; border-radius: 10px; border:1px solid white">Show the generated video</button>
+        </form>
+        {% endif %}
       </center>
     </div>
   </div>

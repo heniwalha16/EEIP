@@ -1158,6 +1158,71 @@ def addClassroom(request):
             
 
 
+######################DEEP FAKE VIDEOOOOOOO##################################################
+from django.shortcuts import render, redirect, reverse
+@csrf_exempt
+def deepFakeVideo(request):
+    if request.method=='POST':
+        url = "https://api.d-id.com/talks"
+        api_key='YWJvdWJha2VyLnJlYmFpQGVzcHJpdC50bg:ePCCr5rnFaDCPcHXpxulW'
+        auth_string = base64.b64encode(f'{api_key}:'.encode()).decode()
+        a=request.POST.get('scripts')
+        payload = {
+            "script": {
+                "type": "text",
+                "provider": {
+                    "type": "microsoft",
+                    "voice_id": "en-US-JennyNeural",
+                    "voice_config": {
+                        "style": "string",
+                        "rate": "0.5",
+                        "pitch": "+2st"
+                    }
+                },
+                "input": a
+            },
+            "source_url": "https://create-images-results.d-id.com/auth0%7C645956f4151ddf91659eac96/upl_3mfQ6jKG8rYjPM-Dgy6jT/image.jpeg"
+            #"webhook": "https://host.domain.tld/to/webhook"
+        }
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            'Authorization': f'Basic {auth_string}',
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+        response_data = response.json()
+        id = response_data['id']
+        print(id)
+        #request.session['id'] = id
+        '''url = f"https://api.d-id.com/talks/{id}"
+        headers = {"accept": "application/json",
+                   "content-type": "application/json",
+                   'Authorization': f'Basic {auth_string}'}
+        response1 = requests.get(url, headers=headers)
+        response_data1 = response1.json()
+        print("aaaaaaaaaaaaaaaaaaaaaaa")
+        print(response1.text)'''
+        return  render(request,'calculate.html',{'id': id})
+
+    
+@csrf_exempt
+def deepFakeVideoGet(request, id):
+    if request.method=='GET':
+        #id = request.session.get('id')
+        api_key='YWJvdWJha2VyLnJlYmFpQGVzcHJpdC50bg:ePCCr5rnFaDCPcHXpxulW'
+        auth_string = base64.b64encode(f'{api_key}:'.encode()).decode()
+        url = f"https://api.d-id.com/talks/{id}"
+        headers = {"accept": "application/json",
+                "content-type": "application/json",
+                'Authorization': f'Basic {auth_string}'}
+        response1 = requests.get(url, headers=headers)
+        response_data1 = response1.json()
+        result_url = response_data1.get('result_url') 
+        print("aaaaaaaaaaaaaaaaaaaaaaa")
+        print(response_data1)
+        print(id)
+        return render(request, 'video.html',{'result_url':result_url})
     
 
 

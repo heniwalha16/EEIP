@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video Problems</title>
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <style>
+        #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+  }
+  #top-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+    </style>
+<div>
+<video id="bg-video" autoplay muted loop>
+<source src="../../static/images/video.mp4" type="video/mp4">
+</video>
+</div>
+{% if result_url %}
+<video id="top-video" controls>
+    <source src="{{result_url}}" type="video/mp4">
+</video>
+{% endif %}
+</body>    
+</html>
