@@ -50,7 +50,7 @@ function speak() {
 }
 function chat_solution() {
   
-  const userInput = document.getElementById("problem1").textContent;
+  const userInput = document.getElementById('problem').textContent;
   console.log(JSON.stringify({ user_input: userInput }));
 
   fetch('/problem_solution/', {

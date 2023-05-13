@@ -37,7 +37,7 @@ def chatbot_solution(request):
     if api_key is not None and  request.method=="POST" :
         openai.api_key=api_key
         user_input = request.data.get('user_input')
-        prompt =user_input
+        prompt ="give me a hint to help me solve this problem : "+user_input
         response =openai.Completion.create(
             engine='text-davinci-003',
             prompt=prompt,
@@ -525,6 +525,8 @@ def image_generation(seed):
                     res['type'] = 'trapezium'
             del doc
             print(len(metrics))
+        
+            Output_List=[[Output_List[0],3]]
             print(Output_List)
             return Output_List
 
@@ -657,7 +659,7 @@ def image_generation(seed):
         else:
             Output_List.append([w[2],0])
    #print(res)
-    #print("aaaa")
+    print("aaaa")
     print(Output_List)
     del doc
     
@@ -1172,16 +1174,20 @@ def deepFakeVideo(request):
                 "type": "text",
                 "provider": {
                     "type": "microsoft",
-                    "voice_id": "en-US-JennyNeural",
+                    "voice_id": "en-US-BrandonNeural",
                     "voice_config": {
                         "style": "string",
-                        "rate": "0.5",
+                        "rate": "1",
                         "pitch": "+2st"
                     }
                 },
                 "input": a
             },
-            "source_url": "https://create-images-results.d-id.com/auth0%7C645956f4151ddf91659eac96/upl_3mfQ6jKG8rYjPM-Dgy6jT/image.jpeg"
+            "config": {
+                "stitch": True,
+            },
+
+            "source_url": "https://create-images-results.d-id.com/auth0%7C645956f4151ddf91659eac96/upl_VecVAgjHCruHxw-iPh9cr/image.png"
             #"webhook": "https://host.domain.tld/to/webhook"
         }
         headers = {
