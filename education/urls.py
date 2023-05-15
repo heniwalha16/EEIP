@@ -6,7 +6,7 @@ urlpatterns=[
     path('',views.intro,name='intro'),
     path('intro/',views.intro,name='intro'),
 
-    path('problem_solution/',views.chatbot_solution),
+    path('problem_solution/',views.chatbot_solution, name='problem_solution'),
     path('problem_translation/',views.chatbot_translation),
     path('transcribe-speech/', views.transcribe_speech, name='transcribe-speech'),
     path('extract_text/', views.extract_text_from_image, name='extract_text'),
@@ -36,6 +36,9 @@ urlpatterns=[
     path('MemoryGame/', views.MemoryGame, name='MemoryGame'),
     path('get/<str:id>/', views.deepFakeVideoGet, name='deepFakeVideoGet'),
     path('deepFakeVideo/', views.deepFakeVideo, name='deepFakeVideo'),
+    path('respond/', views.respond, name='respond'),
+    path('solution/', views.solution, name='solution'),
+
 
 
     #path('quiz/results/', views.quiz_results, name='quiz_results'),

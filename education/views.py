@@ -37,7 +37,7 @@ def chatbot_solution(request):
     if api_key is not None and  request.method=="POST" :
         openai.api_key=api_key
         user_input = request.data.get('user_input')
-        prompt ="give me a hint to help me solve this problem : "+user_input
+        prompt ="give me a hint to help me solve this problem, just a hint don't actually solve it. problem : "+user_input
         response =openai.Completion.create(
             engine='text-davinci-003',
             prompt=prompt,
@@ -47,7 +47,7 @@ def chatbot_solution(request):
         )
         print(response)
         chatbot_response=response["choices"][0]["text"]
-    return Response(chatbot_response)
+    return JsonResponse({'chatbot_response': chatbot_response})
 ########################### chatbot_translation   ###############################
 
 @csrf_exempt
@@ -1031,7 +1031,7 @@ import json
 
 def chatbot_api(request):
     chatbot_response =None 
-    api_key = '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'
+    api_key = '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'
     if api_key is not None and  request.method=="POST" :
         openai.api_key=api_key
         user_input =request.POST.get('user_input')
@@ -1232,7 +1232,34 @@ def deepFakeVideoGet(request, id):
     
 
 
-    
 
+@csrf_exempt
+def respond(request):
+    if request.method=='POST':
+        problem = request.POST.get('input_problem')
+        return render(request,'answer.html',{'problem':problem})
+    else:
+        return render(request,'answer.html',{'problem':problem})    
+
+
+@csrf_exempt
+@api_view(('POST',))
+@action(detail=False, methods=['POST'])
+def solution(request):
+    if request.method=='POST':
+        problem = request.data.get('problem')
+        student_response = request.data.get('answer')
+        openai.api_key=api_key
+        prompt ="This is a simple math problem: "+ problem + " This is my response to the problem : "+ student_response + "Is my response correct? " 
+        response =openai.Completion.create(
+            engine='text-davinci-003',
+            prompt=prompt,
+            max_tokens=256,
+            #stop="."
+            temperature=0.5
+        )
+        print(response)
+        chatbot_response=response["choices"][0]["text"]
+        return JsonResponse({'chatbot_response': chatbot_response})
             
       

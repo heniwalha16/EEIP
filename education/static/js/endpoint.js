@@ -49,22 +49,27 @@ function speak() {
   
 }
 function chat_solution() {
-  
-  const userInput = document.getElementById('problem').textContent;
-  console.log(JSON.stringify({ user_input: userInput }));
+  document.getElementById('user_input').value= document.getElementById('problem')
+  console.log(document.getElementById('user_input').value)
+
+  const formData = new FormData();
+  formData.append('user_input', document.getElementById('user_input').value);
 
   fetch('/problem_solution/', {
     method: 'POST',
-    body: JSON.stringify({ user_input: userInput }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    body: formData
   })
   .then(response => response.text())
   .then(solution => {
     console.log(solution);
     const solutionElement = document.getElementById('solution');
-    solutionElement.textContent = solution;
+    solutionElement.value = solution;
   })
   .catch(error => console.error(error));
 }
+
+
+
+
+
+

@@ -469,7 +469,9 @@
 
       <form method="POST" action="{% url 'calculate' %}">
         {% csrf_token %}
-          <p  id="solution" style="position: relative; bottom: 210px; color: white; "></p>
+          
+          <p  id="solution" style="position: relative; bottom: 150px; color: white; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;  "></p>
+          
           <div class="text-box">
             
               <input type="text" name="problem" id="problem"  placeholder="write ur math problem here !">
@@ -496,10 +498,36 @@
         <button  class="extract-button" onclick="speak()"> 
           <img src="https://www.svgrepo.com/show/487818/speak.svg" width="24px" height="14px" id="micro">
         </button>
-        <button  class="hint-button" onclick="chat_solution()" style="position: relative; left: 250px; bottom:25px"> 
+        <form id="my-form1" method="post" action="{% url 'problem_solution' %}">
+          {% csrf_token %}
+        <script>
+          const form = document.getElementById('my-form1');
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const userInput = document.getElementById('problem').value;
+            fetch('/problem_solution/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
+              },
+              body: JSON.stringify({
+                'user_input': userInput
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+              const chatbotResponse = data.chatbot_response;
+              const chatbotResponseDiv = document.getElementById('solution');
+              chatbotResponseDiv.innerHTML = chatbotResponse;
+            })
+            .catch(error => console.error(error));
+          });
+        </script>
+        <button type="submit" class="hint-button" style="position: relative; left: 340px; bottom:82px"> 
           <img src="https://www.svgrepo.com/show/497219/lamp-charge.svg" width="24px" height="14px" id="micro">
         </button>
-
+        </form>
         <form id="my-form" method="post" action="{% url 'deepFakeVideo' %}">
         {% csrf_token %}
         <input type="hidden" name="scripts" id="scripts">
@@ -510,15 +538,28 @@
         this.submit();
     });
        </script>
-        <button type="submit"  class="video-button" style="bottom:80px; position: relative; left:180px; height: 40px; width: 150px; background-color: white; color: #BB68F9; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; border-radius: 10px; border: 1px solid white;">
+        <button type="submit"  class="video-button" style="bottom:80px; position: relative; left:200px;bottom: 205px; height: 40px; width: 150px; background-color: white; color: #BB68F9; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; border-radius: 10px; border: 1px solid white;">
         Generate a video
         </button>
         </form>
         {% if id %}
         <form method="get" action="{% url 'deepFakeVideoGet' id=id %}">
-          <button class="get-button" style="bottom: 210px; position: relative; right:240px; height: 40px; width:200px; background-color: white; color: #BB68F9; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; border-radius: 10px; border:1px solid white">Show the generated video</button>
+          <button class="get-button" style="bottom: 330px; position: relative; right:240px; height: 40px; width:200px; background-color: white; color: #BB68F9; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; border-radius: 10px; border:1px solid white">Show the generated video</button>
         </form>
         {% endif %}
+
+        <form id="my-form4" method="post" action="{% url 'respond' %}">
+          {% csrf_token %}
+          <input type="hidden" name="input_problem" id="input_problem" style="width: 1px; height: 1px;position: relative; right: 500px;">
+          <script>
+            document.getElementById('my-form4').addEventListener('submit', function(event) {
+          event.preventDefault();
+          document.getElementById('input_problem').value = document.getElementById('problem').value;
+          this.submit();
+      });
+         </script>
+          <button type="submit" style="position: relative; bottom: 335px; right: 380px; height: 40px; width: 100px; border-radius: 20px; color: #BB68F9; border: 1px solid white; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;  ">Respond</button>
+        </form>
       </center>
     </div>
   </div>
