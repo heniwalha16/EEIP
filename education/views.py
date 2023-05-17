@@ -708,7 +708,7 @@ def intro(request):
     else:
         return render(request, 'intro.html')
 ##############face recognition#########
-'''import cv2
+import cv2
 import time
 import pymysql
 import numpy as np
@@ -853,7 +853,7 @@ class LoginSystem:
     def playVoice(self, voice):
         process = mp.Process(target=playsound, args=(voice,))
         process.start()
-        return process'''
+        return process
 
 from io import BytesIO
 def save_image_from_base64(image_data, directory, filename):
