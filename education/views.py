@@ -1041,6 +1041,39 @@ def chatbot_api(request):
         return JsonResponse({'response': chatbot_response})
     else:
         return render(request, 'chatbot.html')
+from selenium import webdriver
+import os
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+def save_image(request):
+    if request.method=='POST':
+        driver_path = 'C:/Users/ASUS/Downloads/chromedriver.exe'
+
+        # Create a new webdriver instance
+        driver = webdriver.Chrome(executable_path=driver_path)
+
+        # Navigate to the locally running HTML page
+        driver.get('http://127.0.0.1:8000/index.html/')
+
+        # Take a screenshot and save it to a file
+        driver.save_screenshot('screenshot.png')
+
+        # Close the webdriver instance
+        driver.quit()
+    else:
+        return render(request, 'index.html',{"role":2})
+
+        
+
+
+
+
+
+
+
+
+
 
 
 

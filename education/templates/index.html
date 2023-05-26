@@ -373,7 +373,10 @@
                 data-offstyle="danger" id="toggle-event"> </span>
                 <div class="row buttons">
                   <button class="clear-canvas" onclick="emptyc()"> Empty Canvas !</button>
+                  <form method="POST" action="{% url 'save_image' %}">
+                    {% csrf_token %}
                   <button class="save-img">Save As Image</button>
+                </form>
                 </div>
                
                 <div>
@@ -482,4 +485,6 @@
   
   <p id="solution"></p>
 
+
+   
 </html>

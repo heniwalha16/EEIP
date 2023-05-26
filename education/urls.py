@@ -30,10 +30,11 @@ urlpatterns=[
     path('login/', views.login_user, name='login_user'),
     path('register/', views.register_user, name='register_user'),
 
-
+    path('save/', views.save_image, name='save_image'),
     #path('quiz/results/', views.quiz_results, name='quiz_results'),
     path('image_generation/', views.image_generation),
     path('login_employee/', views.login_employee, name='login_employee'),
+
     path('api/chatbot/', views.chatbot_api, name='chatbot_api')
     ]
 
