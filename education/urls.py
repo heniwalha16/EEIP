@@ -3,9 +3,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 from . import views 
 urlpatterns=[
+    path('',views.intro,name='intro'),
     path('intro/',views.intro,name='intro'),
 
-    path('problem_solution/',views.chatbot_solution),
+    path('problem_solution/',views.chatbot_solution, name='problem_solution'),
     path('problem_translation/',views.chatbot_translation),
     path('transcribe-speech/', views.transcribe_speech, name='transcribe-speech'),
     path('extract_text/', views.extract_text_from_image, name='extract_text'),
@@ -29,12 +30,19 @@ urlpatterns=[
     path('LogOut/', views.LogOut, name='LogOut'),
     path('login/', views.login_user, name='login_user'),
     path('register/', views.register_user, name='register_user'),
+    path('save_screenshot/', views.save_screenshot, name='save_screenshot'),
+    path('getClassProblems/', views.getClassProblems, name='getClassProblems'),
+    path('addClassroom/',views.addClassroom, name='addClassroom'),
+    path('MemoryGame/', views.MemoryGame, name='MemoryGame'),
+    path('get/<str:id>/', views.deepFakeVideoGet, name='deepFakeVideoGet'),
+    path('deepFakeVideo/', views.deepFakeVideo, name='deepFakeVideo'),
+    path('respond/', views.respond, name='respond'),
+    path('solution/', views.solution, name='solution'),
 
-    path('save/', views.save_image, name='save_image'),
+
+
     #path('quiz/results/', views.quiz_results, name='quiz_results'),
     path('image_generation/', views.image_generation),
     path('login_employee/', views.login_employee, name='login_employee'),
-
     path('api/chatbot/', views.chatbot_api, name='chatbot_api')
     ]
-

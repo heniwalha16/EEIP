@@ -49,7 +49,7 @@ function init(player, OPPONENT){
                 id++;
 
                 // draw the spaces
-                ctx.strokeStyle = "#000";
+                ctx.strokeStyle = "#fff";
                 ctx.strokeRect(j * SPACE_SIZE, i * SPACE_SIZE, SPACE_SIZE, SPACE_SIZE);
             }
         }

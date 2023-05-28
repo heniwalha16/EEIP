@@ -4,6 +4,8 @@ from django.http.response import JsonResponse
 from education.models import Student, Teacher,Class,Problem
 from education.serializers import StudentSerializer, TeacherSerializer ,ClassSerializer,ProblemSerializer
 from django.contrib import messages
+from datetime import date
+
 
 import education.utils
 import random
@@ -37,7 +39,7 @@ def chatbot_solution(request):
     if api_key is not None and  request.method=="POST" :
         openai.api_key=api_key
         user_input = request.data.get('user_input')
-        prompt =user_input
+        prompt ="give me a hint to help me solve this problem, just a hint don't actually solve it. problem : "+user_input
         response =openai.Completion.create(
             engine='text-davinci-003',
             prompt=prompt,
@@ -47,7 +49,7 @@ def chatbot_solution(request):
         )
         print(response)
         chatbot_response=response["choices"][0]["text"]
-    return Response(chatbot_response)
+    return JsonResponse({'chatbot_response': chatbot_response})
 ########################### chatbot_translation   ###############################
 
 @csrf_exempt
@@ -410,10 +412,10 @@ def image_generation(seed):
     doc = nlp(seed)
     print(doc)
     res = {'type': None, 'data': []}
-    '''
+    
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('C:/Users/Asus/Downloads/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('education/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
     
     # Example math problem
@@ -431,10 +433,10 @@ def image_generation(seed):
     # Print the predicted class
     class_names = ['Not Geometry', 'Geometry']
     problem_type = class_names[predicted_class]
-    '''
-    problem = seed
+    
+    #problem = seed
     metrics=[] 
-    problem_type='Not Geometry'
+    #problem_type='Not Geometry'
     print(problem_type)
     if (problem_type=='Geometry'):      
         language, _ = langid.classify(problem)
@@ -525,6 +527,8 @@ def image_generation(seed):
                     res['type'] = 'trapezium'
             del doc
             print(len(metrics))
+        
+            Output_List=[[Output_List[0],3]]
             print(Output_List)
             return Output_List
 
@@ -657,7 +661,7 @@ def image_generation(seed):
         else:
             Output_List.append([w[2],0])
    #print(res)
-    #print("aaaa")
+    print("aaaa")
     print(Output_List)
     del doc
     
@@ -669,6 +673,7 @@ def calculate(request):
   if request.method == 'POST':
     problem = request.POST.get('problem')
     role =request.POST.get("role")
+
     FirstName =request.POST.get("FirstName")
     LastName =request.POST.get("LastName")
     # Appel de votre API pour obtenir le résultat du problème mathématique
@@ -684,8 +689,7 @@ def calculate(request):
             
     result = list_output
     # Renvoi du résultat dans le modèle HTML
-    print(int(role))
-    if(int(role)==2): # teacher 
+    if(role==str(2)): # teacher 
         return render(request, 'index.html', {'result': result,'problem':problem,"role":role})
     else: # student 
         return render(request, 'calculate.html', {'result': result,'problem':problem ,"role":role,
@@ -740,7 +744,7 @@ class LoginSystem:
         # Call a function called playVoice() to play a sound in a different
         # process
         process = self.playVoice("education/Voices/voice1.mp3")
-        time.sleep(6)
+        time.sleep(4)
         # End the process
         process.terminate()
         # Inheriting the class called VideoStream and its
@@ -810,7 +814,7 @@ class LoginSystem:
             if self.status == True:
                 print('mawjoud')
                 process = self.playVoice("education/Voices/voice2.mp3")
-                time.sleep(4)
+                time.sleep(2)
                 process.terminate()
                 break
         video_stream.stop()
@@ -920,6 +924,12 @@ def LogOut(request):
          return render(request, 'login.html')
     else:
          return render(request, 'calculate.html')
+def MemoryGame(request):
+    if request.method == 'POST':
+         return render(request, 'memory.html')
+    else:
+         return render(request, 'calculate.html')    
+
 def login_user(request):
     if request.method=='POST':
         role=0
@@ -981,13 +991,14 @@ import base64
 def register_user(request):
     if request.method=='POST':
         email = request.POST.get('email')
+        birthdate =request.POST.get('birthdate')
         password = request.POST.get('password')
         FirstName = request.POST.get('FirstName')
         LastName = request.POST.get('LastName')
         picture = request.FILES['picture']
         file_content = picture.read()
         b64_content = base64.b64encode(file_content).decode('utf-8')
-        print(b64_content)
+        
         if (email_existe(email)):
             messages.error(request, 'email exist')
             return redirect('register_user') 
@@ -996,14 +1007,22 @@ def register_user(request):
          #   return redirect('register_user') 
 
         else :
-            student_data =    {
+            user_data =    {
             "password": password,
             "email": email,
             "FirstName": FirstName,
           "LastName": LastName,
            "picture": b64_content
          }
-            student_serializer = StudentSerializer(data=student_data)
+        birthdate = datetime.strptime(birthdate, "%Y-%m-%d").date()
+
+        dob=birthdate
+        
+        today = date.today()
+        
+        age = today.year - dob.year -((today.month, today.day) <(dob.month, dob.day))
+        if (5<age<12):
+            student_serializer = StudentSerializer(data=user_data)
             if student_serializer.is_valid():
                 student_serializer.save()
                 messages.success(request, 'Registration successful!')
@@ -1011,9 +1030,15 @@ def register_user(request):
             else:
                 messages.error(request, 'Registration failed. Please try again.')
                 return redirect('register_user')
- 
-
-
+        elif(50>age>12) :
+            teacher_serializer = TeacherSerializer(data=user_data)
+            if teacher_serializer.is_valid():
+                teacher_serializer.save()
+                messages.success(request, 'Registration successful!')
+                return redirect('login_user')
+            else:
+                messages.error(request, 'Registration failed. Please try again.')
+                return redirect('register_user')
     else:
         return render(request, 'register.html')
 from django.shortcuts import render
@@ -1023,7 +1048,7 @@ import json
 
 def chatbot_api(request):
     chatbot_response =None 
-    api_key = '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'
+    api_key = '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'
     if api_key is not None and  request.method=="POST" :
         openai.api_key=api_key
         user_input =request.POST.get('user_input')
@@ -1040,47 +1065,218 @@ def chatbot_api(request):
         chatbot_response = response["choices"][0]["text"]
         return JsonResponse({'response': chatbot_response})
     else:
-        return render(request, 'chatbot.html')
-from selenium import webdriver
-import os
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-def save_image(request):
-    if request.method=='POST':
-        driver_path = 'C:/Users/ASUS/Downloads/chromedriver.exe'
+        return render(request, 'login.html')
+#################################Classroom#################################################""
+def code_class_existe(code):
+    Classrooms = Class.objects.all()
+    Classroom_serializer = ClassSerializer(Classrooms, many=True)
+    list_Classrooms=Classroom_serializer.data
+    dict_list_all = [dict(item) for item in list_Classrooms]
+    print(dict_list_all)
+    for dictionary in dict_list_all:
+        print(str(dictionary.get('code')))
+        print(code)
+        if str(dictionary.get('code')) == str(code) :
+            return True
+    return False
+import base64
+import pyautogui
+import io
+from PIL import Image
+import time
+def save_screenshot(request):
+    print("a")
+    if request.method == 'POST':
+        print("a")
+        Code = request.POST.get('Code')
+        ###
+        ss = pyautogui.screenshot()
+        width, height = ss.size
+        left = 450
+        top = 270
+        right = width - 600
+        bottom = height - 550
+        cropped = ss.crop((left, top, right, bottom))
+        img_bytes = io.BytesIO()
+        cropped.save(img_bytes, format='PNG')
+        img_bytes = img_bytes.getvalue()
 
-        # Create a new webdriver instance
-        driver = webdriver.Chrome(executable_path=driver_path)
-
-        # Navigate to the locally running HTML page
-        driver.get('http://127.0.0.1:8000/index.html/')
-
-        # Take a screenshot and save it to a file
-        driver.save_screenshot('screenshot.png')
-
-        # Close the webdriver instance
-        driver.quit()
+        img_b64 = base64.b64encode(img_bytes).decode('utf-8')
+    
+        classes = Class.objects.all()
+        class_serializer = ClassSerializer(classes, many=True)
+        list_classes=class_serializer.data
+        dict_list_class= [dict(item) for item in list_classes]
+        for dictionary in dict_list_class:
+            if (str(dictionary.get('code')) == str(Code)):
+                class_found = dictionary
+        # Save the screenshot data to a file or a database
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print("naraaa el code:")
+        print(Code)
+        if code_class_existe(Code):
+            problem =    {
+            "base64image": img_b64,
+           "Class": class_found.get('id')
+         }
+            problem_serializer = ProblemSerializer(data=problem)
+            print(problem_serializer)
+            if problem_serializer.is_valid():
+                print("aaaaaaaaaa")
+                print(pyautogui.size())
+                problem_serializer.save()
+            print(problem_serializer.is_valid())
+            print(class_found.get('id'))
+            return render(request, 'calculate.html')
     else:
-        return render(request, 'index.html',{"role":2})
+        return render(request, 'index.html')
+    
+###################################GET CODE AND DISPLAY PROBLEMS IN CLASSROOM#####################################
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def getClassProblems(request):
+    if request.method=='POST':
+        code = request.POST.get('Code')
+        problems = Problem.objects.filter(Class__code=code) # filter problems by class code
+        problem_serializer = ProblemSerializer(problems, many=True)
+        list_problems = problem_serializer.data
+        base64images = [image["base64image"] for image in list_problems]
+        print(list_problems)
+        return render(request, 'classroom.html', {'problems': base64images})
+    else:
+        return render(request, 'get_code_classroom.html')
 
-        
 
 
+###################################GET CODE AND ADD CLASSROOM#####################################
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def addClassroom(request):
+    if request.method=='POST':
+        code = request.POST.get('Code')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # get teacher object by email and password
+        try:
+            teacher = Teacher.objects.get(email=email, password=password)
+        except Teacher.DoesNotExist:
+            return HttpResponse('Teacher not found', status=404)
+
+        # create new class object with given code and teacher
+        new_class = Class.objects.create(code=code, teacher=teacher)
+
+        # return success message
+        return render(request, 'get_code_classroom.html')
+
+        # handle invalid request method
+    return render(request, 'create_classroom.html')    
+
+            
 
 
+######################DEEP FAKE VIDEOOOOOOO##################################################
+from django.shortcuts import render, redirect, reverse
+@csrf_exempt
+def deepFakeVideo(request):
+    if request.method=='POST':
+        url = "https://api.d-id.com/talks"
+        api_key='YWJvdWJha2VyLnJlYmFpQGVzcHJpdC50bg:ePCCr5rnFaDCPcHXpxulW'
+        auth_string = base64.b64encode(f'{api_key}:'.encode()).decode()
+        a=request.POST.get('scripts')
+        payload = {
+            "script": {
+                "type": "text",
+                "provider": {
+                    "type": "microsoft",
+                    "voice_id": "en-US-BrandonNeural",
+                    "voice_config": {
+                        "style": "string",
+                        "rate": "1",
+                        "pitch": "+2st"
+                    }
+                },
+                "input": a
+            },
+            "config": {
+                "stitch": True,
+            },
 
+            "source_url": "https://create-images-results.d-id.com/auth0%7C645956f4151ddf91659eac96/upl_VecVAgjHCruHxw-iPh9cr/image.png"
+            #"webhook": "https://host.domain.tld/to/webhook"
+        }
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            'Authorization': f'Basic {auth_string}',
+        }
 
+        response = requests.post(url, json=payload, headers=headers)
+        response_data = response.json()
+        id = response_data['id']
+        print(id)
+        #request.session['id'] = id
+        '''url = f"https://api.d-id.com/talks/{id}"
+        headers = {"accept": "application/json",
+                   "content-type": "application/json",
+                   'Authorization': f'Basic {auth_string}'}
+        response1 = requests.get(url, headers=headers)
+        response_data1 = response1.json()
+        print("aaaaaaaaaaaaaaaaaaaaaaa")
+        print(response1.text)'''
+        return  render(request,'calculate.html',{'id': id})
 
-
-
-
-
-
+    
+@csrf_exempt
+def deepFakeVideoGet(request, id):
+    if request.method=='GET':
+        #id = request.session.get('id')
+        api_key='YWJvdWJha2VyLnJlYmFpQGVzcHJpdC50bg:ePCCr5rnFaDCPcHXpxulW'
+        auth_string = base64.b64encode(f'{api_key}:'.encode()).decode()
+        url = f"https://api.d-id.com/talks/{id}"
+        headers = {"accept": "application/json",
+                "content-type": "application/json",
+                'Authorization': f'Basic {auth_string}'}
+        response1 = requests.get(url, headers=headers)
+        response_data1 = response1.json()
+        result_url = response_data1.get('result_url') 
+        print("aaaaaaaaaaaaaaaaaaaaaaa")
+        print(response_data1)
+        print(id)
+        return render(request, 'video.html',{'result_url':result_url})
     
 
 
-    
 
+@csrf_exempt
+def respond(request):
+    if request.method=='POST':
+        problem = request.POST.get('input_problem')
+        return render(request,'answer.html',{'problem':problem})
+    else:
+        return render(request,'answer.html',{'problem':problem})    
+
+
+@csrf_exempt
+@api_view(('POST',))
+@action(detail=False, methods=['POST'])
+def solution(request):
+    if request.method=='POST':
+        problem = request.data.get('problem')
+        student_response = request.data.get('answer')
+        openai.api_key=api_key
+        prompt ="This is a simple math problem: "+ problem + " This is my response to the problem : "+ student_response + "Is my response correct? " 
+        response =openai.Completion.create(
+            engine='text-davinci-003',
+            prompt=prompt,
+            max_tokens=256,
+            #stop="."
+            temperature=0.5
+        )
+        print(response)
+        chatbot_response=response["choices"][0]["text"]
+        return JsonResponse({'chatbot_response': chatbot_response})
             
       
