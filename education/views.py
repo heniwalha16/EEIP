@@ -402,6 +402,8 @@ def image_generation(seed):
         seed=replace_numbers_with_digits_en(seed)
     seed1=seed
     print(lang)
+    if (lang != 'ar'):
+        lang='en'
     if (lang != 'en'):
         response = requests.get('https://api.mymemory.translated.net/get?q='+seed+'&langpair='+lang+'|en')
         seed1  = response.json()['responseData']['translatedText']
@@ -652,10 +654,24 @@ def image_generation(seed):
         
 
     Output_List=[]
+    
+    y=False
     for w in res['data']:
+        if(w[1]=='ADJ') and (y==True):
+            y=False
+            continue
         if (w[1]=='NUM') and (not (int(w[0]) in dim_numbers)) and (int(w[0])<15):
             Output_List.append([w[2],1])
+            y=True
             continue
+        else:
+            y=False
+
+        if(w[1]=='NUM') and (not (int(w[0]) in dim_numbers)) :
+            y=True
+        else :
+            y=False
+
         if (w[0].startswith('https')):
             Output_List.append([w[0],0])
         else:
@@ -678,16 +694,32 @@ def calculate(request):
     LastName =request.POST.get("LastName")
     # Appel de votre API pour obtenir le résultat du problème mathématique
     list_output=image_generation(problem)
+    list_output1=[]
     for i in range(len (list_output)):
-        if list_output[i][1]==1:
+        print(list_output[i][0])
+        if(list_output[i][1]==0 ):
+            list_output1.append(list_output[i])
+        if list_output[i][1]==1 and list_output[i+1][0]!='of' :
+            list_output1.append(list_output[i])            
+            for j in range (int(list_output[i][0])-1):
+                list_output1.append([list_output[i+1][0],0])
+        if i!=len(list_output)-1 and list_output[i][1]==1:
+            if(list_output[i+1][0]=='of') :
+                list_output1.append([list_output[i][0],0]) 
+        '''if list_output[i][1]==1 and list_output[i+1][0]!='of' :
             for j in range (int(list_output[i][0])-1):
                 list_output.insert(i+1,[list_output[i+1][0],0])
-    for i in range(len (list_output)):
-      if "http" in list_output[i][0]:
-        list_output[i][1]=2
+        if i!=len(list_output)-1:
+            if(list_output[i+1][0]=='of') :
+                list_output[i][1]=0 '''
+
+    for i in range(len (list_output1)):
+      if "http" in list_output1[i][0]:
+        list_output1[i][1]=2
+    
     
             
-    result = list_output
+    result = list_output1
     # Renvoi du résultat dans le modèle HTML
     if(role==str(2)): # teacher 
         return render(request, 'index.html', {'result': result,'problem':problem,"role":role})
