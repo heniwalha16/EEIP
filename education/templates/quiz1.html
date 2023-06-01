@@ -25,10 +25,7 @@
           font-size: 24px;
         }
       </style>
-      <audio id="my-audio" autoplay >
-        <source src="../static/images/MathQuiz.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-      </audio>
+ 
       <video id="video-background" autoplay loop muted>
         <source src="../static/images/video.mp4" type="video/mp4">
         <!-- Add additional video formats for cross-browser support (e.g., WebM, Ogg) -->
@@ -263,10 +260,10 @@ function generateQuiz() {
   const difficulty = document.getElementById('difficulty').value;
   
   let num1, num2, operator;
-  for (var i = 0; i < 10; i++){          
+  for (var i = 0; i < 11; i++){          
   if (difficulty === 'easy') {
-    num1 = Math.floor(Math.random() * 11);
-    num2 = Math.floor(Math.random() * 11);
+    num1 = Math.floor(Math.random() * 10)+1;
+    num2 = Math.floor(Math.random() * 10)+1;
     operator = Math.random() < 0.5 ? '+' : '-';
     var question = num1 + ' ' + operator + ' ' + num2;
     questions.push(question);
@@ -274,19 +271,22 @@ function generateQuiz() {
   } 
   if (difficulty === 'medium') { 
     // Generate medium-level problems (e.g. multiplication and division problems with numbers between 0 and 100)
-    num1 = Math.floor(Math.random() * 11);
-    num2 = Math.floor(Math.random() * 11);
-    operator = Math.random() < 0.5 ? '*' : '/';
+    num1 = Math.floor(Math.random() * 10) + 1;
+    num2 = Math.floor(Math.random() * 10) + 1;
+    operator = Math.random() < 0.7 ? '*' : '+';
     var question = num1 + ' ' + operator + ' ' + num2;
     questions.push(question);
     }
   if (difficulty === 'hard') {
     // Generate hard-level problems (e.g. mixed operations with numbers between -100 and 100)
-    num1 = Math.floor(Math.random() * 11);
-    num2 = Math.floor(Math.random() * 11);
-    operator = ['+', '-', '*', '/'][Math.floor(Math.random() * 4)];
-    var question = num1 + ' ' + operator + ' ' + num2;
-    questions.push(question);
+    num1 = Math.floor(Math.random() * 51) + 50;
+    num2 = Math.floor(Math.random() * 10) + 1;
+    operator = Math.random() < 0.4 ? '*' : '/';
+    if (operator === '/') {
+        num1 = num2 * (Math.floor(Math.random() * 11) + 1); // Generate a multiple of num2
+      }
+      var question = num1 + ' ' + operator + ' ' + num2;
+      questions.push(question);
   }
   
 }
@@ -332,14 +332,14 @@ function displayQuestion() {
       }
 
       
-      if(progressStartValue<100 && currentQuestionIndex<9){
+      if(progressStartValue<100 && currentQuestionIndex<10){
         currentQuestionIndex++; 
         progressStartValue= progressStartValue + 10;
        progressValue.textContent = `${progressStartValue}%`
         circularProgress.style.background = `conic-gradient(#7d2ae8 ${progressStartValue * 3.6}deg, #ededed 0deg)`
       }
     
-      if (currentQuestionIndex === questions.length -1) {
+      if (currentQuestionIndex === questions.length -1 ) {
         
         // Display final score when all questions are answered
         if(score<5){

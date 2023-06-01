@@ -943,7 +943,7 @@ def Tik_Tac_Toe(request):
          return render(request, 'calculate.html')
 def MathQuiz(request):
     if request.method == 'POST':
-         return render(request, 'ttt.html')
+         return render(request, 'quiz1.html')
     else:
          return render(request, 'calculate.html')
 def RockPaperScissors(request):
@@ -1080,7 +1080,6 @@ import json
 
 def chatbot_api(request):
     chatbot_response =None 
-    api_key = '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'
     if api_key is not None and  request.method=="POST" :
         openai.api_key=api_key
         user_input =request.POST.get('user_input')

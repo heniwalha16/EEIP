@@ -1,6 +1,7 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import io
 import base64
+
 
 def drawrect(x, y,xstr,ystr):
     d_rect = True
@@ -26,12 +27,12 @@ def drawrect(x, y,xstr,ystr):
        # draw.rectangle((x1, y1, x2, y2), outline='black', width=3)
 
     # Calculate text position and draw the dimensions
-    h_text_size = draw.textsize(h)
+    h_text_size = draw.textsize(h) 
     w_text_size = draw.textsize(w)
     h_pos = ((recWidth + 30 - h_text_size[0]) // 2, 12)
     w_pos = (recWidth + 9 - w_text_size[0], (recHeight + 20 - w_text_size[1]) // 2)
-    draw.text(h_pos, h, fill='black')
-    draw.text(w_pos, w, fill='black')
+    draw.text(h_pos, h, fill='black',font=ImageFont.truetype(r'arial.ttf', 40))
+    draw.text(w_pos, w, fill='black',font=ImageFont.truetype(r'arial.ttf', 40))
 
     # Convert image to base64 string and return
     buffered = io.BytesIO()
@@ -66,10 +67,10 @@ def draw_parallelogram(width, height,wstr,hstr, angle_degrees=60):
     # Draw axes with labels
     draw.line([(x1+10, y1+10), (x2+10, y2+10)], fill='black', width=2)
     draw.line([(x2+10, y2+10), (x3+10, y3+10)], fill='black', width=2)
-    draw.text((x2/2+10, 0), wstr, fill='black')
+    draw.text((x2/2+10, 0), wstr, fill='black',font=ImageFont.truetype(r'arial.ttf', 40))
     draw.line([(x1+10, y1+10), (x4+10, y4+10)], fill='black', width=2)
     draw.line([(x4+10, y4+10), (x3+10, y3+10)], fill='black', width=2)
-    draw.text((x4/2-5, y4/2+10), hstr, fill='black')
+    draw.text((x4/2-5, y4/2+10), hstr, fill='black',font=ImageFont.truetype(r'arial.ttf', 40))
 
     # Convert image to base64 string and return
     buffered = io.BytesIO()
@@ -105,7 +106,7 @@ def draw_circle(radius,a):
 
     # Draw the radius value
     text = f"Radius = {a}"
-    ax.text((2*radius+80)/2, 10, text, ha='center')
+    ax.text((2*radius+80)/2, 10, text, ha='center',fontsize=20)
 
     # Save figure to a buffer
     buffer = io.BytesIO()
@@ -144,8 +145,8 @@ def draw_rhombus(diagonal1, diagonal2,dstr1, dstr2):
     ax.plot([half_d1+10, x2+10], [half_d2+10, y2+10], color='black', linewidth=2)
 
     # Add labels for the diagonals
-    ax.text(half_d1/2+10, half_d2+5, dstr2, ha='center', va='bottom')
-    ax.text(half_d1+5, diagonal2/2+10, dstr1, ha='left', va='center')
+    ax.text(half_d1/2+10, half_d2+5, dstr2, ha='center', va='bottom',fontsize=20)
+    ax.text(half_d1+5, diagonal2/2+10, dstr1, ha='left', va='center',fontsize=20)
 
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight')
