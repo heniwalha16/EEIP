@@ -417,7 +417,7 @@ def image_generation(seed):
     
     # Load the trained model and tokenizer
     model = BertForMathProblemClassification()
-    model.load_state_dict(torch.load('education/bert_math_problem_classification.pt'))
+    model.load_state_dict(torch.load('C:/Users/Heni/Documents/studies/4DS/PI/bert_math_problem_classification.pt'))
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
     
     # Example math problem
@@ -1053,7 +1053,7 @@ def register_user(request):
         today = date.today()
         
         age = today.year - dob.year -((today.month, today.day) <(dob.month, dob.day))
-        if (5<age<12):
+        if (age<=12):
             student_serializer = StudentSerializer(data=user_data)
             if student_serializer.is_valid():
                 student_serializer.save()
