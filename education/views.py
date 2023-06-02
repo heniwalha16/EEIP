@@ -695,27 +695,33 @@ def calculate(request):
     # Appel de votre API pour obtenir le résultat du problème mathématique
     list_output=image_generation(problem)
     list_output1=[]
-    for i in range(len (list_output)):
-        print(list_output[i][0])
-        if(list_output[i][1]==0 ):
-            list_output1.append(list_output[i])
-        if list_output[i][1]==1 and list_output[i+1][0]!='of' :
-            list_output1.append(list_output[i])            
-            for j in range (int(list_output[i][0])-1):
-                list_output1.append([list_output[i+1][0],0])
-        if i!=len(list_output)-1 and list_output[i][1]==1:
-            if(list_output[i+1][0]=='of') :
-                list_output1.append([list_output[i][0],0]) 
-        '''if list_output[i][1]==1 and list_output[i+1][0]!='of' :
-            for j in range (int(list_output[i][0])-1):
-                list_output.insert(i+1,[list_output[i+1][0],0])
-        if i!=len(list_output)-1:
-            if(list_output[i+1][0]=='of') :
-                list_output[i][1]=0 '''
+    if(list_output[0][1]==3):
+        list_output1=list_output
+    else:
+        
+        for i in range(len (list_output)):
+            print(list_output[i][0])
+            if(list_output[i][1]==0 ):
+                list_output1.append(list_output[i])
+            if list_output[i][1]==1 and list_output[i+1][0]!='of' :
+                list_output1.append(list_output[i])            
+                for j in range (int(list_output[i][0])-1):
+                    list_output1.append([list_output[i+1][0],0])
+            if i!=len(list_output)-1 and list_output[i][1]==1:
+                if(list_output[i+1][0]=='of') :
+                    list_output1.append([list_output[i][0],0]) 
+            '''if list_output[i][1]==1 and list_output[i+1][0]!='of' :
+                for j in range (int(list_output[i][0])-1):
+                    list_output.insert(i+1,[list_output[i+1][0],0])
+            if i!=len(list_output)-1:
+                if(list_output[i+1][0]=='of') :
+                    list_output[i][1]=0 '''
 
-    for i in range(len (list_output1)):
-      if "http" in list_output1[i][0]:
-        list_output1[i][1]=2
+        for i in range(len (list_output1)):
+            if "http" in list_output1[i][0]:
+                list_output1[i][1]=2
+            
+    
     
     
             
