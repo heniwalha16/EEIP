@@ -10,7 +10,6 @@ from datetime import date
 import education.utils
 import random
 #from education.models import QuizQuestion
-
 from django.core.files.storage import default_storage
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt   
@@ -30,7 +29,9 @@ import pyttsx3
 from dotenv import load_dotenv
 load_dotenv()
 api_key=os.getenv("OPENAI_KEY",None)
+
 ########################### chatbot_solution   ###############################
+
 @csrf_exempt
 @api_view(('POST',))
 @action(detail=False, methods=['POST'])
